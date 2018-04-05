@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace UniversalCommandlineInterface.Attributes {
+namespace UniversalCLIOptionProvider.Attributes {
    [AttributeUsage(AttributeTargets.Class)]
    public class CmdContextAttribute : Attribute {
       private bool _loaded;

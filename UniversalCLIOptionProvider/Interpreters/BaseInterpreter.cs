@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using UniversalCommandlineInterface.Attributes;
+using UniversalCLIOptionProvider.Attributes;
 
-namespace UniversalCommandlineInterface.Interpreters {
+namespace UniversalCLIOptionProvider.Interpreters {
    public abstract class BaseInterpreter {
       public string Name { get; }
       public int Offset { get; internal set; }

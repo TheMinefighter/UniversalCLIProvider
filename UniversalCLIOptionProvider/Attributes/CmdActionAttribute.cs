@@ -1,8 +1,8 @@
 ﻿using System;
- using System.Linq;
- using System.Reflection;
- 
- namespace UniversalCommandlineInterface.Attributes {
+using System.Linq;
+using System.Reflection;
+
+namespace UniversalCLIOptionProvider.Attributes {
     [AttributeUsage(AttributeTargets.Method)]
     public class CmdActionAttribute : Attribute {
        private bool _cached;

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Reflection;
 using Newtonsoft.Json;
-using UniversalCommandlineInterface.Attributes;
+using UniversalCLIOptionProvider.Attributes;
 
-namespace UniversalCommandlineInterface {
+namespace UniversalCLIOptionProvider {
    public static class CommandlineMethods {
 //      public static bool GetAliasValue(out object value, CmdParameterAttribute cmdParameterAttribute, string search) {
 //         value = null;

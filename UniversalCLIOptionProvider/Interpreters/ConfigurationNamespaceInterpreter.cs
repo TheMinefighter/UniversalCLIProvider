@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace UniversalCommandlineInterface.Interpreters {
+namespace UniversalCLIOptionProvider.Interpreters {
    public class ConfigurationNamespaceInterpreter {
       public ManagedConfigurationInterpreter ConfigurationInterpreter;
       public ConfigurationNamespaceInterpreter parent;

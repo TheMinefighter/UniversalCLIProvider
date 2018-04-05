@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace UniversalCommandlineInterface.Attributes {
+namespace UniversalCLIOptionProvider.Attributes {
    [AttributeUsage(AttributeTargets.GenericParameter | AttributeTargets.Parameter | AttributeTargets.Field | AttributeTargets.Property)]
    //TODO Add Defaults
    public class CmdParameterAttribute : Attribute {

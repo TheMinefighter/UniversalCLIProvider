@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace UniversalCommandlineInterface {
+namespace UniversalCLIOptionProvider {
    /// <summary>
    ///    Class storing the Actions for Console Operations
    /// </summary>

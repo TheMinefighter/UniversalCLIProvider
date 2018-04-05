@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UniversalCommandlineInterface.Attributes;
+using UniversalCLIOptionProvider.Attributes;
 
-namespace UniversalCommandlineInterface.Interpreters {
+namespace UniversalCLIOptionProvider.Interpreters {
    public class ContextInterpreter : BaseInterpreter {
       public CmdContextAttribute MyContextAttribute;
 

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace UniversalCommandlineInterface {
+namespace UniversalCLIOptionProvider {
    public class CommandlineParameterAlias {
       public IEnumerable<string> extendedHelp;
       public string Help;

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Reflection;
-using UniversalCommandlineInterface.Attributes;
+using UniversalCLIOptionProvider.Attributes;
 
-namespace UniversalCommandlineInterface.Interpreters {
+namespace UniversalCLIOptionProvider.Interpreters {
    public class CommandlineOptionInterpreter {
       public string[] Args;
       public ConsoleIO ConsoleIO;

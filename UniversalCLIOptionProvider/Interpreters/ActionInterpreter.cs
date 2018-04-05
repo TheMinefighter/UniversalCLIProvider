@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
-using UniversalCommandlineInterface.Attributes;
+using UniversalCLIOptionProvider.Attributes;
 
-namespace UniversalCommandlineInterface.Interpreters {
+namespace UniversalCLIOptionProvider.Interpreters {
    public class ActionInterpreter : BaseInterpreter ,IDisposable {
       private bool _cached;
       public CmdActionAttribute MyActionAttribute;

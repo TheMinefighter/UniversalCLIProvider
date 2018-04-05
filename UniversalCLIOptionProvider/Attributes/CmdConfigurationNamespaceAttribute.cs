@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UniversalCommandlineInterface.Attributes {
+namespace UniversalCLIOptionProvider.Attributes {
    [AttributeUsage(AttributeTargets.Class)]
    public class CmdConfigurationNamespaceAttribute : Attribute {
       public string ExtendedHelp;

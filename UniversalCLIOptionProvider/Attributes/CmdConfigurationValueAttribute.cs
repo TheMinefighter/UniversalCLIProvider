@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UniversalCommandlineInterface.Attributes {
+namespace UniversalCLIOptionProvider.Attributes {
    [AttributeUsage(AttributeTargets.Parameter)]
    public class CmdConfigurationValueAttribute : Attribute {
       public string ExtendedHelp;

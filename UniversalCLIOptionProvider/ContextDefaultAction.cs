@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Security.Cryptography.X509Certificates;
-using UniversalCommandlineInterface.Interpreters;
+using UniversalCLIOptionProvider.Interpreters;
 
-namespace UniversalCommandlineInterface {
+namespace UniversalCLIOptionProvider {
    public class ContextDefaultAction {
       internal ContextDefaultAction() {
          

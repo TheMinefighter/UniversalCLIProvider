@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using UniversalCommandlineInterface.Attributes;
+using UniversalCLIOptionProvider.Attributes;
 
-namespace UniversalCommandlineInterface.Interpreters {
+namespace UniversalCLIOptionProvider.Interpreters {
    public class ManagedConfigurationInterpreter : BaseInterpreter {
       private Dictionary<CmdConfigurationNamespaceAttribute, MemberInfo> _namespaces;
       private Dictionary<CmdConfigurationValueAttribute, MemberInfo> _values;

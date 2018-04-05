@@ -1,4 +1,4 @@
-﻿namespace UniversalCommandlineInterface {
+﻿namespace UniversalCLIOptionProvider {
    public enum ContextAction : byte {
       PrintError = 0x03,
       PrintHelp = 0x02,
