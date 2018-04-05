@@ -27,11 +27,11 @@ namespace UniversalCLIOptionProvider.Interpreters {
                TopInterpreter.Args = args.ToArray();
             }
             else {
-               TopInterpreter.ConsoleIO.WriteToConsole(string.Join(" ", currentContextInterpreter.Path) + ">");
+               TopInterpreter.ConsoleIO.Write(string.Join(" ", currentContextInterpreter.Path) + ">");
                List<string> arguments = new List<string>();
                StringBuilder lastStringBuilder = new StringBuilder();
                bool quoting = false;
-               foreach (char c in TopInterpreter.ConsoleIO.ReadFromConsole()) {
+               foreach (char c in TopInterpreter.ConsoleIO.ReadLine()) {
                   if (c == '"') {
                      quoting ^= true;
                   }
@@ -125,6 +125,7 @@ namespace UniversalCLIOptionProvider.Interpreters {
             //TODO Implement this
          }
 
+          MyContextAttribute.DefaultAction.Interpret(this);
          return false;
       }
 

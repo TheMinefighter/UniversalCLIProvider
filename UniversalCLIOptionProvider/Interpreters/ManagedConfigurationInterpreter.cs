@@ -7,10 +7,14 @@ using UniversalCLIOptionProvider.Attributes;
 
 namespace UniversalCLIOptionProvider.Interpreters {
    public class ManagedConfigurationInterpreter : BaseInterpreter {
+      private enum RootRequiremnts :byte {
+      AllAllowed,RootRequired,RootForbidden
+         
+      }
       private Dictionary<CmdConfigurationNamespaceAttribute, MemberInfo> _namespaces;
       private Dictionary<CmdConfigurationValueAttribute, MemberInfo> _values;
       private string _configurationRootName;
-      private bool _rootRequired;
+      private RootRequiremnts _rootRequired;
       private string[] _contextTrace;
       protected ManagedConfigurationInterpreter(CommandlineOptionInterpreter top, int offset = 0) : base(top, offset) {
       }
@@ -22,7 +26,7 @@ namespace UniversalCLIOptionProvider.Interpreters {
          int maxlength =
             new int[] {_namespaces.Keys.Select(x => x.Help.Length).Max(), _values.Keys.Select(x => x.Help.Length).Max()}.Max() + 1;
          StringBuilder ConsoleStack = new StringBuilder();
-         TopInterpreter.ConsoleIO.WriteLineToConsole($"Syntax: {Path} ");
+         TopInterpreter.ConsoleIO.WriteLine($"Syntax: {Path} ");
          foreach (CmdConfigurationNamespaceAttribute cmdConfigurationNamespaceAttribute in _namespaces.Keys) {
             //  TopInterpreter.ConsoleIO.WriteLineToConsole
             ConsoleStack.Append(cmdConfigurationNamespaceAttribute.Name.PadRight(maxlength) +
@@ -30,7 +34,7 @@ namespace UniversalCLIOptionProvider.Interpreters {
             ConsoleStack.Append(Environment.NewLine);
          }
 
-         TopInterpreter.ConsoleIO.WriteToConsole(ConsoleStack.ToString());
+         TopInterpreter.ConsoleIO.Write(ConsoleStack.ToString());
          throw new NotImplementedException();
       }
 
@@ -46,12 +50,19 @@ namespace UniversalCLIOptionProvider.Interpreters {
          }
 
          _contextTrace = TopInterpreter.Args[Offset].Split('.').Select(x=>x.ToLower()).ToArray();
-         if (_rootRequired) {
+         if (_rootRequired != RootRequiremnts.RootForbidden) {
             if (_contextTrace[0].Equals(_configurationRootName,StringComparison.OrdinalIgnoreCase)) {
-            
+               Offset++;
+            }
+            else {
+               if (_rootRequired == RootRequiremnts.RootRequired) {
+                  TopInterpreter.ConsoleIO.WriteLine($"Expected token (\"{_configurationRootName}\") not found");
+                  return false;
+               }
+               
             }
          }
-
+throw new NotImplementedException();
          return true;
       }
    }

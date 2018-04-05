@@ -61,7 +61,7 @@ namespace UniversalCLIOptionProvider.Interpreters {
 
 
       public void PrintEror(string argName = null) {
-         TopInterpreter.ConsoleIO.WriteToConsole(
+         TopInterpreter.ConsoleIO.Write(
             $"An error occurred while parsing argument {argName ?? Name} use {TopInterpreter.Options.PreferredArgumentPrefix}? for help");
       }
 
