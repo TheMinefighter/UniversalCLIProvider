@@ -1,6 +1,9 @@
 ﻿namespace UniversalCLIOptionProvider {
-   public enum InterpretationResult {
-     Unknown,Success,RunError,IncompatibleParameters,MissingParameter
-      
-   }
+	public enum InterpretationResult {
+		Unknown,
+		Success,
+		RunError,
+		IncompatibleParameters,
+		MissingParameter
+	}
 }

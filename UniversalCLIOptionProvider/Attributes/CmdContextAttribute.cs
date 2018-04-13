@@ -4,59 +4,58 @@ using System.Linq;
 using System.Reflection;
 
 namespace UniversalCLIOptionProvider.Attributes {
-   [AttributeUsage(AttributeTargets.Class)]
-   public class CmdContextAttribute : Attribute {
-      private bool _loaded;
-      public IList<CmdActionAttribute> ctxActions = new List<CmdActionAttribute>();
-      public IList<CmdParameterAttribute> ctxParameters = new List<CmdParameterAttribute>();
-      public TypeInfo MyInfo;
-      public ContextDefaultAction DefaultAction;
-      public string Name;
-      public IList<CmdContextAttribute> subCtx = new List<CmdContextAttribute>();
+	[AttributeUsage(AttributeTargets.Class)]
+	public class CmdContextAttribute : Attribute {
+		private bool _loaded;
+		public IList<CmdActionAttribute> ctxActions = new List<CmdActionAttribute>();
+		public IList<CmdParameterAttribute> ctxParameters = new List<CmdParameterAttribute>();
+		public ContextDefaultAction DefaultAction;
+		public TypeInfo MyInfo;
+		public string Name;
+		public IList<CmdContextAttribute> subCtx = new List<CmdContextAttribute>();
 
-      public CmdContextAttribute(string name,ContextDefaultAction defaultAction = null ) {
-         defaultAction = defaultAction ?? ContextAction.PrintHelp;
-         DefaultAction = defaultAction;
-         Name = name;
-      }
+		public CmdContextAttribute(string name, ContextDefaultAction defaultAction = null) {
+			defaultAction = defaultAction ?? ContextAction.PrintHelp;
+			DefaultAction = defaultAction;
+			Name = name;
+		}
 
-      public CmdContextAttribute() {
-      }
+		public CmdContextAttribute() { }
 
-      
-      public void LoadIfNot() {
-         if (!_loaded) {
-            Load();
 
-            _loaded = true;
-         }
-      }
+		public void LoadIfNot() {
+			if (!_loaded) {
+				Load();
 
-      internal void Load() {
-         foreach (TypeInfo myInfoDeclaredNestedType in MyInfo.DeclaredNestedTypes) {
-            CmdContextAttribute contextAttribute = myInfoDeclaredNestedType.GetCustomAttribute<CmdContextAttribute>();
-            if (contextAttribute != null) {
-               contextAttribute.MyInfo = myInfoDeclaredNestedType;
-               subCtx.Add(contextAttribute);
-            }
-         }
+				_loaded = true;
+			}
+		}
 
-         IEnumerable<MemberInfo> members = MyInfo.DeclaredFields.Cast<MemberInfo>().Concat(MyInfo.DeclaredProperties);
-         foreach (MemberInfo memberInfo in members) {
-            CmdParameterAttribute parameterAttribute = memberInfo.GetCustomAttribute<CmdParameterAttribute>();
-            if (parameterAttribute != null) {
-               parameterAttribute.MyInfo = memberInfo;
-               ctxParameters.Add(parameterAttribute);
-            }
-         }
+		internal void Load() {
+			foreach (TypeInfo myInfoDeclaredNestedType in MyInfo.DeclaredNestedTypes) {
+				CmdContextAttribute contextAttribute = myInfoDeclaredNestedType.GetCustomAttribute<CmdContextAttribute>();
+				if (contextAttribute != null) {
+					contextAttribute.MyInfo = myInfoDeclaredNestedType;
+					subCtx.Add(contextAttribute);
+				}
+			}
 
-         foreach (MethodInfo methodInfo in MyInfo.DeclaredMethods) {
-            CmdActionAttribute actionAttribute = methodInfo.GetCustomAttribute<CmdActionAttribute>();
-            if (actionAttribute != null) {
-               actionAttribute.MyInfo = methodInfo;
-               ctxActions.Add(actionAttribute);
-            }
-         }
-      }
-   }
+			IEnumerable<MemberInfo> members = MyInfo.DeclaredFields.Cast<MemberInfo>().Concat(MyInfo.DeclaredProperties);
+			foreach (MemberInfo memberInfo in members) {
+				CmdParameterAttribute parameterAttribute = memberInfo.GetCustomAttribute<CmdParameterAttribute>();
+				if (parameterAttribute != null) {
+					parameterAttribute.MyInfo = memberInfo;
+					ctxParameters.Add(parameterAttribute);
+				}
+			}
+
+			foreach (MethodInfo methodInfo in MyInfo.DeclaredMethods) {
+				CmdActionAttribute actionAttribute = methodInfo.GetCustomAttribute<CmdActionAttribute>();
+				if (actionAttribute != null) {
+					actionAttribute.MyInfo = methodInfo;
+					ctxActions.Add(actionAttribute);
+				}
+			}
+		}
+	}
 }

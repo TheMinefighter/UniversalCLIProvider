@@ -1,41 +1,39 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 
 namespace UniversalCLIOptionProvider {
-   /// <summary>
-   ///    Class storing the Actions for Console Operations
-   /// </summary>
-   public class ConsoleIO {
+	/// <summary>
+	///  Class storing the Actions for Console Operations
+	/// </summary>
+	public class ConsoleIO {
 //      private static ConsoleIO _primary = DefaultIO;
 
-      /// <summary>
-      ///    Reads a line from Console
-      /// </summary>
-      public Func<string> ReadLine;
+		/// <summary>
+		///  Reads a line from Console
+		/// </summary>
+		public Func<string> ReadLine;
 
-      
+		/// <summary>
+		///  Writes a message to Console
+		/// </summary>
+		public Action<string> Write;
+
+
 //      /// <summary>
 //      ///    Sets the visibility of the Console Window
 //      /// </summary>
 //      public Action<bool> SetVisibiltyToConsole;
 
-      /// <summary>
-      ///    Writes a message to Console and a linebreak afterwards
-      /// </summary>
-      public Action<string> WriteLine;
+		/// <summary>
+		///  Writes a message to Console and a linebreak afterwards
+		/// </summary>
+		public Action<string> WriteLine;
 
-      /// <summary>
-      ///    Writes a message to Console
-      /// </summary>
-      public Action<string> Write;
-
-      public static ConsoleIO DefaultIO => new ConsoleIO {
-         ReadLine = Console.ReadLine,
+		public static ConsoleIO DefaultIO => new ConsoleIO {
+			ReadLine = Console.ReadLine,
 //         SetVisibiltyToConsole = x => ShowWindow(GetConsoleWindow(), x ? SW_SHOW : SW_HIDE),
-         WriteLine = Console.WriteLine,
-         Write = Console.Write
-
-      };
+			WriteLine = Console.WriteLine,
+			Write = Console.Write
+		};
 
 //      public ConsoleIO(bool isPrimary = true) {
 //         if (isPrimary) {
@@ -85,5 +83,5 @@ namespace UniversalCLIOptionProvider {
 //      public const int SW_SHOW = 5;
 //
 //      #endregion
-   }
+	}
 }
