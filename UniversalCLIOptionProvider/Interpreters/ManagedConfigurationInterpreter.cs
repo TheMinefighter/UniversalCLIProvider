@@ -16,6 +16,7 @@ namespace UniversalCLIOptionProvider.Interpreters {
       private string _configurationRootName;
       private RootRequiremnts _rootRequired;
       private string[] _contextTrace;
+      private ConfigurationNamespaceInterpreter _root;
       protected ManagedConfigurationInterpreter(CommandlineOptionInterpreter top, int offset = 0) : base(top, offset) {
       }
 
@@ -37,7 +38,6 @@ namespace UniversalCLIOptionProvider.Interpreters {
          TopInterpreter.ConsoleIO.Write(ConsoleStack.ToString());
          throw new NotImplementedException();
       }
-
 
       internal override bool Interpret(bool printErrors = true) {
          if (Offset==TopInterpreter.Args.Length||IsParameterEqual("?", TopInterpreter.Args[Offset])) {
@@ -62,6 +62,7 @@ namespace UniversalCLIOptionProvider.Interpreters {
                
             }
          }
+         _root.Interpret();
 throw new NotImplementedException();
          return true;
       }

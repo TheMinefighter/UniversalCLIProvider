@@ -76,7 +76,13 @@ namespace UniversalCLIOptionProvider.Interpreters {
             }
          }
 
-         MyActionAttribute.MyInfo.Invoke(null, invokers);
+         InterpretationResult result;
+        object returned= MyActionAttribute.MyInfo.Invoke(null, invokers);
+         if (returned is bool invokationSuccess) {
+            result = invokationSuccess ? InterpretationResult.Success : InterpretationResult.RunError;
+         } else if (returned is InterpretationResult invokationResult) {
+            result = invokationResult;
+         }
          return true;
          //throw new NotImplementedException();
       }
