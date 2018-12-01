@@ -1,0 +1,166 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PropertyOrFieldInfo</name>
+    </assembly>
+    <members>
+        <member name="M:PropertyOrFieldInfo.PropertyOrFieldInfo.GetCustomAttributes(System.Boolean)">
+            <inheritdoc />
+            <summary>Returns an array of all custom attributes applied to this member.</summary>
+            <param name="inherit">true to search this member's inheritance chain to find the attributes; otherwise, false. This parameter is ignored for properties and events.</param>
+            <returns>An array that contains all the custom attributes applied to this member, or an array with zero elements if no attributes are defined.</returns>
+            <exception cref="T:System.InvalidOperationException">This member belongs to a type that is loaded into the reflection-only context. See <see cref="!:~/docs/framework/reflection-and-codedom/how-to-load-assemblies-into-the-reflection-only-context.md">How to: Load Assemblies into the Reflection-Only Context</see>.</exception>
+            <exception cref="T:System.TypeLoadException">A custom attribute type could not be loaded.</exception>
+        </member>
+        <member name="M:PropertyOrFieldInfo.PropertyOrFieldInfo.GetCustomAttributes(System.Type,System.Boolean)">
+            <inheritdoc />
+            <summary>Returns an array of custom attributes applied to this member and identified by <see cref="T:System.Type"></see>.</summary>
+            <param name="attributeType">The type of attribute to search for. Only attributes that are assignable to this type are returned.</param>
+            <param name="inherit">true to search this member's inheritance chain to find the attributes; otherwise, false. This parameter is ignored for properties and events.</param>
+            <returns>An array of custom attributes applied to this member, or an array with zero elements if no attributes assignable to <paramref name="attributeType">attributeType</paramref> have been applied.</returns>
+            <exception cref="T:System.TypeLoadException">A custom attribute type cannot be loaded.</exception>
+            <exception cref="T:System.ArgumentNullException">If <paramref name="attributeType">attributeType</paramref> is null.</exception>
+            <exception cref="T:System.InvalidOperationException">This member belongs to a type that is loaded into the reflection-only context. See <see cref="!:~/docs/framework/reflection-and-codedom/how-to-load-assemblies-into-the-reflection-only-context.md">How to: Load Assemblies into the Reflection-Only Context</see>.</exception>
+        </member>
+        <member name="M:PropertyOrFieldInfo.PropertyOrFieldInfo.IsDefined(System.Type,System.Boolean)">
+            <inheritdoc />
+            <summary>Indicates whether one or more attributes of the specified type or of its derived types is applied to this member.</summary>
+            <param name="attributeType">The type of custom attribute to search for. The search includes derived types.</param>
+            <param name="inherit">true to search this member's inheritance chain to find the attributes; otherwise, false. This parameter is ignored for properties and events.</param>
+            <returns>true if one or more instances of <paramref name="attributeType">attributeType</paramref> or any of its derived types is applied to this member; otherwise, false.</returns>
+        </member>
+        <member name="P:PropertyOrFieldInfo.PropertyOrFieldInfo.DeclaringType">
+            <inheritdoc />
+            <summary>Gets the class that declares this member.</summary>
+            <returns>The Type object for the class that declares this member.</returns>
+        </member>
+        <member name="P:PropertyOrFieldInfo.PropertyOrFieldInfo.MemberType">
+            <inheritdoc />
+            <summary>Gets a <see cref="T:System.Reflection.MemberTypes"></see> value indicating the type of the member — method, constructor, event, and so on.</summary>
+            <returns>A <see cref="T:System.Reflection.MemberTypes"></see> value indicating the type of member.</returns>
+        </member>
+        <member name="P:PropertyOrFieldInfo.PropertyOrFieldInfo.Name">
+            <inheritdoc />
+            <summary>Gets the name of the current member.</summary>
+            <returns>A <see cref="T:System.String"></see> containing the name of this member.</returns>
+        </member>
+        <member name="P:PropertyOrFieldInfo.PropertyOrFieldInfo.ReflectedType">
+            <inheritdoc />
+            <summary>Gets the class object that was used to obtain this instance of MemberInfo.</summary>
+            <returns>The Type object through which this MemberInfo object was obtained.</returns>
+        </member>
+        <member name="P:PropertyOrFieldInfo.PropertyOrFieldInfo.IsField">
+            <summary>
+            True if it is a <see cref="T:System.Reflection.FieldInfo"/>, false if it is a <see cref="T:System.Reflection.PropertyInfo"/>
+            </summary>
+        </member>
+        <member name="P:PropertyOrFieldInfo.PropertyOrFieldInfo.MemberInfo">
+            <summary>
+            The actual <see cref="T:System.Reflection.MemberInfo"/>
+            </summary>
+        </member>
+        <member name="M:PropertyOrFieldInfo.PropertyOrFieldInfo.Equals(PropertyOrFieldInfo.PropertyOrFieldInfo)">
+            <inheritdoc />
+            <summary>
+            Tesst whether two <see cref="T:PropertyOrFieldInfo.PropertyOrFieldInfo" />s are Equal
+            </summary>
+            <param name="other">The <see cref="T:PropertyOrFieldInfo.PropertyOrFieldInfo" /> to compare with</param>
+            <returns>Whether both are equal</returns>
+        </member>
+        <member name="M:PropertyOrFieldInfo.PropertyOrFieldInfo.Equals(System.Reflection.PropertyInfo)">
+            <inheritdoc />
+            <summary>
+            Tests whether a this <see cref="T:PropertyOrFieldInfo.PropertyOrFieldInfo" /> is equal to a <see cref="T:System.Reflection.PropertyInfo" />
+            </summary>
+            <param name="other">The <see cref="T:System.Reflection.PropertyInfo" /> to compare with</param>
+            <returns>Whether both are equal</returns>
+        </member>
+        <member name="M:PropertyOrFieldInfo.PropertyOrFieldInfo.Equals(System.Reflection.FieldInfo)">
+            <inheritdoc />
+            <summary>
+            Tests whether a this <see cref="T:PropertyOrFieldInfo.PropertyOrFieldInfo" /> is equal to a <see cref="T:System.Reflection.FieldInfo" />
+            </summary>
+            <param name="other">The <see cref="T:System.Reflection.FieldInfo" /> to compare with</param>
+            <returns>Whether both are equal</returns>
+        </member>
+        <member name="M:PropertyOrFieldInfo.PropertyOrFieldInfo.#ctor(System.Reflection.PropertyInfo)">
+            <summary>
+            Creates a new <see cref="T:PropertyOrFieldInfo.PropertyOrFieldInfo"/> from a <see cref="T:System.Reflection.PropertyInfo"/>
+            </summary>
+            <param name="source">The <see cref="T:System.Reflection.PropertyInfo"/> to use</param>
+        </member>
+        <member name="M:PropertyOrFieldInfo.PropertyOrFieldInfo.#ctor(System.Reflection.FieldInfo)">
+            <inheritdoc />
+            <summary>
+            Creates a new <see cref="T:PropertyOrFieldInfo.PropertyOrFieldInfo" /> from a <see cref="T:System.Reflection.FieldInfo" />
+            </summary>
+            <param name="source">The <see cref="T:System.Reflection.FieldInfo" /> to use</param>
+        </member>
+        <member name="M:PropertyOrFieldInfo.PropertyOrFieldInfo.#ctor(System.Reflection.MemberInfo)">
+            <summary>
+            Creates a new <see cref="T:PropertyOrFieldInfo.PropertyOrFieldInfo"/> from a <see cref="T:System.Reflection.MemberInfo"/>
+            </summary>
+            <param name="source">The MemberInfo to use</param>
+            <exception cref="T:System.ArgumentException">Thrown when the MemberInfo is not a <see cref="T:System.Reflection.PropertyInfo"/> neither a <see cref="T:System.Reflection.FieldInfo"/></exception>  
+        </member>
+        <member name="M:PropertyOrFieldInfo.PropertyOrFieldInfo.op_Explicit(PropertyOrFieldInfo.PropertyOrFieldInfo)~System.Reflection.PropertyInfo">
+            <summary>
+            Convertes a <see cref="T:PropertyOrFieldInfo.PropertyOrFieldInfo"/> to a <see cref="T:System.Reflection.PropertyInfo"/> if possible, throws otherwise
+            </summary>
+            <param name="source">The <see cref="T:PropertyOrFieldInfo.PropertyOrFieldInfo"/> to convert</param>
+            <exception cref="T:System.InvalidOperationException">Thrown when it is a <see cref="T:System.Reflection.FieldInfo"/> instead of the requested <see cref="T:System.Reflection.PropertyInfo"/></exception>
+        </member>
+        <member name="M:PropertyOrFieldInfo.PropertyOrFieldInfo.op_Explicit(PropertyOrFieldInfo.PropertyOrFieldInfo)~System.Reflection.FieldInfo">
+            <summary>
+            Convertes a <see cref="T:PropertyOrFieldInfo.PropertyOrFieldInfo"/> to a <see cref="T:System.Reflection.FieldInfo"/> if possible, throws otherwise
+            </summary>
+            <param name="source">The <see cref="T:PropertyOrFieldInfo.PropertyOrFieldInfo"/> to convert</param>
+            <exception cref="T:System.InvalidOperationException">Thrown when it is a <see cref="T:System.Reflection.PropertyInfo"/> instead of the requested <see cref="T:System.Reflection.FieldInfo"/></exception>
+        </member>
+        <member name="M:PropertyOrFieldInfo.PropertyOrFieldInfo.op_Explicit(System.Reflection.FieldInfo)~PropertyOrFieldInfo.PropertyOrFieldInfo">
+            <summary>
+            Convertes a <see cref="T:System.Reflection.FieldInfo"/> to a <see cref="T:PropertyOrFieldInfo.PropertyOrFieldInfo"/>
+            </summary>
+            <param name="source">The <see cref="T:System.Reflection.FieldInfo"/> to convert</param>
+        </member>
+        <member name="M:PropertyOrFieldInfo.PropertyOrFieldInfo.op_Explicit(System.Reflection.PropertyInfo)~PropertyOrFieldInfo.PropertyOrFieldInfo">
+            <summary>
+            Convertes a <see cref="T:System.Reflection.PropertyInfo"/> to a <see cref="T:PropertyOrFieldInfo.PropertyOrFieldInfo"/>
+            </summary>
+            <param name="source">The <see cref="T:System.Reflection.PropertyInfo"/> to convert</param>
+        </member>
+        <member name="P:PropertyOrFieldInfo.PropertyOrFieldInfo.CanRead">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:PropertyOrFieldInfo.PropertyOrFieldInfo.GetValueType">
+            <summary>
+            Gets the Datatype stored  inside the Field or Property
+            </summary>
+            <returns> The <see cref="T:System.Type"/> stored inside the field or property</returns>
+        </member>
+        <member name="M:PropertyOrFieldInfo.PropertyOrFieldInfo.GetValue(System.Object)">
+            <summary>
+            Reads the value of a field or property of a certain object or statics
+            </summary>
+            <param name="toReadFrom">The object to Read the data from, use null if the property or field is static</param>
+            <returns>The value of the field or property for the specified object</returns>
+        </member>
+        <member name="M:PropertyOrFieldInfo.PropertyOrFieldInfo.SetValue(System.Object,System.Object)">
+            <summary>
+            Writes a value to a field or property of a certain object or statics
+            </summary>
+            <param name="target">The object to Read the data from, use null if the property or field is static</param>
+            <param name="value"></param>
+            <returns>The value of the field or property for the specified object</returns>
+        </member>
+        <member name="M:PropertyOrFieldInfo.PropertyOrFieldInfoExtensions.DeclaredPropertiesAndFields(System.Reflection.TypeInfo)">
+            <summary>
+            Loads all <see cref="M:PropertyOrFieldInfo.PropertyOrFieldInfoExtensions.DeclaredPropertiesAndFields(System.Reflection.TypeInfo)"/> from a given <see cref="T:System.Reflection.TypeInfo"/>
+            </summary>
+            <param name="source">The TypeInfo to load the <see cref="M:PropertyOrFieldInfo.PropertyOrFieldInfoExtensions.DeclaredPropertiesAndFields(System.Reflection.TypeInfo)"/> from</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> containing all Properties and Fields of the Type</returns>
+        </member>
+    </members>
+</doc>

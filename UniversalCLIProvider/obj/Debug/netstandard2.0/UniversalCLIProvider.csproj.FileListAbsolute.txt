@@ -1,0 +1,9 @@
+F:\TobiasAcc\Documents\CS\StorageManagementTool\src\UniversalCLIProvider\bin\Debug\netstandard2.0\UniversalCLIProvider.deps.json
+F:\TobiasAcc\Documents\CS\StorageManagementTool\src\UniversalCLIProvider\bin\Debug\netstandard2.0\UniversalCLIProvider.dll
+F:\TobiasAcc\Documents\CS\StorageManagementTool\src\UniversalCLIProvider\bin\Debug\netstandard2.0\UniversalCLIProvider.pdb
+F:\TobiasAcc\Documents\CS\StorageManagementTool\src\UniversalCLIProvider\obj\Debug\netstandard2.0\UniversalCLIProvider.csprojAssemblyReference.cache
+F:\TobiasAcc\Documents\CS\StorageManagementTool\src\UniversalCLIProvider\obj\Debug\netstandard2.0\UniversalCLIProvider.csproj.CoreCompileInputs.cache
+F:\TobiasAcc\Documents\CS\StorageManagementTool\src\UniversalCLIProvider\obj\Debug\netstandard2.0\UniversalCLIProvider.AssemblyInfoInputs.cache
+F:\TobiasAcc\Documents\CS\StorageManagementTool\src\UniversalCLIProvider\obj\Debug\netstandard2.0\UniversalCLIProvider.AssemblyInfo.cs
+F:\TobiasAcc\Documents\CS\StorageManagementTool\src\UniversalCLIProvider\obj\Debug\netstandard2.0\UniversalCLIProvider.dll
+F:\TobiasAcc\Documents\CS\StorageManagementTool\src\UniversalCLIProvider\obj\Debug\netstandard2.0\UniversalCLIProvider.pdb
