@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniversalCLIProvider", "UniversalCLIProvider\UniversalCLIProvider.csproj", "{71498654-8408-4C02-B98B-B9230B91E8A6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{8049E290-027F-445D-9749-952F5FF1A0EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{71498654-8408-4C02-B98B-B9230B91E8A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71498654-8408-4C02-B98B-B9230B91E8A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71498654-8408-4C02-B98B-B9230B91E8A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8049E290-027F-445D-9749-952F5FF1A0EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8049E290-027F-445D-9749-952F5FF1A0EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8049E290-027F-445D-9749-952F5FF1A0EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8049E290-027F-445D-9749-952F5FF1A0EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

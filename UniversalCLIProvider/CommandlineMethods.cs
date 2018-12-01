@@ -7,7 +7,7 @@ using UniversalCLIProvider.Attributes;
 
 namespace UniversalCLIProvider {
 	public static class CommandlineMethods {
-		public static string toHexArgumentString(string[] originalArguments, Encoding encoding = null) {
+		public static string ToHexArgumentString(string[] originalArguments, Encoding encoding = null) {
 			encoding = encoding ?? Encoding.UTF8;
 			int typicalEncodingLength = encoding.GetByteCount("s");
 			StringBuilder stringBuilder =
@@ -112,6 +112,18 @@ namespace UniversalCLIProvider {
 					value = source[0];
 					return true;
 
+				
+				case TypeCode.DBNull:
+					if (string.Equals(source, "null", StringComparison.OrdinalIgnoreCase)) {
+						value = null;
+						return true;
+					}
+					if (string.Equals(source, "DBNull", StringComparison.OrdinalIgnoreCase)) {
+						value = DBNull.Value;
+						return true;
+					}
+
+					return false;
 				case TypeCode.Object: {
 					if (expectedType.IsEnum) {
 						bool parseable = Enum.IsDefined(expectedType, source);
@@ -135,7 +147,6 @@ namespace UniversalCLIProvider {
 					return false;
 				}
 				case TypeCode.Empty:
-				case TypeCode.DBNull:
 				default: return false;
 			}
 		}
