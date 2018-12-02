@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -60,7 +61,7 @@ namespace UniversalCLIProvider {
 					return parsed;
 				}
 				case TypeCode.Int32: {
-					bool parsed = int.TryParse(source, out int tmp);
+					bool parsed = int.TryParse(source,out int tmp);
 					value = tmp;
 					return parsed;
 				}
