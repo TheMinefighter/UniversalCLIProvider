@@ -4,24 +4,25 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using UniversalCLIProvider.Attributes;
 
 namespace UniversalCLIProvider {
-	public static class CommandlineMethods {
-		public static string ToHexArgumentString(string[] originalArguments, Encoding encoding = null) {
-			encoding = encoding ?? Encoding.UTF8;
-			int typicalEncodingLength = encoding.GetByteCount("s");
-			StringBuilder stringBuilder =
-				new StringBuilder(typicalEncodingLength * originalArguments.Sum(x => x.Length) + originalArguments.Length * 8);
-			foreach (string argument in originalArguments) {
-				stringBuilder.Append(argument.Length.ToString("x8"));
-				foreach (byte b in encoding.GetBytes(argument)) {
-					stringBuilder.Append(b.ToString("x2"));
-				}
+public static class CommandlineMethods {
+	public static string ToHexArgumentString(string[] originalArguments, Encoding encoding = null) {
+		encoding = encoding ?? Encoding.UTF8;
+		int typicalEncodingLength = encoding.GetByteCount("s");
+		StringBuilder stringBuilder =
+			new StringBuilder(typicalEncodingLength * originalArguments.Sum(x => x.Length) + originalArguments.Length * 8);
+		foreach (string argument in originalArguments) {
+			stringBuilder.Append(argument.Length.ToString("x8"));
+			foreach (byte b in encoding.GetBytes(argument)) {
+				stringBuilder.Append(b.ToString("x2"));
 			}
-
-			return stringBuilder.ToString();
 		}
+
+		return stringBuilder.ToString();
+	}
 
 //      public static bool GetAliasValue(out object value, CmdParameterAttribute cmdParameterAttribute, string search) {
 //         value = null;
@@ -36,185 +37,120 @@ namespace UniversalCLIProvider {
 //
 //         return success;
 //      }
+	private static Type[] _nullableOverridenTypes = {typeof(DateTime?), typeof(DateTimeOffset?), typeof(TimeSpan?), typeof(Guid?)};
 
-		public static bool GetValueFromString(string source, Type expectedType, out object value) {
-			value = null;
-			switch (Type.GetTypeCode(expectedType)) {
-				case TypeCode.SByte: {
-					bool parsed = sbyte.TryParse(source, out sbyte tmp);
-					value = tmp;
-					return parsed;
-				}
-				case TypeCode.Byte: {
-					bool parsed = byte.TryParse(source, out byte tmp);
-					value = tmp;
-					return parsed;
-				}
-				case TypeCode.Int16: {
-					bool parsed = short.TryParse(source, out short tmp);
-					value = tmp;
-					return parsed;
-				}
-				case TypeCode.UInt16: {
-					bool parsed = ushort.TryParse(source, out ushort tmp);
-					value = tmp;
-					return parsed;
-				}
-				case TypeCode.Int32: {
-					bool parsed = int.TryParse(source,out int tmp);
-					value = tmp;
-					return parsed;
-				}
-				case TypeCode.UInt32: {
-					bool parsed = uint.TryParse(source, out uint tmp);
-					value = tmp;
-					return parsed;
-				}
-				case TypeCode.Int64: {
-					bool parsed = long.TryParse(source, out long tmp);
-					value = tmp;
-					return parsed;
-				}
-				case TypeCode.UInt64: {
-					bool parsed = ulong.TryParse(source, out ulong tmp);
-					value = tmp;
-					return parsed;
-				}
-				case TypeCode.Boolean: {
-					bool parsed = bool.TryParse(source, out bool tmp);
-					value = tmp;
-					return parsed;
-				}
-				case TypeCode.Single: {
-					bool parsed = float.TryParse(source, out float tmp);
-					value = tmp;
-					return parsed;
-				}
-				case TypeCode.Double: {
-					bool parsed = double.TryParse(source, out double tmp);
-					value = tmp;
-					return parsed;
-				}
-				case TypeCode.Decimal: {
-					bool parsed = decimal.TryParse(source, out decimal tmp);
-					value = tmp;
-					return parsed;
-				}
-				case TypeCode.DateTime: {
-					bool parsed = DateTime.TryParse(source, out DateTime tmp);
-					value = tmp;
-					return parsed;
-				}
-				case TypeCode.String: {
-					value = source;
-					return true;
-				}
-				case TypeCode.Char:
-					value = source[0];
-					return true;
+	private static Type[] _overridenTypes =
+		{typeof(DateTime), typeof(DateTimeOffset), typeof(TimeSpan), typeof(string), typeof(Guid), typeof(Uri)};
 
-				
-				case TypeCode.DBNull:
-					if (string.Equals(source, "null", StringComparison.OrdinalIgnoreCase)) {
-						value = null;
-						return true;
-					}
-					if (string.Equals(source, "DBNull", StringComparison.OrdinalIgnoreCase)) {
-						value = DBNull.Value;
-						return true;
-					}
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="source"></param>
+	/// <param name="expectedType"></param>
+	/// <param name="value"></param>
+	/// <remarks>For supported primary types see https://github.com/JamesNK/Newtonsoft.Json/blob/master/Src/Newtonsoft.Json/Utilities/ConvertUtils.cs (@ internal enum PrimitiveTypeCode) </remarks>
+	/// <remarks>Types with modified support:</remarks>
+	/// <remarks><see cref="Enum"/>: Allowing Enum.Parse (e.g. <c>NumberStyles.Any</c>, <c>Any</c>) when enum is the explicit target type</remarks>
+	/// <remarks><see cref="DateTime"/>, <see cref="TimeSpan"/>, <see cref="DateTimeOffset"/>, <see cref="Uri"/>, <see cref="Guid"/>,<see cref="string"/>Allowed without quotation marks when explicit</remarks>
+	/// <remarks><see cref="Nullable{T}"/> types also supported</remarks>
+	/// <returns>Whether parsing was successful</returns>
+	public static bool GetValueFromString(string source, Type expectedType, out object value) {
+		value = null;
+		if (expectedType.IsEnum ||
+		    (expectedType.IsGenericType&& expectedType.GetGenericTypeDefinition() == typeof(Nullable<>) && expectedType.GenericTypeArguments.Length == 1 &&
+		     expectedType.GenericTypeArguments[0].IsEnum) && Enum.IsDefined(expectedType, source)) {
+			value = Enum.Parse(expectedType, source);
+			return true;
+		}
 
-					return false;
-				case TypeCode.Object: {
-					if (expectedType.IsEnum) {
-						bool parseable = Enum.IsDefined(expectedType, source);
-						if (parseable) {
-							value = Enum.Parse(expectedType, source);
-						}
-
-						return parseable;
-					}
-					else if ((source.StartsWith("{") && source.EndsWith("}"))||(source.StartsWith("[") && source.EndsWith("]"))) {
-						try {
-							value= JsonConvert.DeserializeObject(source, expectedType);
-						}
-						catch (Exception) {
-							return false;
-						}
-
-						return true;
-					}
-
-					return false;
-				}
-				case TypeCode.Empty:
-				default: return false;
+		if (_overridenTypes.Contains(expectedType)) {
+			if (!source.StartsWith("\"")) {
+				source = "\"" + source + "\"";
 			}
 		}
 
-		public static TypeInfo GetTypeInfo(MemberInfo member) {
-			switch (member) {
-				case PropertyInfo propertyInfo:
-					propertyInfo.PropertyType.GetTypeInfo();
-					break;
-				case FieldInfo fieldInfo:
-					fieldInfo.FieldType.GetTypeInfo();
-					break;
+		if (_nullableOverridenTypes.Contains(expectedType)) {
+			if (source == "null") {
+				return true;
 			}
 
-			throw new ArgumentOutOfRangeException(nameof(member), member, "Must be  or FieldInfo");
-		}
-
-		public static bool WithDeclerationAllowed(this CmdParameterAttribute.CmdParameterUsage src) {
-			switch (src) {
-				case CmdParameterAttribute.CmdParameterUsage.RawValueWithDecleration:
-					return true;
-				case CmdParameterAttribute.CmdParameterUsage.NoRawsButDecleration:
-					return true;
-				case CmdParameterAttribute.CmdParameterUsage.DirectAliasOrDeclared:
-					return true;
-				case CmdParameterAttribute.CmdParameterUsage.OnlyDirectAlias:
-					return false;
-				case CmdParameterAttribute.CmdParameterUsage.Default:
-					return false;
-				default:
-					throw new ArgumentOutOfRangeException(nameof(src), src, null);
+			if (!source.StartsWith("\"")) {
+				source = "\"" + source + "\"";
 			}
 		}
-
-		public static bool WithoutDeclarationAllowed(this CmdParameterAttribute.CmdParameterUsage src) {
-			switch (src) {
-				case CmdParameterAttribute.CmdParameterUsage.RawValueWithDecleration:
-					return false;
-				case CmdParameterAttribute.CmdParameterUsage.NoRawsButDecleration:
-					return false;
-				case CmdParameterAttribute.CmdParameterUsage.DirectAliasOrDeclared:
-					return true;
-				case CmdParameterAttribute.CmdParameterUsage.OnlyDirectAlias:
-					return true;
-				case CmdParameterAttribute.CmdParameterUsage.Default:
-					return false;
-				default:
-					throw new ArgumentOutOfRangeException(nameof(src), src, null);
-			}
+		try {
+			value = JsonConvert.DeserializeObject(source, expectedType, new IsoDateTimeConverter() {DateTimeFormat = "dd/MM/yyyy"});
+		}
+		catch (Exception) {
+			return false;
 		}
 
+		return true;
+	}
 
-		public static bool RawAllowed(this CmdParameterAttribute.CmdParameterUsage src) {
-			switch (src) {
-				case CmdParameterAttribute.CmdParameterUsage.RawValueWithDecleration:
-					return true;
-				case CmdParameterAttribute.CmdParameterUsage.NoRawsButDecleration:
-					return false;
-				case CmdParameterAttribute.CmdParameterUsage.DirectAliasOrDeclared:
-					return false;
-				case CmdParameterAttribute.CmdParameterUsage.OnlyDirectAlias:
-					return false;
-				case CmdParameterAttribute.CmdParameterUsage.Default:
-					return false;
-				default:
-					throw new ArgumentOutOfRangeException(nameof(src), src, null);
-			}
+	public static TypeInfo GetTypeInfo(MemberInfo member) {
+		switch (member) {
+			case PropertyInfo propertyInfo:
+				propertyInfo.PropertyType.GetTypeInfo();
+				break;
+			case FieldInfo fieldInfo:
+				fieldInfo.FieldType.GetTypeInfo();
+				break;
+		}
+
+		throw new ArgumentOutOfRangeException(nameof(member), member, "Must be  or FieldInfo");
+	}
+
+	public static bool WithDeclarationAllowed(this CmdParameterUsage src) {
+		switch (src) {
+			case CmdParameterUsage.RawValueWithDeclaration:
+				return true;
+			case CmdParameterUsage.NoRawsButDeclaration:
+				return true;
+			case CmdParameterUsage.DirectOrDeclaredAlias:
+				return true;
+			case CmdParameterUsage.OnlyDirectAlias:
+				return false;
+			case CmdParameterUsage.Default:
+				return false;
+			default:
+				throw new ArgumentOutOfRangeException(nameof(src), src, null);
 		}
 	}
+
+	public static bool WithoutDeclarationAllowed(this CmdParameterUsage src) {
+		switch (src) {
+			case CmdParameterUsage.RawValueWithDeclaration:
+				return false;
+			case CmdParameterUsage.NoRawsButDeclaration:
+				return false;
+			case CmdParameterUsage.DirectOrDeclaredAlias:
+				return true;
+			case CmdParameterUsage.OnlyDirectAlias:
+				return true;
+			case CmdParameterUsage.Default:
+				return false;
+			default:
+				throw new ArgumentOutOfRangeException(nameof(src), src, null);
+		}
+	}
+
+
+	public static bool RawAllowed(this CmdParameterUsage src) {
+		switch (src) {
+			case CmdParameterUsage.RawValueWithDeclaration:
+				return true;
+			case CmdParameterUsage.NoRawsButDeclaration:
+				return false;
+			case CmdParameterUsage.DirectOrDeclaredAlias:
+				return false;
+			case CmdParameterUsage.OnlyDirectAlias:
+				return false;
+			case CmdParameterUsage.Default:
+				return false;
+			default:
+				throw new ArgumentOutOfRangeException(nameof(src), src, null);
+		}
+	}
+}
 }

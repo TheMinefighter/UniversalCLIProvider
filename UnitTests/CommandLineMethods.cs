@@ -8,8 +8,10 @@ namespace UnitTests {
 public class Tests {
 	public static TheoryData<string,Type,bool, object> GetValueFromStringData => new TheoryData<string,Type,bool, object>() {
 		{"1",typeof(int),true,1},
-		{"Sat, 01 Nov 2008 19:35:00",typeof(DateTime),true,new DateTime(2008,11,1,19,35,0)},
-		{"1.1",typeof(double),true,1.1}
+		{"2018-12-04T19:11:44Z",typeof(DateTime),true,new DateTime(2018,12,04,19,11,44,DateTimeKind.Utc)},
+		{"1.1",typeof(double),true,1.1},
+		{"[1,2]",typeof(int[]),true,new int[] {1,2}},
+		{"Any",typeof(NumberStyles),true,NumberStyles.Any},{"393EF354-C45D-47EB-8A7C-32886DA20491",typeof(Guid?),true,new Guid("393EF354-C45D-47EB-8A7C-32886DA20491")},{"null",typeof(Guid?),true,null}
 	};
 	[Theory]
 	[MemberData(nameof(GetValueFromStringData))]
@@ -19,6 +21,7 @@ public class Tests {
 		if (success) {
 			Assert.Equal(expectedResult,result);
 		}
+		
 	}
 }
 }
