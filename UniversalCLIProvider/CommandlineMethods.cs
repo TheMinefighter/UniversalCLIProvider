@@ -100,57 +100,5 @@ public static class CommandlineMethods {
 
 		throw new ArgumentOutOfRangeException(nameof(member), member, "Must be  or FieldInfo");
 	}
-
-	public static bool WithDeclarationAllowed(this CmdParameterUsage src) {
-		switch (src) {
-			case CmdParameterUsage.RawValueWithDeclaration:
-				return true;
-			case CmdParameterUsage.NoRawsButDeclaration:
-				return true;
-			case CmdParameterUsage.DirectOrDeclaredAlias:
-				return true;
-			case CmdParameterUsage.OnlyDirectAlias:
-				return false;
-			case CmdParameterUsage.Default:
-				return false;
-			default:
-				throw new ArgumentOutOfRangeException(nameof(src), src, null);
-		}
-	}
-
-	public static bool WithoutDeclarationAllowed(this CmdParameterUsage src) {
-		switch (src) {
-			case CmdParameterUsage.RawValueWithDeclaration:
-				return false;
-			case CmdParameterUsage.NoRawsButDeclaration:
-				return false;
-			case CmdParameterUsage.DirectOrDeclaredAlias:
-				return true;
-			case CmdParameterUsage.OnlyDirectAlias:
-				return true;
-			case CmdParameterUsage.Default:
-				return false;
-			default:
-				throw new ArgumentOutOfRangeException(nameof(src), src, null);
-		}
-	}
-
-
-	public static bool RawAllowed(this CmdParameterUsage src) {
-		switch (src) {
-			case CmdParameterUsage.RawValueWithDeclaration:
-				return true;
-			case CmdParameterUsage.NoRawsButDeclaration:
-				return false;
-			case CmdParameterUsage.DirectOrDeclaredAlias:
-				return false;
-			case CmdParameterUsage.OnlyDirectAlias:
-				return false;
-			case CmdParameterUsage.Default:
-				return false;
-			default:
-				throw new ArgumentOutOfRangeException(nameof(src), src, null);
-		}
-	}
 }
 }

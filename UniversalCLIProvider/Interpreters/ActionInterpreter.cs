@@ -115,11 +115,11 @@ namespace UniversalCLIProvider.Interpreters {
 					if (IsAlias(found, out object aliasValue)) {
 						invokationArguments.Add(found, aliasValue);
 					}
-					else if (found.Usage.RawAllowed() &&
+					else if (found.Usage.HasFlag(CmdParameterUsage.SupportRaw) &&
 					         CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], parameterType, out object given)) {
 						invokationArguments.Add(found, given);
 					}
-					else if (found.Usage.RawAllowed() && parameterType.GetInterfaces().Any(x => {
+					else if (found.Usage.HasFlag(CmdParameterUsage.SupportRaw) && parameterType.GetInterfaces().Any(x => {
 							         bool isIEnumerable = x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>);
 							         iEnumerableCache = x;
 							         return isIEnumerable;
@@ -143,7 +143,7 @@ namespace UniversalCLIProvider.Interpreters {
 							}
 
 							if (IsAlias(out CmdParameterAttribute tmpParameterAttribute, out object _) &&
-							    tmpParameterAttribute.Usage.WithoutDeclarationAllowed() ||
+							    tmpParameterAttribute.Usage.HasFlag(CmdParameterUsage.SupportDirectAlias) ||
 							    IsParameterDeclaration(out CmdParameterAttribute _)) {
 								break;
 							}
@@ -188,7 +188,7 @@ namespace UniversalCLIProvider.Interpreters {
 						return false;
 					}
 				}
-				else if (IsAlias(out found, out object aliasValue) && found.Usage.WithoutDeclarationAllowed()) {
+				else if (IsAlias(out found, out object aliasValue) && (found.Usage & CmdParameterUsage.SupportDirectAlias) != 0) {
 					invokationArguments.Add(found, aliasValue);
 				}
 				else {
