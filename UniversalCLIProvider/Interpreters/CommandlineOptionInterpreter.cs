@@ -23,11 +23,16 @@ namespace UniversalCLIProvider.Interpreters {
 			Interpret(typeof(T), defaultAction);
 		}
 
-		public bool BinaryReprocessor(Encoding encoding = null) {
-			encoding = encoding ?? Encoding.UTF8;
-			int typicalEncodingLength = encoding.GetByteCount("s");
+		public bool HexadecimalPreprocessor() {
 			string arg = Args[1];
 			int currentOffset = 0;
+			if (arg.Length<8+currentOffset) {
+				Console.WriteLine("The hexadecimal data is not long enough for evaluating the encoding");
+				return false;
+			}
+			Encoding encoding=Encoding.GetEncoding(int.Parse(arg.Substring(currentOffset,8),NumberStyles.HexNumber));
+			currentOffset += 8;
+			int typicalEncodingLength = encoding.GetByteCount("s");
 			int count = 0;
 			List<string> newArgs = new List<string>(16);
 			while (true) {
@@ -36,7 +41,7 @@ namespace UniversalCLIProvider.Interpreters {
 				}
 
 				if (arg.Length < currentOffset + 8) {
-					Console.WriteLine($"The binary data is not long enough for evaluating the proposed length of argument {count}");
+					Console.WriteLine($"The hexadecimal data is not long enough for evaluating the proposed length of argument {count}");
 					return false;
 				}
 
@@ -51,13 +56,13 @@ namespace UniversalCLIProvider.Interpreters {
 
 				currentOffset += 8;
 				if (arg.Length < currentOffset + proposedLength * 2) {
-					Console.WriteLine($"The binary data is not long enough for content of argument {count}");
+					Console.WriteLine($"The hexadecimal data is not long enough for content of argument {count}");
 					return false;
 				}
 
 				byte[] rawArgument = new byte[proposedLength];
 				for (int i = 0; i < proposedLength; i++) {
-					//TODO Can be optimized later (dual loop)
+					//TODO Can be optimized later (dual counter)
 					rawArgument[i] = byte.Parse(arg.Substring(currentOffset, 2), NumberStyles.HexNumber);
 					currentOffset += 2;
 				}
@@ -86,7 +91,7 @@ namespace UniversalCLIProvider.Interpreters {
 				contextInterpreter.MyContextAttribute.LoadIfNot();
 				if (Args.Length > 0) {
 					if (contextInterpreter.IsParameterEqual(Options.HexOption, Args[0])) {
-						if (BinaryReprocessor()) {
+						if (HexadecimalPreprocessor()) {
 							Interpret(baseContext, defaultAction);
 						}
 
