@@ -3,7 +3,6 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -104,19 +103,6 @@ public static class CommandlineMethods {
 		}
 
 		return true;
-	}
-
-	public static TypeInfo GetTypeInfo(MemberInfo member) {
-		switch (member) {
-			case PropertyInfo propertyInfo:
-				propertyInfo.PropertyType.GetTypeInfo();
-				break;
-			case FieldInfo fieldInfo:
-				fieldInfo.FieldType.GetTypeInfo();
-				break;
-		}
-
-		throw new ArgumentOutOfRangeException(nameof(member), member, "Must be  or FieldInfo");
 	}
 
 	public static bool ArgumentsFromHex(string arg, out List<string> newArgs) {
