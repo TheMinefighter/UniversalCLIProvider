@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -23,7 +24,7 @@ public static class CommandlineMethods {
 			new StringBuilder(typicalEncodingLength * originalArguments.Sum(x => x.Length) + originalArguments.Length * 8+8);
 		stringBuilder.Append(encoding.CodePage.ToString("x8"));
 		foreach (string argument in originalArguments) {
-			stringBuilder.Append(argument.Length.ToString("x8"));
+			stringBuilder.Append( encoding.GetByteCount(argument).ToString("x8"));
 			foreach (byte b in encoding.GetBytes(argument)) {
 				stringBuilder.Append(b.ToString("x2"));
 			}
@@ -116,6 +117,58 @@ public static class CommandlineMethods {
 		}
 
 		throw new ArgumentOutOfRangeException(nameof(member), member, "Must be  or FieldInfo");
+	}
+
+	public static bool ArgumentsFromHex(string arg, out List<string> newArgs) {
+		newArgs = null;
+		int currentOffset = 0;
+		if (arg.Length < 8 + currentOffset) {
+			Console.WriteLine("The hexadecimal data is not long enough for evaluating the encoding");
+			return false;
+		}
+
+		Encoding encoding = Encoding.GetEncoding(int.Parse(arg.Substring(currentOffset, 8), NumberStyles.HexNumber));
+		currentOffset += 8;
+		int typicalEncodingLength = encoding.GetByteCount("s");
+		int count = 0;
+		newArgs = new List<string>(16);
+		while (true) {
+			if (arg.Length == currentOffset) {
+				break;
+			}
+
+			if (arg.Length < currentOffset + 8) {
+				Console.WriteLine($"The hexadecimal data is not long enough for evaluating the proposed length of argument {count}");
+				return false;
+			}
+
+			int proposedLength;
+			try {
+				proposedLength = int.Parse(arg.Substring(currentOffset, 8), NumberStyles.HexNumber);
+			}
+			catch (Exception) {
+				Console.WriteLine($"Error while parsing string length of argument {count}");
+				return false;
+			}
+
+			currentOffset += 8;
+			if (arg.Length < currentOffset + proposedLength * 2) {
+				Console.WriteLine($"The hexadecimal data is not long enough for content of argument {count}");
+				return false;
+			}
+
+			byte[] rawArgument = new byte[proposedLength];
+			for (int i = 0; i < proposedLength; i++) {
+				//TODO Can be optimized later (dual counter)
+				rawArgument[i] = byte.Parse(arg.Substring(currentOffset, 2), NumberStyles.HexNumber);
+				currentOffset += 2;
+			}
+
+			count++;
+			newArgs.Add(encoding.GetString(rawArgument));
+		}
+
+		return true;
 	}
 }
 }

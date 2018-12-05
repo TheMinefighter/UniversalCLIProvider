@@ -25,50 +25,8 @@ namespace UniversalCLIProvider.Interpreters {
 
 		public bool HexadecimalPreprocessor() {
 			string arg = Args[1];
-			int currentOffset = 0;
-			if (arg.Length<8+currentOffset) {
-				Console.WriteLine("The hexadecimal data is not long enough for evaluating the encoding");
+			if (!CommandlineMethods.ArgumentsFromHex(arg, out List<string> newArgs)) {
 				return false;
-			}
-			Encoding encoding=Encoding.GetEncoding(int.Parse(arg.Substring(currentOffset,8),NumberStyles.HexNumber));
-			currentOffset += 8;
-			int typicalEncodingLength = encoding.GetByteCount("s");
-			int count = 0;
-			List<string> newArgs = new List<string>(16);
-			while (true) {
-				if (arg.Length == currentOffset) {
-					break;
-				}
-
-				if (arg.Length < currentOffset + 8) {
-					Console.WriteLine($"The hexadecimal data is not long enough for evaluating the proposed length of argument {count}");
-					return false;
-				}
-
-				int proposedLength;
-				try {
-					proposedLength = int.Parse(arg.Substring(currentOffset,8), NumberStyles.HexNumber);
-				}
-				catch (Exception) {
-					Console.WriteLine($"Error while parsing string length of argument {count}");
-					return false;
-				}
-
-				currentOffset += 8;
-				if (arg.Length < currentOffset + proposedLength * 2) {
-					Console.WriteLine($"The hexadecimal data is not long enough for content of argument {count}");
-					return false;
-				}
-
-				byte[] rawArgument = new byte[proposedLength];
-				for (int i = 0; i < proposedLength; i++) {
-					//TODO Can be optimized later (dual counter)
-					rawArgument[i] = byte.Parse(arg.Substring(currentOffset, 2), NumberStyles.HexNumber);
-					currentOffset += 2;
-				}
-
-				count++;
-				newArgs.Add(encoding.GetString(rawArgument));
 			}
 
 			Args = newArgs.ToArray();
