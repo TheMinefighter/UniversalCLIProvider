@@ -1,14 +1,11 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using UniversalCLIProvider.Attributes;
 
-namespace UniversalCLIProvider {
+namespace UniversalCLIProvider.OtherInternals {
 public static class CommandlineMethods {
 	/// <summary>
 	/// Converts the given Arguments of the given encoding to a hex string fixing commandline related quote issues, to be used by 3rd programs for inter-program communication

@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Globalization;
 using System.Text;
 using UniversalCLIProvider;
+using UniversalCLIProvider.OtherInternals;
 using Xunit;
 
 namespace UnitTests {
@@ -16,6 +17,7 @@ public class StaticTests {
 		{"Any", typeof(NumberStyles), true, NumberStyles.Any},
 		{"393EF354-C45D-47EB-8A7C-32886DA20491", typeof(Guid?), true, new Guid("393EF354-C45D-47EB-8A7C-32886DA20491")},
 		{"null", typeof(Guid?), true, null}
+		
 	};
 
 	[Theory, MemberData(nameof(GetValueFromStringData))]
