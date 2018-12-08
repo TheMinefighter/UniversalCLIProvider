@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using UniversalCLIProvider.Attributes;
+using UniversalCLIProvider.OtherInternals;
 
 namespace UniversalCLIProvider.Interpreters {
 	public class ActionInterpreter : BaseInterpreter, IDisposable {

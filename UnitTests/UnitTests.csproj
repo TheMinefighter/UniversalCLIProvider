@@ -11,6 +11,7 @@
 		<RootNamespace>UnitTests</RootNamespace>
 		<AssemblyName>UnitTests</AssemblyName>
 		<TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+		<!--TargetFrameworks>netstandard2.0</TargetFrameworks-->
 		<FileAlignment>512</FileAlignment>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -55,6 +56,7 @@
 		</Reference>
 	</ItemGroup>
 	<ItemGroup>
+		<Compile Include="ConfiguartionHelperTests.cs" />
 		<Compile Include="StaticTests.cs" />
 		<Compile Include="Properties\AssemblyInfo.cs" />
 	</ItemGroup>

@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Text;
 using UniversalCLIProvider.Attributes;
+using UniversalCLIProvider.OtherInternals;
 
 namespace UniversalCLIProvider.Interpreters {
 	public class CommandlineOptionInterpreter {
