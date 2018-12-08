@@ -38,6 +38,14 @@
         "PropertyOrFieldInfo": {
           "target": "Package",
           "version": "[1.0.1, )"
+        },
+        "xunit.runner.console": {
+          "target": "Package",
+          "version": "[2.4.1, )"
+        },
+        "xunit.runner.visualstudio": {
+          "target": "Package",
+          "version": "[2.4.1, )"
         }
       }
     },
@@ -56,6 +64,14 @@
         "PropertyOrFieldInfo": {
           "target": "Package",
           "version": "[1.0.1, )"
+        },
+        "xunit.runner.console": {
+          "target": "Package",
+          "version": "[2.4.1, )"
+        },
+        "xunit.runner.visualstudio": {
+          "target": "Package",
+          "version": "[2.4.1, )"
         }
       },
       "imports": [
