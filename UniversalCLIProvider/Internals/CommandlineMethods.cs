@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -80,6 +80,40 @@ public static class CommandlineMethods {
 		}
 
 		return true;
+	}
+/// <summary>
+/// Breaks up a given string in multiple lines of a given width, while making each end with a word end when possible
+/// </summary>
+/// <param name="indent"> The indent to use for each new line</param>
+/// <param name="width"> The width of the textoutput to format for</param>
+/// <param name="text"> The text to format</param>
+/// <returns>The formatted text</returns>
+	public static List<string> PrintWithPotentialIndent(int indent, int width, string text) {
+		List<string> lines= new List<string>();
+		int? lastFallback = null;
+		int lineStart=0;
+		for (int i = 0; i < text.Length; i++) {
+			if (i-lineStart==width) {
+				int breakIndex = lastFallback ?? i;
+				string line;
+				if (lines.Count==0) {
+					line = text.Substring(lineStart,breakIndex-lineStart-(lastFallback is null?0:1));
+				}
+				else {
+					line=new string(' ',indent); text.Substring(lineStart,breakIndex-lineStart);
+				}
+				lines.Add(line);
+				lineStart = i;
+				if (lines.Count==1) {
+					width -= indent;
+				}
+			}
+			if (text[i]==' ') {
+				lastFallback = i;
+			}
+		}
+
+		return lines;
 	}
 }
 }
