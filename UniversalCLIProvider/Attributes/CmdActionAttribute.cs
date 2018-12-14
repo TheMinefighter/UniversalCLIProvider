@@ -9,6 +9,8 @@ namespace UniversalCLIProvider.Attributes {
 		private bool _cached;
 		public MethodInfo UnderlyingMethod;
 		public string Name;
+		public string[] Description;
+		public string[] UsageExamples;
 
 		public CmdActionAttribute(string name ) => Name = name;
 

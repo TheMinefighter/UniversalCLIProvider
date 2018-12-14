@@ -89,7 +89,7 @@ public static class CommandlineMethods {
 /// <param name="text"> The text to format</param>
 /// <returns>The formatted text</returns>
 	public static List<string> PrintWithPotentialIndent(int indent, int width, string text) {
-		List<string> lines= new List<string>();
+		List<string> lines= new List<string>(text.Length/width*2);
 		int? lastFallback = null;
 		int lineStart=0;
 		for (int i = 0; i < text.Length; i++) {
@@ -100,7 +100,7 @@ public static class CommandlineMethods {
 					line = text.Substring(lineStart,breakIndex-lineStart-(lastFallback is null?0:1));
 				}
 				else {
-					line=new string(' ',indent); text.Substring(lineStart,breakIndex-lineStart);
+					line=new string(' ',indent)+ text.Substring(lineStart,breakIndex-lineStart);
 				}
 				lines.Add(line);
 				lineStart = i;
