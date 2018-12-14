@@ -24,7 +24,7 @@ namespace UniversalCLIProvider.Interpreters {
 
 		public bool HexadecimalPreprocessor() {
 			string arg = Args[1];
-			if (!CommandlineMethods.ArgumentsFromHex(arg, out List<string> newArgs)) {
+			if (!HexArgumentEncoding.ArgumentsFromHex(arg, out List<string> newArgs)) {
 				return false;
 			}
 

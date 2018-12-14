@@ -37,7 +37,7 @@ public class StaticTests {
 	[Theory, MemberData(nameof(HexArgumentProcessingTestsData))]
 	public void HexArgumentProcessingTests(string[] args, Encoding encoding) {
 		bool success =
-			CommandlineMethods.ArgumentsFromHex(CommandlineMethods.ToHexArgumentString(args, encoding), out List<string> result);
+			HexArgumentEncoding.ArgumentsFromHex(HexArgumentEncoding.ToHexArgumentString(args, encoding), out List<string> result);
 		Assert.True(success);
 		Assert.Equal(args, result);
 	}
