@@ -2,32 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace UniversalCLIProvider.Attributes {
 [AttributeUsage(AttributeTargets.GenericParameter | AttributeTargets.Parameter | AttributeTargets.Field |
-	                AttributeTargets.Property)]
+	                AttributeTargets.Property),UsedImplicitly]
 	//TODO Add Defaults
 	public class CmdParameterAttribute : Attribute {
 		private bool _loaded;
-
-//      public bool AvailableWithoutAlias;
-//      private bool _AvailableWithoutAliasExplictitlyDeclared;
-//      public bool DeclerationNeeded;
-//      private bool _DeclerationNeededExplicitlyDeclared;
 		public bool IsParameter;
 		public ICustomAttributeProvider MyInfo;
-		public string Name;
+		[NotNull] public string Name;
 		public IEnumerable<CmdParameterAliasAttribute> ParameterAliases;
-		internal CmdParameterUsage Usage;
+		public CmdParameterUsage Usage;
 
 
 		public CmdParameterAttribute(string name, CmdParameterUsage usage = CmdParameterUsage.Default) {
 			Name = name;
 			Usage = usage;
-//         AvailableWithoutAlias = availableWithoutAlias??true;
-//         _AvailableWithoutAliasExplictitlyDeclared = availableWithoutAlias != null;
-//         DeclerationNeeded = declerationNeeded??true;
-//         _DeclerationNeededExplicitlyDeclared = declerationNeeded != null;
 		}
 
 		public void LoadAlias() {

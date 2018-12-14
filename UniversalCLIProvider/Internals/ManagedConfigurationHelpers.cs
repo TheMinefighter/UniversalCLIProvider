@@ -1,13 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using PropertyOrFieldInfoPackage;
 using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
-using UniversalCLIProvider.OtherInternals;
 
-namespace UniversalCLIProvider.OtherInternals {
+namespace UniversalCLIProvider.Internals {
 public static class ManagedConfigurationHelpers {
 	public static bool ResolvePath(string path, object item, out PropertyInfo prop, out object[] requiredIndexers,
 		out object newObject) {
@@ -17,34 +14,7 @@ public static class ManagedConfigurationHelpers {
 		path = path.Trim();
 		TypeInfo typeInfoOfItem = item.GetType().GetTypeInfo();
 		if (path.StartsWith("[")) {
-			int endOfIndexer = path.IndexOf(']');
-			if (endOfIndexer == -1) {
-				return false;
-			}
-
-			if (!SplitIndexerArguments(path.Substring(1, endOfIndexer - 2), out string[] indexerParameters)) {
-				return false;
-			}
-
-			if (!ResolveIndexerParameters(indexerParameters, typeInfoOfItem, out requiredIndexers, out prop)) {
-				return false;
-			}
-
-			if (path.Length < endOfIndexer + 1) {
-				object newItem;
-				try {
-					newItem = prop.GetValue(item, requiredIndexers);
-				}
-				catch (Exception) {
-					return false;
-				}
-
-				if (!ResolvePath(path.Substring(endOfIndexer + 1), newItem, out prop, out requiredIndexers, out newObject)) {
-					return false;
-				}
-			}
-
-			return true;
+			return ResolveIndexerInPath(path, item, ref prop, ref requiredIndexers, ref newObject, typeInfoOfItem);
 		}
 
 		string currentPath=path;
@@ -71,6 +41,38 @@ public static class ManagedConfigurationHelpers {
 				return false;
 			}
 		}
+		return true;
+	}
+
+	private static bool ResolveIndexerInPath(string path, object item, ref PropertyInfo prop, ref object[] requiredIndexers,
+		ref object newObject, TypeInfo typeInfoOfItem) {
+		int endOfIndexer = path.IndexOf(']');
+		if (endOfIndexer == -1) {
+			return false;
+		}
+
+		if (!SplitIndexerArguments(path.Substring(1, endOfIndexer - 2), out string[] indexerParameters)) {
+			return false;
+		}
+
+		if (!ResolveIndexerParameters(indexerParameters, typeInfoOfItem, out requiredIndexers, out prop)) {
+			return false;
+		}
+
+		if (path.Length < endOfIndexer + 1) {
+			object newItem;
+			try {
+				newItem = prop.GetValue(item, requiredIndexers);
+			}
+			catch (Exception) {
+				return false;
+			}
+
+			if (!ResolvePath(path.Substring(endOfIndexer + 1), newItem, out prop, out requiredIndexers, out newObject)) {
+				return false;
+			}
+		}
+
 		return true;
 	}
 

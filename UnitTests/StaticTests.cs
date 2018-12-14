@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 using System.Globalization;
 using System.Text;
 using UniversalCLIProvider;
-using UniversalCLIProvider.OtherInternals;
+using UniversalCLIProvider.Internals;
 using Xunit;
 
 namespace UnitTests {

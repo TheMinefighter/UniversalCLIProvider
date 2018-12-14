@@ -31,6 +31,10 @@
   "frameworks": {
     "net472": {
       "dependencies": {
+        "JetBrains.Annotations": {
+          "target": "Package",
+          "version": "[2018.2.1, )"
+        },
         "Newtonsoft.Json": {
           "target": "Package",
           "version": "[12.0.1, )"
@@ -51,6 +55,10 @@
     },
     "netstandard2.0": {
       "dependencies": {
+        "JetBrains.Annotations": {
+          "target": "Package",
+          "version": "[2018.2.1, )"
+        },
         "NETStandard.Library": {
           "suppressParent": "All",
           "target": "Package",

@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using UniversalCLIProvider.Attributes;
-using UniversalCLIProvider.OtherInternals;
+using UniversalCLIProvider.Internals;
 
 namespace UniversalCLIProvider.Interpreters {
 	public class ActionInterpreter : BaseInterpreter, IDisposable {
@@ -34,7 +34,7 @@ namespace UniversalCLIProvider.Interpreters {
 		}
 
 		private void LoadParametersWithoutCache() {
-			parameters = MyActionAttribute.MyInfo.GetParameters().Select(x =>
+			parameters = MyActionAttribute.UnderlyingMethod.GetParameters().Select(x =>
 					new KeyValuePair<ParameterInfo, Attribute>(x, x.GetCustomAttribute(typeof(CmdParameterAttribute))))
 				.Where(x => x.Value != null).Select(x => {
 					CmdParameterAttribute cmdParameterAttribute = x.Value as CmdParameterAttribute;
@@ -59,7 +59,7 @@ namespace UniversalCLIProvider.Interpreters {
 				invokationArguments = new Dictionary<CmdParameterAttribute, object>();
 			}
 
-			ParameterInfo[] allParameterInfos = MyActionAttribute.MyInfo.GetParameters();
+			ParameterInfo[] allParameterInfos = MyActionAttribute.UnderlyingMethod.GetParameters();
 			object[] invokers = new object[allParameterInfos.Length];
 			bool[] invokersDeclared = new bool[allParameterInfos.Length];
 			foreach (KeyValuePair<CmdParameterAttribute, object> invokationArgument in invokationArguments) {
@@ -82,7 +82,7 @@ namespace UniversalCLIProvider.Interpreters {
 			}
 
 			InterpretationResult result;
-			object returned = MyActionAttribute.MyInfo.Invoke(null, invokers);
+			object returned = MyActionAttribute.UnderlyingMethod.Invoke(null, invokers);
 			if (returned is bool invokationSuccess) {
 				result = invokationSuccess ? InterpretationResult.Success : InterpretationResult.RunError;
 			}

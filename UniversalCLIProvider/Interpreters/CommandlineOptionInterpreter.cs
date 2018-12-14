@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Reflection;
-using System.Text;
 using UniversalCLIProvider.Attributes;
-using UniversalCLIProvider.OtherInternals;
+using UniversalCLIProvider.Internals;
 
 namespace UniversalCLIProvider.Interpreters {
 	public class CommandlineOptionInterpreter {
@@ -46,7 +44,7 @@ namespace UniversalCLIProvider.Interpreters {
 					Offset = 0
 				};
 
-				contextInterpreter.MyContextAttribute.MyInfo = baseContext.GetTypeInfo();
+				contextInterpreter.MyContextAttribute.UnderlyingType = baseContext.GetTypeInfo();
 				contextInterpreter.MyContextAttribute.LoadIfNot();
 				if (Args.Length > 0) {
 					if (contextInterpreter.IsParameterEqual(Options.HexOption, Args[0])) {

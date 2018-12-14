@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace UniversalCLIProvider.Attributes {
-	[AttributeUsage(AttributeTargets.Class)]
+	[AttributeUsage(AttributeTargets.Class), UsedImplicitly]
 	public class CmdConfigurationNamespaceAttribute : Attribute {
 		private CmdConfigurationValueAttribute[] _configurationValues;
 		private bool _loaded;

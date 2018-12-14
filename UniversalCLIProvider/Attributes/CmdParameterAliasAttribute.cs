@@ -1,9 +1,10 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace UniversalCLIProvider.Attributes {
 	[AttributeUsage(AttributeTargets.GenericParameter | AttributeTargets.Parameter | AttributeTargets.Property |
 	                AttributeTargets.Field,
-		AllowMultiple = true)]
+		AllowMultiple = true),UsedImplicitly]
 	public class CmdParameterAliasAttribute : Attribute {
 		public readonly string Name;
 

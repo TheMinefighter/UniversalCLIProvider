@@ -2,6 +2,15 @@
   "version": 3,
   "targets": {
     ".NETFramework,Version=v4.7.2": {
+      "JetBrains.Annotations/2018.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net20/JetBrains.Annotations.dll": {}
+        },
+        "runtime": {
+          "lib/net20/JetBrains.Annotations.dll": {}
+        }
+      },
       "Newtonsoft.Json/12.0.1": {
         "type": "package",
         "compile": {
@@ -34,6 +43,15 @@
       }
     },
     ".NETStandard,Version=v2.0": {
+      "JetBrains.Annotations/2018.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/JetBrains.Annotations.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/JetBrains.Annotations.dll": {}
+        }
+      },
       "Microsoft.NETCore.Platforms/1.1.0": {
         "type": "package",
         "compile": {
@@ -91,6 +109,26 @@
     }
   },
   "libraries": {
+    "JetBrains.Annotations/2018.2.1": {
+      "sha512": "/aPVHEW93EV1Httnbniz0Cty5+jrXobS27I8QBnIUMe0n51qgxLyQV2AQNko4yXkeOxEdWiZ7bg9+BuMxYbXcA==",
+      "type": "package",
+      "path": "jetbrains.annotations/2018.2.1",
+      "files": [
+        ".nupkg.metadata",
+        "jetbrains.annotations.2018.2.1.nupkg.sha512",
+        "jetbrains.annotations.nuspec",
+        "lib/net20/JetBrains.Annotations.dll",
+        "lib/net20/JetBrains.Annotations.xml",
+        "lib/netstandard1.0/JetBrains.Annotations.deps.json",
+        "lib/netstandard1.0/JetBrains.Annotations.dll",
+        "lib/netstandard1.0/JetBrains.Annotations.xml",
+        "lib/netstandard2.0/JetBrains.Annotations.deps.json",
+        "lib/netstandard2.0/JetBrains.Annotations.dll",
+        "lib/netstandard2.0/JetBrains.Annotations.xml",
+        "lib/portable40-net40+sl5+win8+wp8+wpa81/JetBrains.Annotations.dll",
+        "lib/portable40-net40+sl5+win8+wp8+wpa81/JetBrains.Annotations.xml"
+      ]
+    },
     "Microsoft.NETCore.Platforms/1.1.0": {
       "sha512": "bLpT1f/SFlO1CzqXG12KnJzpZs6lv24uX2Rzi4Fmm0noJpNlnWRVryuO3yK18Ca04t/YHcO1e1Z0WDfjseqNzw==",
       "type": "package",
@@ -235,10 +273,11 @@
       ]
     },
     "Newtonsoft.Json/12.0.1": {
-      "sha512": "jmVyoEyk0In8r+AObYQyFKVFm7uSRzE0XSHSbEtBJcZDMV6DqJoyB4FLcHwprPVhAh826so0db3DIKXVnpGoPA==",
+      "sha512": "pBR3wCgYWZGiaZDYP+HHYnalVnPJlpP1q55qvVb+adrDHmFMDc1NAKio61xTwftK3Pw5h7TZJPJEEVMd6ty8rg==",
       "type": "package",
       "path": "newtonsoft.json/12.0.1",
       "files": [
+        ".nupkg.metadata",
         ".signature.p7s",
         "LICENSE.md",
         "lib/net20/Newtonsoft.Json.dll",
@@ -286,10 +325,12 @@
       ]
     },
     "xunit.runner.console/2.4.1": {
-      "sha512": "ZOAIWPBvWIxpavMUiRho4Lc3SFR8dZV45kOWqOvnZy1/hipEIZjGcrH6ZXrrNjfGdifDjP/m18hEYE0Huk6JoA==",
+      "sha512": "6yGe+Vx250m1zG/nV8FH1XlftJFoidCThpRdWEIwIFE/rc/lYSuL0M+D1gMDNmZgERAR/sHR18Q/etqd6lxaNA==",
       "type": "package",
       "path": "xunit.runner.console/2.4.1",
+      "hasTools": true,
       "files": [
+        ".nupkg.metadata",
         ".signature.p7s",
         "build/xunit.runner.console.props",
         "tools/net452/xunit.abstractions.dll",
@@ -362,10 +403,11 @@
       ]
     },
     "xunit.runner.visualstudio/2.4.1": {
-      "sha512": "70iTd44VD/UcP5kX7Bm6DjNayi9pquI7NhnU7Nl46qWVQBDHVqRrFDXgNrGP936YxefJxzC+2bp1yQUwPJIEvg==",
+      "sha512": "mBXd1lp1TQr4to2nFv+c4Tf+RnPoQPKglzwLdbdirOUxRaJsCUNDUx2y7E6j9ajgISlTTp1CydFBZCRCUIrwDg==",
       "type": "package",
       "path": "xunit.runner.visualstudio/2.4.1",
       "files": [
+        ".nupkg.metadata",
         ".signature.p7s",
         "build/_common/xunit.abstractions.dll",
         "build/_common/xunit.runner.reporters.net452.dll",
@@ -393,12 +435,14 @@
   },
   "projectFileDependencyGroups": {
     ".NETFramework,Version=v4.7.2": [
+      "JetBrains.Annotations >= 2018.2.1",
       "Newtonsoft.Json >= 12.0.1",
       "PropertyOrFieldInfo >= 1.0.1",
       "xunit.runner.console >= 2.4.1",
       "xunit.runner.visualstudio >= 2.4.1"
     ],
     ".NETStandard,Version=v2.0": [
+      "JetBrains.Annotations >= 2018.2.1",
       "NETStandard.Library >= 2.0.3",
       "Newtonsoft.Json >= 12.0.1",
       "PropertyOrFieldInfo >= 1.0.1",
@@ -452,6 +496,10 @@
     "frameworks": {
       "net472": {
         "dependencies": {
+          "JetBrains.Annotations": {
+            "target": "Package",
+            "version": "[2018.2.1, )"
+          },
           "Newtonsoft.Json": {
             "target": "Package",
             "version": "[12.0.1, )"
@@ -461,8 +509,6 @@
             "version": "[1.0.1, )"
           },
           "xunit.runner.console": {
-            "include": "Runtime, Build, Native, ContentFiles, Analyzers",
-            "suppressParent": "All",
             "target": "Package",
             "version": "[2.4.1, )"
           },
@@ -474,6 +520,10 @@
       },
       "netstandard2.0": {
         "dependencies": {
+          "JetBrains.Annotations": {
+            "target": "Package",
+            "version": "[2018.2.1, )"
+          },
           "NETStandard.Library": {
             "suppressParent": "All",
             "target": "Package",
@@ -489,8 +539,6 @@
             "version": "[1.0.1, )"
           },
           "xunit.runner.console": {
-            "include": "Runtime, Build, Native, ContentFiles, Analyzers",
-            "suppressParent": "All",
             "target": "Package",
             "version": "[2.4.1, )"
           },

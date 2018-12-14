@@ -1,7 +1,8 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace UniversalCLIProvider.Attributes {
-	[AttributeUsage(AttributeTargets.Parameter)]
+	[AttributeUsage(AttributeTargets.Parameter), UsedImplicitly]
 	public class CmdConfigurationValueAttribute : Attribute {
 		public string ExtendedHelp;
 		public string Help;

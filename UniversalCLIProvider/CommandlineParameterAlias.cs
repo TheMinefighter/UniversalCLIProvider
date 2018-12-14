@@ -13,7 +13,7 @@ namespace UniversalCLIProvider {
 			Name = name;
 			Value = value;
 			Help = help;
-			this.extendedHelp = extendedHelp ?? new List<string>();
+			this.extendedHelp = extendedHelp ?? new string[0];
 		}
 	}
 }
