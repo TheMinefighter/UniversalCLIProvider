@@ -115,5 +115,21 @@ public static class CommandlineMethods {
 
 		return lines;
 	}
+/// <summary>
+/// Pads a given string to centered by a given padding char in a given width
+/// </summary>
+/// <param name="src">The original string</param>
+/// <param name="width">The targeted width</param>
+/// <param name="pad">The padding character to use, defaults to =</param>
+/// <remarks>When the difference between the length of <paramref name="src"/> and <paramref name="width"/> is odd, there will be one less padding character on the left</remarks>
+/// <returns>The padded string</returns>
+public static string PadCentered(string src, int width, char pad = '=') {
+	if (src.Length > width) {
+		return src;
+	}
+	else {
+		return new string(pad, (width - src.Length) / 2) + src + new string(pad, (width - src.Length + 1) / 2);
+	}
+}
 }
 }
