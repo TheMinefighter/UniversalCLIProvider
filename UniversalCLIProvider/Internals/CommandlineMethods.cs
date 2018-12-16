@@ -24,13 +24,16 @@ public static class CommandlineMethods {
 //
 //         return success;
 //      }
-/// <summary>
-/// The nullable types for which <see cref="GetValueFromString"/> overrides quote and null behaviour
-/// </summary>
-	private static readonly Type[] NullableOverridenTypes = {typeof(DateTime?), typeof(DateTimeOffset?), typeof(TimeSpan?), typeof(Guid?)};
-/// <summary>
-/// The non nullable types for which <see cref="GetValueFromString"/> overrides quote behaviour
-/// </summary>
+
+	/// <summary>
+	/// The nullable types for which <see cref="GetValueFromString"/> overrides quote and null behaviour
+	/// </summary>
+	private static readonly Type[] NullableOverridenTypes =
+		{typeof(DateTime?), typeof(DateTimeOffset?), typeof(TimeSpan?), typeof(Guid?)};
+
+	/// <summary>
+	/// The non nullable types for which <see cref="GetValueFromString"/> overrides quote behaviour
+	/// </summary>
 	private static readonly Type[] OverridenTypes =
 		{typeof(DateTime), typeof(DateTimeOffset), typeof(TimeSpan), typeof(string), typeof(Guid), typeof(Uri)};
 
@@ -48,11 +51,13 @@ public static class CommandlineMethods {
 	/// <remarks><see cref="DateTime"/>, <see cref="TimeSpan"/>, <see cref="DateTimeOffset"/>, <see cref="Uri"/>, <see cref="Guid"/>,<see cref="string"/>Allowed without quotation marks when explicit</remarks>
 	/// <remarks><see cref="Nullable{T}"/> types also supported</remarks>
 	/// <returns>Whether parsing was successful</returns>
-	public static bool GetValueFromString([NotNull] string source, [NotNull] Type expectedType, out object value, [CanBeNull] JsonSerializerSettings serializerSettings=null, bool enableCustomCompatSupport=true) {
+	public static bool GetValueFromString([NotNull] string source, [NotNull] Type expectedType, out object value,
+		[CanBeNull] JsonSerializerSettings serializerSettings = null, bool enableCustomCompatSupport = true) {
 		value = null;
 		if (enableCustomCompatSupport) {
 			if (expectedType.IsEnum ||
-			    (expectedType.IsGenericType&& expectedType.GetGenericTypeDefinition() == typeof(Nullable<>) && expectedType.GenericTypeArguments.Length == 1 &&
+			    (expectedType.IsGenericType && expectedType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+			     expectedType.GenericTypeArguments.Length == 1 &&
 			     expectedType.GenericTypeArguments[0].IsEnum) && Enum.IsDefined(expectedType, source)) {
 				value = Enum.Parse(expectedType, source);
 				return true;
@@ -74,8 +79,9 @@ public static class CommandlineMethods {
 				}
 			}
 		}
+
 		try {
-			value = JsonConvert.DeserializeObject(source, expectedType,serializerSettings);
+			value = JsonConvert.DeserializeObject(source, expectedType, serializerSettings);
 		}
 		catch (Exception) {
 			return false;
@@ -95,16 +101,18 @@ public static class CommandlineMethods {
 	public static IEnumerable<string> PrintWithPotentialIndent([NotNull] string text, int width, int indent) {
 		bool firstLine = true;
 		int lastFallback = -1;
-		int lineStart=0;
+		int lineStart = 0;
 		for (int i = 0; i < text.Length; i++) {
-			if (i-lineStart==width) {
-				int breakIndex = lastFallback!=-1 ? lastFallback :  i;
+			if (i - lineStart == width) {
+				int breakIndex = lastFallback != -1 ? lastFallback : i;
 				if (!firstLine) {
-					yield return text.Substring(lineStart,breakIndex-lineStart-(lastFallback ==-1?0:1)); //last removes redundant space
+					yield return text.Substring(lineStart,
+						breakIndex - lineStart - (lastFallback == -1 ? 0 : 1)); //last removes redundant space
 				}
 				else {
-					yield return new string(' ',indent)+ text.Substring(lineStart,breakIndex-lineStart);
+					yield return new string(' ', indent) + text.Substring(lineStart, breakIndex - lineStart);
 				}
+
 				lineStart = i;
 				if (!firstLine) {
 					width -= indent;
@@ -112,28 +120,29 @@ public static class CommandlineMethods {
 
 				firstLine = false;
 			}
-			if (text[i]==' ') {
+
+			if (text[i] == ' ') {
 				lastFallback = i;
 			}
 		}
+	}
 
+	/// <summary>
+	/// Pads a given string to centered by a given padding char in a given width
+	/// </summary>
+	/// <param name="src">The original string</param>
+	/// <param name="width">The targeted width</param>
+	/// <param name="pad">The padding character to use, defaults to =</param>
+	/// <remarks>When the difference between the length of <paramref name="src"/> and <paramref name="width"/> is odd, there will be one less padding character on the left</remarks>
+	/// <returns>The padded string</returns>
+	[NotNull]
+	public static string PadCentered([NotNull] string src, int width, char pad = '=') {
+		if (src.Length > width) {
+			return src;
+		}
+		else {
+			return new string(pad, (width - src.Length) / 2) + src + new string(pad, (width - src.Length + 1) / 2);
+		}
 	}
-/// <summary>
-/// Pads a given string to centered by a given padding char in a given width
-/// </summary>
-/// <param name="src">The original string</param>
-/// <param name="width">The targeted width</param>
-/// <param name="pad">The padding character to use, defaults to =</param>
-/// <remarks>When the difference between the length of <paramref name="src"/> and <paramref name="width"/> is odd, there will be one less padding character on the left</remarks>
-/// <returns>The padded string</returns>
-[NotNull]
-public static string PadCentered([NotNull] string src, int width, char pad = '=') {
-	if (src.Length > width) {
-		return src;
-	}
-	else {
-		return new string(pad, (width - src.Length) / 2) + src + new string(pad, (width - src.Length + 1) / 2);
-	}
-}
 }
 }
