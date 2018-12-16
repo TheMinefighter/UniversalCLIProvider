@@ -61,7 +61,7 @@ namespace UniversalCLIProvider.Interpreters {
 
 		public void PrintEror(string argName = null) {
 			TopInterpreter.ConsoleIO.Write(
-				$"An error occurred while parsing argument {argName ?? Name} use {TopInterpreter.Options.PreferredArgumentPrefix}? for help");
+				$"An error occurred while parsing argument {argName ?? Name} use {TopInterpreter.Options.PreferredArgumentPrefix}? for description");
 		}
 
 		internal bool IsParameterDeclaration(out CmdParameterAttribute found,

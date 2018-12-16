@@ -6,17 +6,18 @@ namespace UniversalCLIProvider.Attributes {
 	                AttributeTargets.Field,
 		AllowMultiple = true),UsedImplicitly]
 	public class CmdParameterAliasAttribute : Attribute {
-		public readonly string Name;
+		[NotNull] public readonly string Name;
+		[CanBeNull] public readonly string ShortForm;
+		[CanBeNull] public readonly object Value;
+		[CanBeNull] public readonly string[] LongDescription;
+		[CanBeNull] public readonly string Description;
 
-		public readonly object Value;
-		public string[] ExtendedHelp;
-		public string Help;
-
-		public CmdParameterAliasAttribute(string name, object value, string help = "", string[] extendedHelp = null) {
+		public CmdParameterAliasAttribute([NotNull] string name, [CanBeNull] object value, [CanBeNull] string description = null, [CanBeNull] string shortForm=null, [CanBeNull] string[] longDescription = null) {
 			Name = name;
 			Value = value;
-			Help = help;
-			ExtendedHelp = extendedHelp ?? new string[] { };
+			ShortForm = shortForm;
+			Description = description;
+			LongDescription = longDescription;
 		}
 	}
 }
