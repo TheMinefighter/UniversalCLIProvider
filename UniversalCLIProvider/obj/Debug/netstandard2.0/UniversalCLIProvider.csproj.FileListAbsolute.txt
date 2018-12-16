@@ -16,3 +16,7 @@ F:\TobiasAcc\Documents\CS\UniversalCLIProvider\UniversalCLIProvider\obj\Debug\ne
 F:\TobiasAcc\Documents\CS\UniversalCLIProvider\UniversalCLIProvider\obj\Debug\netstandard2.0\UniversalCLIProvider.AssemblyInfo.cs
 F:\TobiasAcc\Documents\CS\UniversalCLIProvider\UniversalCLIProvider\obj\Debug\netstandard2.0\UniversalCLIProvider.dll
 F:\TobiasAcc\Documents\CS\UniversalCLIProvider\UniversalCLIProvider\obj\Debug\netstandard2.0\UniversalCLIProvider.pdb
+F:\TobiasAcc\Documents\CS\UniversalCLIProvider\UniversalCLIProvider\bin\Debug\netstandard2.0\xunit.runner.visualstudio.testadapter.dll
+F:\TobiasAcc\Documents\CS\UniversalCLIProvider\UniversalCLIProvider\bin\Debug\netstandard2.0\xunit.runner.reporters.net452.dll
+F:\TobiasAcc\Documents\CS\UniversalCLIProvider\UniversalCLIProvider\bin\Debug\netstandard2.0\xunit.runner.utility.net452.dll
+F:\TobiasAcc\Documents\CS\UniversalCLIProvider\UniversalCLIProvider\bin\Debug\netstandard2.0\xunit.abstractions.dll

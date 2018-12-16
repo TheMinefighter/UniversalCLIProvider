@@ -6,9 +6,10 @@ using System.Text;
 using Newtonsoft.Json;
 
 namespace UniversalCLIProvider.Internals {
+/// <summary>
+/// Provides Methods needed for basic interpretation tasks
+/// </summary>
 public static class CommandlineMethods {
-
-
 //      public static bool GetAliasValue(out object value, CmdParameterAttribute cmdParameterAttribute, string search) {
 //         value = null;
 //         bool success = false;
@@ -81,14 +82,15 @@ public static class CommandlineMethods {
 
 		return true;
 	}
-/// <summary>
-/// Breaks up a given string in multiple lines of a given width, while making each end with a word end when possible
-/// </summary>
-/// <param name="indent"> The indent to use for each new line</param>
-/// <param name="width"> The width of the textoutput to format for</param>
-/// <param name="text"> The text to format</param>
-/// <returns>The formatted text</returns>
-	public static List<string> PrintWithPotentialIndent(int indent, int width, string text) {
+
+	/// <summary>
+	/// Breaks up a given string in multiple lines of a given width, while making each end with a word end when possible
+	/// </summary>
+	/// <param name="text"> The text to format</param>
+	/// <param name="width"> The width of the textoutput to format for</param>
+	/// <param name="indent"> The indent to use for each new line</param>
+	/// <returns>The formatted text</returns>
+	public static List<string> PrintWithPotentialIndent(string text, int width, int indent) {
 		List<string> lines= new List<string>(text.Length/width*2);
 		int? lastFallback = null;
 		int lineStart=0;

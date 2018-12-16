@@ -16,6 +16,9 @@ namespace UniversalCLIProvider.Attributes {
 		public string Name;
 		[CanBeNull]
 		public string ShortName;
+
+		public string[] LongDescription;
+		public string Description;
 		public IList<CmdContextAttribute> subCtx = new List<CmdContextAttribute>();
 
 		public CmdContextAttribute(string name) {
@@ -47,7 +50,7 @@ namespace UniversalCLIProvider.Attributes {
 			foreach (MemberInfo memberInfo in members) {
 				CmdParameterAttribute parameterAttribute = memberInfo.GetCustomAttribute<CmdParameterAttribute>();
 				if (parameterAttribute != null) {
-					parameterAttribute.MyInfo = memberInfo;
+					parameterAttribute.UnderlyingParameter = memberInfo;
 					ctxParameters.Add(parameterAttribute);
 				}
 			}

@@ -11,10 +11,12 @@ namespace UniversalCLIProvider.Attributes {
 	public class CmdParameterAttribute : Attribute {
 		private bool _loaded;
 		public bool IsParameter;
-		public ICustomAttributeProvider MyInfo;
+		public ICustomAttributeProvider UnderlyingParameter;
 		[NotNull] public string Name;
+		public string ShortForm;
 		public IEnumerable<CmdParameterAliasAttribute> ParameterAliases;
 		public CmdParameterUsage Usage;
+		public string Description;
 
 
 		public CmdParameterAttribute(string name, CmdParameterUsage usage = CmdParameterUsage.Default) {
@@ -24,7 +26,7 @@ namespace UniversalCLIProvider.Attributes {
 
 		public void LoadAlias() {
 			if (!_loaded) {
-				ParameterAliases = MyInfo.GetCustomAttributes(typeof(CmdParameterAliasAttribute), false)
+				ParameterAliases = UnderlyingParameter.GetCustomAttributes(typeof(CmdParameterAliasAttribute), false)
 					.Cast<CmdParameterAliasAttribute>();
 				if (Usage == CmdParameterUsage.Default) {
 					Usage = ParameterAliases.Any() ? CmdParameterUsage.OnlyDirectAlias : CmdParameterUsage.RawValueWithDeclaration;

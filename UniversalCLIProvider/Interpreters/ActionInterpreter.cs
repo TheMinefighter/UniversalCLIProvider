@@ -38,7 +38,7 @@ namespace UniversalCLIProvider.Interpreters {
 					new KeyValuePair<ParameterInfo, Attribute>(x, x.GetCustomAttribute(typeof(CmdParameterAttribute))))
 				.Where(x => x.Value != null).Select(x => {
 					CmdParameterAttribute cmdParameterAttribute = x.Value as CmdParameterAttribute;
-					cmdParameterAttribute.MyInfo = x.Key;
+					cmdParameterAttribute.UnderlyingParameter = x.Key;
 					cmdParameterAttribute.ParameterAliases =
 						x.Key.GetCustomAttributes(typeof(CmdParameterAliasAttribute)).Cast<CmdParameterAliasAttribute>();
 					cmdParameterAttribute.LoadAlias();
@@ -63,7 +63,7 @@ namespace UniversalCLIProvider.Interpreters {
 			object[] invokers = new object[allParameterInfos.Length];
 			bool[] invokersDeclared = new bool[allParameterInfos.Length];
 			foreach (KeyValuePair<CmdParameterAttribute, object> invokationArgument in invokationArguments) {
-				int position = (invokationArgument.Key.MyInfo as ParameterInfo).Position;
+				int position = (invokationArgument.Key.UnderlyingParameter as ParameterInfo).Position;
 				invokers[position] = invokationArgument.Value;
 				invokersDeclared[position] = true;
 			}
@@ -112,7 +112,7 @@ namespace UniversalCLIProvider.Interpreters {
 						return false;
 					}
 
-					Type parameterType = (found.MyInfo as ParameterInfo).ParameterType;
+					Type parameterType = (found.UnderlyingParameter as ParameterInfo).ParameterType;
 					if (IsAlias(found, out object aliasValue)) {
 						invokationArguments.Add(found, aliasValue);
 					}

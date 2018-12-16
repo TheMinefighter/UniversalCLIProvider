@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETStandard,Version=v2.0/",
-    "signature": "c7dfca31ad0cae9389802ace9b4ef44e22308d3b"
+    "signature": "e91a779b1713c0a691f3c94bddc9da9483593a5b"
   },
   "compilationOptions": {},
   "targets": {
@@ -9,12 +9,23 @@
     ".NETStandard,Version=v2.0/": {
       "UniversalCLIProvider/1.0.0": {
         "dependencies": {
+          "JetBrains.Annotations": "2018.2.1",
           "NETStandard.Library": "2.0.3",
           "Newtonsoft.Json": "12.0.1",
-          "PropertyOrFieldInfo": "1.0.1"
+          "PropertyOrFieldInfo": "1.0.1",
+          "xunit.runner.console": "2.4.1",
+          "xunit.runner.visualstudio": "2.4.1"
         },
         "runtime": {
           "UniversalCLIProvider.dll": {}
+        }
+      },
+      "JetBrains.Annotations/2018.2.1": {
+        "runtime": {
+          "lib/netstandard2.0/JetBrains.Annotations.dll": {
+            "assemblyVersion": "2018.2.1.0",
+            "fileVersion": "2018.2.1.0"
+          }
         }
       },
       "Microsoft.NETCore.Platforms/1.1.0": {},
@@ -38,7 +49,9 @@
             "fileVersion": "1.0.0.0"
           }
         }
-      }
+      },
+      "xunit.runner.console/2.4.1": {},
+      "xunit.runner.visualstudio/2.4.1": {}
     }
   },
   "libraries": {
@@ -46,6 +59,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "JetBrains.Annotations/2018.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/aPVHEW93EV1Httnbniz0Cty5+jrXobS27I8QBnIUMe0n51qgxLyQV2AQNko4yXkeOxEdWiZ7bg9+BuMxYbXcA==",
+      "path": "jetbrains.annotations/2018.2.1",
+      "hashPath": "jetbrains.annotations.2018.2.1.nupkg.sha512"
     },
     "Microsoft.NETCore.Platforms/1.1.0": {
       "type": "package",
@@ -64,7 +84,7 @@
     "Newtonsoft.Json/12.0.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-jmVyoEyk0In8r+AObYQyFKVFm7uSRzE0XSHSbEtBJcZDMV6DqJoyB4FLcHwprPVhAh826so0db3DIKXVnpGoPA==",
+      "sha512": "sha512-pBR3wCgYWZGiaZDYP+HHYnalVnPJlpP1q55qvVb+adrDHmFMDc1NAKio61xTwftK3Pw5h7TZJPJEEVMd6ty8rg==",
       "path": "newtonsoft.json/12.0.1",
       "hashPath": "newtonsoft.json.12.0.1.nupkg.sha512"
     },
@@ -74,6 +94,20 @@
       "sha512": "sha512-e2ULQp0dP/kH+BEafWxk9iCmMBIwNs1nxVw3/Htc/Yk8e7B+vNlF8kzKwtzj8OLZBwpDWfMwF1rKjn/FxXjWFg==",
       "path": "propertyorfieldinfo/1.0.1",
       "hashPath": "propertyorfieldinfo.1.0.1.nupkg.sha512"
+    },
+    "xunit.runner.console/2.4.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6yGe+Vx250m1zG/nV8FH1XlftJFoidCThpRdWEIwIFE/rc/lYSuL0M+D1gMDNmZgERAR/sHR18Q/etqd6lxaNA==",
+      "path": "xunit.runner.console/2.4.1",
+      "hashPath": "xunit.runner.console.2.4.1.nupkg.sha512"
+    },
+    "xunit.runner.visualstudio/2.4.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-mBXd1lp1TQr4to2nFv+c4Tf+RnPoQPKglzwLdbdirOUxRaJsCUNDUx2y7E6j9ajgISlTTp1CydFBZCRCUIrwDg==",
+      "path": "xunit.runner.visualstudio/2.4.1",
+      "hashPath": "xunit.runner.visualstudio.2.4.1.nupkg.sha512"
     }
   }
 }
