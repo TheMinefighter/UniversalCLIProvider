@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace UniversalCLIProvider.Internals {
 public static class ManagedConfigurationHelpers {
-	public static bool ResolvePath(string path, object item, out PropertyInfo prop, out object[] requiredIndexers,
+	public static bool ResolvePath([CanBeNull] string path, [NotNull] object item, out PropertyInfo prop, out object[] requiredIndexers,
 		out object newObject) {
 		prop = null;
 		newObject = null;
@@ -14,7 +15,7 @@ public static class ManagedConfigurationHelpers {
 		path = path.Trim();
 		TypeInfo typeInfoOfItem = item.GetType().GetTypeInfo();
 		if (path.StartsWith("[")) {
-			return ResolveIndexerInPath(path, item, ref prop, ref requiredIndexers, ref newObject, typeInfoOfItem);
+			return ResolveIndexerInPath(path, item, typeInfoOfItem, ref prop, ref requiredIndexers, ref newObject);
 		}
 
 		string currentPath=path;
@@ -44,8 +45,9 @@ public static class ManagedConfigurationHelpers {
 		return true;
 	}
 
-	private static bool ResolveIndexerInPath(string path, object item, ref PropertyInfo prop, ref object[] requiredIndexers,
-		ref object newObject, TypeInfo typeInfoOfItem) {
+	private static bool ResolveIndexerInPath([NotNull] string path, [NotNull] object item, [NotNull] TypeInfo typeInfoOfItem,
+		ref PropertyInfo prop, ref object[] requiredIndexers,
+		ref object newObject) {
 		int endOfIndexer = path.IndexOf(']');
 		if (endOfIndexer == -1) {
 			return false;
@@ -76,7 +78,7 @@ public static class ManagedConfigurationHelpers {
 		return true;
 	}
 
-	public static bool ResolveIndexerParameters(string[] parameters, TypeInfo type, out object[] indexParameters,
+	public static bool ResolveIndexerParameters([NotNull] string[] parameters, [NotNull] TypeInfo type, out object[] indexParameters,
 		out PropertyInfo indexer) {
 		indexParameters = new object[parameters.Length];
 		indexer = null;
@@ -102,7 +104,7 @@ public static class ManagedConfigurationHelpers {
 		return false;
 	}
 
-	public static bool SplitIndexerArguments(string src, out string[] result) {
+	public static bool SplitIndexerArguments([NotNull] string src, out string[] result) {
 		if (!src.Contains(',')) {
 			result = new[] {src};
 			return true;
@@ -112,7 +114,8 @@ public static class ManagedConfigurationHelpers {
 		throw new NotImplementedException("Multiple Indexer parameters haven't been implemented yet");
 	}
 
-	public static IEnumerable<TypeInfo> GetUnderlyingTypes(this TypeInfo src) {
+	[NotNull]
+	public static IEnumerable<TypeInfo> GetUnderlyingTypes([NotNull] this TypeInfo src) {
 		IEnumerable<TypeInfo> baseEnumerator = src.ImplementedInterfaces.SelectMany(x => x.GetTypeInfo().GetUnderlyingTypes()).Append(src);
 		if (!(src.BaseType is null)) {
 			baseEnumerator = baseEnumerator.Concat(src.BaseType.GetTypeInfo().GetUnderlyingTypes());

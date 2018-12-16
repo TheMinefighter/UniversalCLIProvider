@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using JetBrains.Annotations;
 
 namespace UniversalCLIProvider.Internals {
 public static class HexArgumentEncoding {
@@ -14,7 +15,8 @@ public static class HexArgumentEncoding {
 	/// <param name="encoding">The encoding to use, defaults to <see cref="Encoding.UTF8"/></param>
 	/// <remarks>The information about the encoding used is self contained in the resulting string using the <see cref="Encoding.CodePage"/> property.</remarks>
 	/// <returns>A long string of hex data which can be supplied to programs implementing this interface</returns>
-	public static string ToHexArgumentString(string[] originalArguments, Encoding encoding = null) {
+	[NotNull]
+	public static string ToHexArgumentString([NotNull] string[] originalArguments, [CanBeNull] Encoding encoding = null) {
 		encoding = encoding ?? Encoding.UTF8;
 		int typicalEncodingLength = encoding.GetByteCount("s");
 		StringBuilder stringBuilder =
@@ -36,7 +38,7 @@ public static class HexArgumentEncoding {
 	/// <param name="arg"> The original hexadecimal argument</param>
 	/// <param name="newArgs"> the decoded arguments</param>
 	/// <returns>Whether the parsing operation were successful</returns>
-	public static bool ArgumentsFromHex(string arg, out List<string> newArgs) {
+	public static bool ArgumentsFromHex([NotNull] string arg, out List<string> newArgs) {
 		newArgs = null;
 		int currentOffset = 0;
 		if (arg.Length < 8 + currentOffset) {

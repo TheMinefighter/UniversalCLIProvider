@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace UniversalCLIProvider.Internals {
@@ -47,7 +48,7 @@ public static class CommandlineMethods {
 	/// <remarks><see cref="DateTime"/>, <see cref="TimeSpan"/>, <see cref="DateTimeOffset"/>, <see cref="Uri"/>, <see cref="Guid"/>,<see cref="string"/>Allowed without quotation marks when explicit</remarks>
 	/// <remarks><see cref="Nullable{T}"/> types also supported</remarks>
 	/// <returns>Whether parsing was successful</returns>
-	public static bool GetValueFromString(string source, Type expectedType, out object value, JsonSerializerSettings serializerSettings=null, bool enableCustomCompatSupport=true) {
+	public static bool GetValueFromString([NotNull] string source, [NotNull] Type expectedType, out object value, [CanBeNull] JsonSerializerSettings serializerSettings=null, bool enableCustomCompatSupport=true) {
 		value = null;
 		if (enableCustomCompatSupport) {
 			if (expectedType.IsEnum ||
@@ -90,32 +91,32 @@ public static class CommandlineMethods {
 	/// <param name="width"> The width of the textoutput to format for</param>
 	/// <param name="indent"> The indent to use for each new line</param>
 	/// <returns>The formatted text</returns>
-	public static List<string> PrintWithPotentialIndent(string text, int width, int indent) {
-		List<string> lines= new List<string>(text.Length/width*2);
-		int? lastFallback = null;
+	[ItemNotNull]
+	public static IEnumerable<string> PrintWithPotentialIndent([NotNull] string text, int width, int indent) {
+		bool firstLine = true;
+		int lastFallback = -1;
 		int lineStart=0;
 		for (int i = 0; i < text.Length; i++) {
 			if (i-lineStart==width) {
-				int breakIndex = lastFallback ?? i;
-				string line;
-				if (lines.Count==0) {
-					line = text.Substring(lineStart,breakIndex-lineStart-(lastFallback is null?0:1));
+				int breakIndex = lastFallback!=-1 ? lastFallback :  i;
+				if (!firstLine) {
+					yield return text.Substring(lineStart,breakIndex-lineStart-(lastFallback ==-1?0:1)); //last removes redundant space
 				}
 				else {
-					line=new string(' ',indent)+ text.Substring(lineStart,breakIndex-lineStart);
+					yield return new string(' ',indent)+ text.Substring(lineStart,breakIndex-lineStart);
 				}
-				lines.Add(line);
 				lineStart = i;
-				if (lines.Count==1) {
+				if (!firstLine) {
 					width -= indent;
 				}
+
+				firstLine = false;
 			}
 			if (text[i]==' ') {
 				lastFallback = i;
 			}
 		}
 
-		return lines;
 	}
 /// <summary>
 /// Pads a given string to centered by a given padding char in a given width
@@ -125,7 +126,8 @@ public static class CommandlineMethods {
 /// <param name="pad">The padding character to use, defaults to =</param>
 /// <remarks>When the difference between the length of <paramref name="src"/> and <paramref name="width"/> is odd, there will be one less padding character on the left</remarks>
 /// <returns>The padded string</returns>
-public static string PadCentered(string src, int width, char pad = '=') {
+[NotNull]
+public static string PadCentered([NotNull] string src, int width, char pad = '=') {
 	if (src.Length > width) {
 		return src;
 	}

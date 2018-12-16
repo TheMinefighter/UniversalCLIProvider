@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using JetBrains.Annotations;
 using UniversalCLIProvider.Attributes;
 
 namespace UniversalCLIProvider.Internals {
@@ -9,7 +10,8 @@ namespace UniversalCLIProvider.Internals {
 /// Methods generating --help texts
 /// </summary>
 public class HelpGenerators {
-	List<string> ActionHelp(CmdActionAttribute action, int width, int indent = 3) {
+	[NotNull]
+	List<string> ActionHelp([NotNull] CmdActionAttribute action, int width, int indent = 3) {
 		List<string> ret = new List<string> {CommandlineMethods.PadCentered(action.Name,width)};
 		ret.AddRange(action.Description.SelectMany(x=>CommandlineMethods.PrintWithPotentialIndent(x, width, 0)));
 		if (action.Parameters.Count!=0) {
@@ -33,7 +35,8 @@ public class HelpGenerators {
 		return ret;
 	}
 	
-	List<string> ContextHelp(CmdContextAttribute context, int width, int indent = 3) {
+	[NotNull]
+	List<string> ContextHelp([NotNull] CmdContextAttribute context, int width, int indent = 3) {
 		List<string> ret = new List<string> {CommandlineMethods.PadCentered(context.Name,width)};
 		ret.AddRange(context.LongDescription.SelectMany(x=>CommandlineMethods.PrintWithPotentialIndent(x, width, 0)));
 		if (context.subCtx.Count!=0) {
