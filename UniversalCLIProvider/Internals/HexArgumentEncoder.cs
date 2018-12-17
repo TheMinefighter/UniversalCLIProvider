@@ -8,22 +8,23 @@ using JetBrains.Annotations;
 namespace UniversalCLIProvider.Internals {
 public static class HexArgumentEncoding {
 	/// <summary>
-	/// Converts the given Arguments of the given encoding to a hex string fixing commandline related quote issues, and also enabling more special character including emojis.
+	///  Converts the given Arguments of the given encoding to a hex string fixing commandline related quote issues, and also enabling more special character
+	///  including emojis.
 	/// </summary>
 	/// <summary>This method has no use in this library itself and is made to be referenced by other programs or to be seen as reference implementation</summary>
 	/// <param name="originalArguments">The original arguments</param>
-	/// <param name="encoding">The encoding to use, defaults to <see cref="Encoding.UTF8"/></param>
-	/// <remarks>The information about the encoding used is self contained in the resulting string using the <see cref="Encoding.CodePage"/> property.</remarks>
+	/// <param name="encoding">The encoding to use, defaults to <see cref="Encoding.UTF8" /></param>
+	/// <remarks>The information about the encoding used is self contained in the resulting string using the <see cref="Encoding.CodePage" /> property.</remarks>
 	/// <returns>A long string of hex data which can be supplied to programs implementing this interface</returns>
 	[NotNull]
 	public static string ToHexArgumentString([NotNull] string[] originalArguments, [CanBeNull] Encoding encoding = null) {
 		encoding = encoding ?? Encoding.UTF8;
 		int typicalEncodingLength = encoding.GetByteCount("s");
 		StringBuilder stringBuilder =
-			new StringBuilder(typicalEncodingLength * originalArguments.Sum(x => x.Length) + originalArguments.Length * 8+8);
+			new StringBuilder(typicalEncodingLength * originalArguments.Sum(x => x.Length) + originalArguments.Length * 8 + 8);
 		stringBuilder.Append(encoding.CodePage.ToString("x8"));
 		foreach (string argument in originalArguments) {
-			stringBuilder.Append( encoding.GetByteCount(argument).ToString("x8"));
+			stringBuilder.Append(encoding.GetByteCount(argument).ToString("x8"));
 			foreach (byte b in encoding.GetBytes(argument)) {
 				stringBuilder.Append(b.ToString("x2"));
 			}
@@ -33,7 +34,7 @@ public static class HexArgumentEncoding {
 	}
 
 	/// <summary>
-	/// Loads the arguments encoded using <see cref="ToHexArgumentString"/>
+	///  Loads the arguments encoded using <see cref="ToHexArgumentString" />
 	/// </summary>
 	/// <param name="arg"> The original hexadecimal argument</param>
 	/// <param name="newArgs"> the decoded arguments</param>
@@ -46,7 +47,7 @@ public static class HexArgumentEncoding {
 			return false;
 		}
 
-		Encoding encoding = Encoding.GetEncoding(Int32.Parse(arg.Substring(currentOffset, 8), NumberStyles.HexNumber));
+		Encoding encoding = Encoding.GetEncoding(int.Parse(arg.Substring(currentOffset, 8), NumberStyles.HexNumber));
 		currentOffset += 8;
 		int typicalEncodingLength = encoding.GetByteCount("s");
 		int count = 0;
@@ -63,7 +64,7 @@ public static class HexArgumentEncoding {
 
 			int proposedLength;
 			try {
-				proposedLength = Int32.Parse(arg.Substring(currentOffset, 8), NumberStyles.HexNumber);
+				proposedLength = int.Parse(arg.Substring(currentOffset, 8), NumberStyles.HexNumber);
 			}
 			catch (Exception) {
 				Console.WriteLine($"Error while parsing string length of argument {count}");
@@ -79,7 +80,7 @@ public static class HexArgumentEncoding {
 			byte[] rawArgument = new byte[proposedLength];
 			for (int i = 0; i < proposedLength; i++) {
 				//TODO Can be optimized later (dual counter)
-				rawArgument[i] = Byte.Parse(arg.Substring(currentOffset, 2), NumberStyles.HexNumber);
+				rawArgument[i] = byte.Parse(arg.Substring(currentOffset, 2), NumberStyles.HexNumber);
 				currentOffset += 2;
 			}
 

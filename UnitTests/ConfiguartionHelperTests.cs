@@ -7,23 +7,28 @@ using Xunit;
 
 namespace UnitTests {
 public class ConfigurationHelperTests {
-	public static TheoryData<string[],Type,bool,object[],PropertyInfo> Data=new TheoryData<string[], Type, bool, object[], PropertyInfo>() {
-		{new []{"3"},typeof(string[]),true,new object[]{3},typeof(string[]).GetTypeInfo().GetUnderlyingTypes().SelectMany(x=>x.GetRuntimeProperties()).First(x=>x.GetIndexParameters().Length>0)},
-		{new []{"\"Test\""},typeof(Dictionary<string,int>),true,new object[]{"Test"},typeof(Dictionary<string,int>).GetTypeInfo().GetUnderlyingTypes().SelectMany(x=>x.GetRuntimeProperties()).First(x=>x.GetIndexParameters().Length>0)}
-		
+	public static TheoryData<string[], Type, bool, object[], PropertyInfo> Data = new TheoryData<string[], Type, bool, object[], PropertyInfo> {
+		{
+			new[] {"3"}, typeof(string[]), true, new object[] {3},
+			typeof(string[]).GetTypeInfo().GetUnderlyingTypes().SelectMany(x => x.GetRuntimeProperties()).First(x => x.GetIndexParameters().Length > 0)
+		}, {
+			new[] {"\"Test\""}, typeof(Dictionary<string, int>), true, new object[] {"Test"},
+			typeof(Dictionary<string, int>).GetTypeInfo().GetUnderlyingTypes().SelectMany(x => x.GetRuntimeProperties())
+				.First(x => x.GetIndexParameters().Length > 0)
+		}
 	};
 
-	[Theory]
-	[MemberData(nameof(Data))]
+	[Theory, MemberData(nameof(Data))]
 	public static void ResolveIndexerParametersTest(string[] parameters, Type indexerOwner, bool expectedSuccess,
 		object[] expectedIndexerParameters, PropertyInfo expectedIndexer) {
 		bool success = ManagedConfigurationHelpers.ResolveIndexerParameters(parameters, indexerOwner.GetTypeInfo(), out object[] indexParameters,
 			out PropertyInfo indexer);
-		Assert.Equal(expectedSuccess,success);
+		Assert.Equal(expectedSuccess, success);
 		if (success) {
-			Assert.Equal(expectedIndexerParameters,indexParameters);
-			Assert.Same(expectedIndexer,indexer);
+			Assert.Equal(expectedIndexerParameters, indexParameters);
+			Assert.Same(expectedIndexer, indexer);
 		}
+
 		//Array
 	}
 
@@ -32,7 +37,5 @@ public class ConfigurationHelperTests {
 			public string this[]
 		}
 	}*/
-	
-	
 }
 }

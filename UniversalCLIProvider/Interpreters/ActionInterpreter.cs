@@ -7,200 +7,200 @@ using UniversalCLIProvider.Attributes;
 using UniversalCLIProvider.Internals;
 
 namespace UniversalCLIProvider.Interpreters {
-	public class ActionInterpreter : BaseInterpreter, IDisposable {
-		private bool _cached;
-		public CmdActionAttribute MyActionAttribute;
-		private IEnumerable<CmdParameterAttribute> parameters;
+public class ActionInterpreter : BaseInterpreter, IDisposable {
+	private bool _cached;
+	public CmdActionAttribute MyActionAttribute;
+	private IEnumerable<CmdParameterAttribute> parameters;
 
-		public ActionInterpreter(CommandlineOptionInterpreter top, int i) : base(top) {
-			i++;
+	public ActionInterpreter(CommandlineOptionInterpreter top, int i) : base(top) {
+		i++;
+	}
+
+	public ActionInterpreter(CmdActionAttribute myActionAttribute, BaseInterpreter parent, int offset = 0) : base(parent,
+		myActionAttribute.Name, offset) => MyActionAttribute = myActionAttribute;
+
+	public void Dispose() {
+		_cached = false;
+		MyActionAttribute = null;
+	}
+
+	internal override void PrintHelp() { }
+
+	internal void LoadParameters() {
+		if (!_cached) {
+			LoadParametersWithoutCache();
+			_cached = true;
 		}
+	}
 
-		public ActionInterpreter(CmdActionAttribute myActionAttribute, BaseInterpreter parent, int offset = 0) : base(parent,
-			myActionAttribute.Name, offset) => MyActionAttribute = myActionAttribute;
+	private void LoadParametersWithoutCache() {
+		parameters = MyActionAttribute.UnderlyingMethod.GetParameters().Select(x =>
+				new KeyValuePair<ParameterInfo, Attribute>(x, x.GetCustomAttribute(typeof(CmdParameterAttribute))))
+			.Where(x => x.Value != null).Select(x => {
+				CmdParameterAttribute cmdParameterAttribute = x.Value as CmdParameterAttribute;
+				cmdParameterAttribute.UnderlyingParameter = x.Key;
+				cmdParameterAttribute.ParameterAliases =
+					x.Key.GetCustomAttributes(typeof(CmdParameterAliasAttribute)).Cast<CmdParameterAliasAttribute>();
+				cmdParameterAttribute.LoadAlias();
+				return cmdParameterAttribute;
+			});
+	}
 
-		public void Dispose() {
-			_cached = false;
-			MyActionAttribute = null;
-		}
-
-		internal override void PrintHelp() { }
-
-		internal void LoadParameters() {
-			if (!_cached) {
-				LoadParametersWithoutCache();
-				_cached = true;
+	internal override bool Interpret(bool printErrors = true) {
+		LoadParameters();
+		//Dictionary<CmdParameterAttribute, object> invokationArguments = new Dictionary<CmdParameterAttribute, object>();
+		Dictionary<CmdParameterAttribute, object> invokationArguments;
+		if (Offset != TopInterpreter.Args.Length) {
+			if (!GetValues(out invokationArguments)) {
+				return true;
 			}
 		}
-
-		private void LoadParametersWithoutCache() {
-			parameters = MyActionAttribute.UnderlyingMethod.GetParameters().Select(x =>
-					new KeyValuePair<ParameterInfo, Attribute>(x, x.GetCustomAttribute(typeof(CmdParameterAttribute))))
-				.Where(x => x.Value != null).Select(x => {
-					CmdParameterAttribute cmdParameterAttribute = x.Value as CmdParameterAttribute;
-					cmdParameterAttribute.UnderlyingParameter = x.Key;
-					cmdParameterAttribute.ParameterAliases =
-						x.Key.GetCustomAttributes(typeof(CmdParameterAliasAttribute)).Cast<CmdParameterAliasAttribute>();
-					cmdParameterAttribute.LoadAlias();
-					return cmdParameterAttribute;
-				});
-		}
-
-		internal override bool Interpret(bool printErrors = true) {
-			LoadParameters();
-			//Dictionary<CmdParameterAttribute, object> invokationArguments = new Dictionary<CmdParameterAttribute, object>();
-			Dictionary<CmdParameterAttribute, object> invokationArguments;
-			if (Offset != TopInterpreter.Args.Length) {
-				if (!GetValues(out invokationArguments)) {
-					return true;
-				}
-			}
-			else {
-				invokationArguments = new Dictionary<CmdParameterAttribute, object>();
-			}
-
-			ParameterInfo[] allParameterInfos = MyActionAttribute.UnderlyingMethod.GetParameters();
-			object[] invokers = new object[allParameterInfos.Length];
-			bool[] invokersDeclared = new bool[allParameterInfos.Length];
-			foreach (KeyValuePair<CmdParameterAttribute, object> invokationArgument in invokationArguments) {
-				int position = (invokationArgument.Key.UnderlyingParameter as ParameterInfo).Position;
-				invokers[position] = invokationArgument.Value;
-				invokersDeclared[position] = true;
-			}
-
-			for (int i = 0; i < allParameterInfos.Length; i++) {
-				if (!invokersDeclared[i]) {
-					if (allParameterInfos[i].HasDefaultValue) {
-						invokers[i] = allParameterInfos[i].DefaultValue;
-						invokersDeclared[i] = true;
-					}
-					else {
-						//throw
-						return false;
-					}
-				}
-			}
-
-			InterpretationResult result;
-			object returned = MyActionAttribute.UnderlyingMethod.Invoke(null, invokers);
-			if (returned is bool invokationSuccess) {
-				result = invokationSuccess ? InterpretationResult.Success : InterpretationResult.RunError;
-			}
-			else if (returned is InterpretationResult invokationResult) {
-				result = invokationResult;
-			}
-
-			return true;
-			//throw new NotImplementedException();
-		}
-
-		/// <summary>
-		///  reads all arguments
-		/// </summary>
-		/// <param name="invokationArguments"></param>
-		/// <returns></returns>
-		private bool GetValues(out Dictionary<CmdParameterAttribute, object> invokationArguments) {
+		else {
 			invokationArguments = new Dictionary<CmdParameterAttribute, object>();
-			Type iEnumerableCache = null;
-			// value = null;
-			while (true) {
-				if (IsParameterDeclaration(out CmdParameterAttribute found)) {
-					if (IncreaseOffset()) {
-						//TODO What if Empty Array
-						//throw
+		}
 
-						return false;
-					}
+		ParameterInfo[] allParameterInfos = MyActionAttribute.UnderlyingMethod.GetParameters();
+		object[] invokers = new object[allParameterInfos.Length];
+		bool[] invokersDeclared = new bool[allParameterInfos.Length];
+		foreach (KeyValuePair<CmdParameterAttribute, object> invokationArgument in invokationArguments) {
+			int position = (invokationArgument.Key.UnderlyingParameter as ParameterInfo).Position;
+			invokers[position] = invokationArgument.Value;
+			invokersDeclared[position] = true;
+		}
 
-					Type parameterType = (found.UnderlyingParameter as ParameterInfo).ParameterType;
-					if (IsAlias(found, out object aliasValue)) {
-						invokationArguments.Add(found, aliasValue);
-					}
-					else if (found.Usage.HasFlag(CmdParameterUsage.SupportRaw) &&
-					         CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], parameterType, out object given)) {
-						invokationArguments.Add(found, given);
-					}
-					else if (found.Usage.HasFlag(CmdParameterUsage.SupportRaw) && parameterType.GetInterfaces().Any(x => {
-							         bool isIEnumerable = x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>);
-							         iEnumerableCache = x;
-							         return isIEnumerable;
-						         }
-					         )
-					) {
-						#region Based upon https://stackoverflow.com/a/2493258/6730162 last access 04.03.2018
-
-						Type realType = iEnumerableCache.GetGenericArguments()[0];
-						Type specificList = typeof(List<>).MakeGenericType(realType);
-						ConstructorInfo ci = specificList.GetConstructor(new Type[] { });
-						object listOfRealType = ci.Invoke(new object[] { });
-
-						#endregion
-
-						MethodInfo addMethodInfo = specificList.GetMethod("Add");
-						Offset--;
-						while (true) {
-							if (IncreaseOffset()) {
-								break;
-							}
-
-							if (IsAlias(out CmdParameterAttribute tmpParameterAttribute, out object _) &&
-							    tmpParameterAttribute.Usage.HasFlag(CmdParameterUsage.SupportDirectAlias) ||
-							    IsParameterDeclaration(out CmdParameterAttribute _)) {
-								break;
-							}
-
-							if (!CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], realType, out object toAppend)) {
-								//throw
-								return false;
-							}
-							else {
-								addMethodInfo.Invoke(listOfRealType, new object[] {toAppend});
-							}
-						}
-
-						if (new Type[] {
-							typeof(List<>), typeof(IList<>), typeof(ICollection<>), typeof(IEnumerable<>), typeof(IReadOnlyList<>),
-							typeof(IReadOnlyCollection<>), typeof(ReadOnlyCollection<>)
-						}.Select(x => x.MakeGenericType(realType)).Contains(parameterType)) {
-							invokationArguments.Add(found, listOfRealType);
-						}
-						else if (parameterType == realType.MakeArrayType()) {
-							object arrayOfRealType = typeof(Enumerable).GetMethod("ToArray").MakeGenericMethod(realType)
-								.Invoke(null, new object[] {listOfRealType});
-							invokationArguments.Add(found, arrayOfRealType);
-						}
-						else {
-							ConstructorInfo constructorInfo;
-							try {
-								constructorInfo =
-									parameterType.GetConstructor(new Type[] {typeof(IEnumerable<>).MakeGenericType(realType)});
-							}
-							catch (Exception e) {
-								Console.WriteLine(e);
-								throw;
-							}
-
-							constructorInfo.Invoke(new object[] {listOfRealType});
-						}
-					}
-
-					else {
-						//throw
-						return false;
-					}
-				}
-				else if (IsAlias(out found, out object aliasValue) && (found.Usage & CmdParameterUsage.SupportDirectAlias) != 0) {
-					invokationArguments.Add(found, aliasValue);
+		for (int i = 0; i < allParameterInfos.Length; i++) {
+			if (!invokersDeclared[i]) {
+				if (allParameterInfos[i].HasDefaultValue) {
+					invokers[i] = allParameterInfos[i].DefaultValue;
+					invokersDeclared[i] = true;
 				}
 				else {
 					//throw
 					return false;
 				}
+			}
+		}
 
+		InterpretationResult result;
+		object returned = MyActionAttribute.UnderlyingMethod.Invoke(null, invokers);
+		if (returned is bool invokationSuccess) {
+			result = invokationSuccess ? InterpretationResult.Success : InterpretationResult.RunError;
+		}
+		else if (returned is InterpretationResult invokationResult) {
+			result = invokationResult;
+		}
+
+		return true;
+		//throw new NotImplementedException();
+	}
+
+	/// <summary>
+	///  reads all arguments
+	/// </summary>
+	/// <param name="invokationArguments"></param>
+	/// <returns></returns>
+	private bool GetValues(out Dictionary<CmdParameterAttribute, object> invokationArguments) {
+		invokationArguments = new Dictionary<CmdParameterAttribute, object>();
+		Type iEnumerableCache = null;
+		// value = null;
+		while (true) {
+			if (IsParameterDeclaration(out CmdParameterAttribute found)) {
 				if (IncreaseOffset()) {
-					return true;
+					//TODO What if Empty Array
+					//throw
+
+					return false;
+				}
+
+				Type parameterType = (found.UnderlyingParameter as ParameterInfo).ParameterType;
+				if (IsAlias(found, out object aliasValue)) {
+					invokationArguments.Add(found, aliasValue);
+				}
+				else if (found.Usage.HasFlag(CmdParameterUsage.SupportRaw) &&
+				         CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], parameterType, out object given)) {
+					invokationArguments.Add(found, given);
+				}
+				else if (found.Usage.HasFlag(CmdParameterUsage.SupportRaw) && parameterType.GetInterfaces().Any(x => {
+						         bool isIEnumerable = x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>);
+						         iEnumerableCache = x;
+						         return isIEnumerable;
+					         }
+				         )
+				) {
+					#region Based upon https://stackoverflow.com/a/2493258/6730162 last access 04.03.2018
+
+					Type realType = iEnumerableCache.GetGenericArguments()[0];
+					Type specificList = typeof(List<>).MakeGenericType(realType);
+					ConstructorInfo ci = specificList.GetConstructor(new Type[] { });
+					object listOfRealType = ci.Invoke(new object[] { });
+
+					#endregion
+
+					MethodInfo addMethodInfo = specificList.GetMethod("Add");
+					Offset--;
+					while (true) {
+						if (IncreaseOffset()) {
+							break;
+						}
+
+						if (IsAlias(out CmdParameterAttribute tmpParameterAttribute, out object _) &&
+						    tmpParameterAttribute.Usage.HasFlag(CmdParameterUsage.SupportDirectAlias) ||
+						    IsParameterDeclaration(out CmdParameterAttribute _)) {
+							break;
+						}
+
+						if (!CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], realType, out object toAppend)) {
+							//throw
+							return false;
+						}
+						else {
+							addMethodInfo.Invoke(listOfRealType, new object[] {toAppend});
+						}
+					}
+
+					if (new Type[] {
+						typeof(List<>), typeof(IList<>), typeof(ICollection<>), typeof(IEnumerable<>), typeof(IReadOnlyList<>),
+						typeof(IReadOnlyCollection<>), typeof(ReadOnlyCollection<>)
+					}.Select(x => x.MakeGenericType(realType)).Contains(parameterType)) {
+						invokationArguments.Add(found, listOfRealType);
+					}
+					else if (parameterType == realType.MakeArrayType()) {
+						object arrayOfRealType = typeof(Enumerable).GetMethod("ToArray").MakeGenericMethod(realType)
+							.Invoke(null, new object[] {listOfRealType});
+						invokationArguments.Add(found, arrayOfRealType);
+					}
+					else {
+						ConstructorInfo constructorInfo;
+						try {
+							constructorInfo =
+								parameterType.GetConstructor(new Type[] {typeof(IEnumerable<>).MakeGenericType(realType)});
+						}
+						catch (Exception e) {
+							Console.WriteLine(e);
+							throw;
+						}
+
+						constructorInfo.Invoke(new object[] {listOfRealType});
+					}
+				}
+
+				else {
+					//throw
+					return false;
 				}
 			}
+			else if (IsAlias(out found, out object aliasValue) && (found.Usage & CmdParameterUsage.SupportDirectAlias) != 0) {
+				invokationArguments.Add(found, aliasValue);
+			}
+			else {
+				//throw
+				return false;
+			}
+
+			if (IncreaseOffset()) {
+				return true;
+			}
+		}
 
 /*
          foreach (CmdParameterAttribute cmdParameterAttribute in parameters) {
@@ -257,26 +257,26 @@ namespace UniversalCLIProvider.Interpreters {
             //   invokationArguments.Add();
          }
 */
-		}
+	}
 
-		internal bool IsParameterDeclaration(out CmdParameterAttribute found, string search = null) =>
-			IsParameterDeclaration(out found, parameters, search ?? TopInterpreter.Args[Offset]);
+	internal bool IsParameterDeclaration(out CmdParameterAttribute found, string search = null) =>
+		IsParameterDeclaration(out found, parameters, search ?? TopInterpreter.Args[Offset]);
 
 //      internal bool IsAlias(CmdParameterAttribute expectedAliasType, out object value, string source = null) {
 //         return base.IsAlias(expectedAliasType, out value, source ?? TopInterpreter.Args[Offset]);
 //      }
 
-		internal bool IsAlias(out CmdParameterAttribute aliasType, out object value, string source = null) {
-			foreach (CmdParameterAttribute cmdParameterAttribute in parameters) {
-				if (IsAlias(cmdParameterAttribute, out value, source ?? TopInterpreter.Args[Offset])) {
-					aliasType = cmdParameterAttribute;
-					return true;
-				}
+	internal bool IsAlias(out CmdParameterAttribute aliasType, out object value, string source = null) {
+		foreach (CmdParameterAttribute cmdParameterAttribute in parameters) {
+			if (IsAlias(cmdParameterAttribute, out value, source ?? TopInterpreter.Args[Offset])) {
+				aliasType = cmdParameterAttribute;
+				return true;
 			}
-
-			aliasType = null;
-			value = null;
-			return false;
 		}
+
+		aliasType = null;
+		value = null;
+		return false;
 	}
+}
 }

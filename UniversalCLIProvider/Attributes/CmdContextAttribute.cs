@@ -5,63 +5,64 @@ using System.Reflection;
 using JetBrains.Annotations;
 
 namespace UniversalCLIProvider.Attributes {
-	[AttributeUsage(AttributeTargets.Class), UsedImplicitly]
-	public class CmdContextAttribute : Attribute {
-		private bool _loaded;
-		public IList<CmdActionAttribute> ctxActions = new List<CmdActionAttribute>();
-		public IList<CmdParameterAttribute> ctxParameters = new List<CmdParameterAttribute>();
-		public ContextDefaultAction DefaultAction;
-		public TypeInfo UnderlyingType;
-		[CanBeNull]
-		public string Name;
-		[CanBeNull]
-		public string ShortName;
+[AttributeUsage(AttributeTargets.Class), UsedImplicitly]
+public class CmdContextAttribute : Attribute {
+	private bool _loaded;
+	public IList<CmdActionAttribute> ctxActions = new List<CmdActionAttribute>();
+	public IList<CmdParameterAttribute> ctxParameters = new List<CmdParameterAttribute>();
+	public ContextDefaultAction DefaultAction;
+	public string Description;
 
-		public string[] LongDescription;
-		public string Description;
-		public IList<CmdContextAttribute> subCtx = new List<CmdContextAttribute>();
+	public string[] LongDescription;
 
-		public CmdContextAttribute(string name) {
-			DefaultAction = ContextAction.PrintHelp;
-			Name = name;
+	[CanBeNull] public string Name;
+
+	[CanBeNull] public string ShortName;
+
+	public IList<CmdContextAttribute> subCtx = new List<CmdContextAttribute>();
+	public TypeInfo UnderlyingType;
+
+	public CmdContextAttribute(string name) {
+		DefaultAction = ContextAction.PrintHelp;
+		Name = name;
+	}
+
+	public CmdContextAttribute() { }
+
+
+	public void LoadIfNot() {
+		if (!_loaded) {
+			Load();
+
+			_loaded = true;
+		}
+	}
+
+	internal void Load() {
+		foreach (TypeInfo myInfoDeclaredNestedType in UnderlyingType.DeclaredNestedTypes) {
+			CmdContextAttribute contextAttribute = myInfoDeclaredNestedType.GetCustomAttribute<CmdContextAttribute>();
+			if (contextAttribute != null) {
+				contextAttribute.UnderlyingType = myInfoDeclaredNestedType;
+				subCtx.Add(contextAttribute);
+			}
 		}
 
-		public CmdContextAttribute() { }
-
-
-		public void LoadIfNot() {
-			if (!_loaded) {
-				Load();
-
-				_loaded = true;
+		IEnumerable<MemberInfo> members = UnderlyingType.DeclaredFields.Cast<MemberInfo>().Concat(UnderlyingType.DeclaredProperties);
+		foreach (MemberInfo memberInfo in members) {
+			CmdParameterAttribute parameterAttribute = memberInfo.GetCustomAttribute<CmdParameterAttribute>();
+			if (parameterAttribute != null) {
+				parameterAttribute.UnderlyingParameter = memberInfo;
+				ctxParameters.Add(parameterAttribute);
 			}
 		}
 
-		internal void Load() {
-			foreach (TypeInfo myInfoDeclaredNestedType in UnderlyingType.DeclaredNestedTypes) {
-				CmdContextAttribute contextAttribute = myInfoDeclaredNestedType.GetCustomAttribute<CmdContextAttribute>();
-				if (contextAttribute != null) {
-					contextAttribute.UnderlyingType = myInfoDeclaredNestedType;
-					subCtx.Add(contextAttribute);
-				}
-			}
-
-			IEnumerable<MemberInfo> members = UnderlyingType.DeclaredFields.Cast<MemberInfo>().Concat(UnderlyingType.DeclaredProperties);
-			foreach (MemberInfo memberInfo in members) {
-				CmdParameterAttribute parameterAttribute = memberInfo.GetCustomAttribute<CmdParameterAttribute>();
-				if (parameterAttribute != null) {
-					parameterAttribute.UnderlyingParameter = memberInfo;
-					ctxParameters.Add(parameterAttribute);
-				}
-			}
-
-			foreach (MethodInfo methodInfo in UnderlyingType.DeclaredMethods) {
-				CmdActionAttribute actionAttribute = methodInfo.GetCustomAttribute<CmdActionAttribute>();
-				if (actionAttribute != null) {
-					actionAttribute.UnderlyingMethod = methodInfo;
-					ctxActions.Add(actionAttribute);
-				}
+		foreach (MethodInfo methodInfo in UnderlyingType.DeclaredMethods) {
+			CmdActionAttribute actionAttribute = methodInfo.GetCustomAttribute<CmdActionAttribute>();
+			if (actionAttribute != null) {
+				actionAttribute.UnderlyingMethod = methodInfo;
+				ctxActions.Add(actionAttribute);
 			}
 		}
 	}
+}
 }

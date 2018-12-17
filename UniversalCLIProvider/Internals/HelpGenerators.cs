@@ -1,17 +1,15 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 using JetBrains.Annotations;
 using UniversalCLIProvider.Attributes;
 
 namespace UniversalCLIProvider.Internals {
 /// <summary>
-/// Methods generating --description texts
+///  Methods generating --description texts
 /// </summary>
 public class HelpGenerators {
 	[NotNull]
-	List<string> ActionHelp([NotNull] CmdActionAttribute action, int width, int indent = 3) {
+	private List<string> ActionHelp([NotNull] CmdActionAttribute action, int width, int indent = 3) {
 		action.LoadParametersAndAlias();
 		List<string> ret = new List<string> {CommandlineMethods.PadCentered(action.Name, width)};
 		ret.AddRange(action.LongDescription.SelectMany(x => CommandlineMethods.PrintWithPotentialIndent(x, width, 0)));
@@ -31,7 +29,7 @@ public class HelpGenerators {
 				}
 			}
 
-			if (parameter.Usage.HasFlag(CmdParameterUsage.SupportDirectAlias)||parameter.Usage.HasFlag(CmdParameterUsage.SupportDeclaredAlias)) {
+			if (parameter.Usage.HasFlag(CmdParameterUsage.SupportDirectAlias) || parameter.Usage.HasFlag(CmdParameterUsage.SupportDeclaredAlias)) {
 				foreach (CmdParameterAliasAttribute alias in parameter.ParameterAliases) {
 					if (alias.Description is null) {
 						ret.Add((alias.ShortForm is null ? "--" : "-" + alias.ShortForm + " | --") + alias.Name);
@@ -53,7 +51,7 @@ public class HelpGenerators {
 	}
 
 	[NotNull]
-	List<string> ContextHelp([NotNull] CmdContextAttribute context, int width, int indent = 3) {
+	private List<string> ContextHelp([NotNull] CmdContextAttribute context, int width, int indent = 3) {
 		context.LoadIfNot();
 		List<string> ret = new List<string> {CommandlineMethods.PadCentered(context.Name, width)};
 		ret.AddRange(context.LongDescription.SelectMany(x => CommandlineMethods.PrintWithPotentialIndent(x, width, 0)));
@@ -73,6 +71,7 @@ public class HelpGenerators {
 		if (context.ctxActions.Count != 0) {
 			ret.Add(CommandlineMethods.PadCentered("Actions", indent));
 		}
+
 		foreach (CmdActionAttribute action in context.ctxActions) {
 			if (action.LongDescription is null) {
 				ret.Add(action.Name);
@@ -81,6 +80,7 @@ public class HelpGenerators {
 				ret.AddRange(CommandlineMethods.PrintWithPotentialIndent($"{action.Name}: {action.LongDescription}", width, indent));
 			}
 		}
+
 		return ret;
 	}
 }

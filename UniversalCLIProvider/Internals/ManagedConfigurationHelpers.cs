@@ -18,9 +18,9 @@ public static class ManagedConfigurationHelpers {
 			return ResolveIndexerInPath(path, item, typeInfoOfItem, ref prop, ref requiredIndexers, ref newObject);
 		}
 
-		string currentPath=path;
+		string currentPath = path;
 		int dotIndex = path.IndexOf('.');
-		if (dotIndex!=-1) {
+		if (dotIndex != -1) {
 			currentPath = path.Substring(0, dotIndex);
 		}
 
@@ -29,7 +29,8 @@ public static class ManagedConfigurationHelpers {
 		if (prop is null) {
 			return false;
 		}
-		if (dotIndex!=-1) {
+
+		if (dotIndex != -1) {
 			object newItem;
 			try {
 				newItem = prop.GetValue(item);
@@ -42,6 +43,7 @@ public static class ManagedConfigurationHelpers {
 				return false;
 			}
 		}
+
 		return true;
 	}
 
