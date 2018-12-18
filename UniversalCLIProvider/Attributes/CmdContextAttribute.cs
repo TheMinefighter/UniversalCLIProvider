@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -38,7 +38,7 @@ public class CmdContextAttribute : Attribute {
 		}
 	}
 
-	internal void Load() {
+	public void Load() {
 		foreach (TypeInfo myInfoDeclaredNestedType in UnderlyingType.DeclaredNestedTypes) {
 			CmdContextAttribute contextAttribute = myInfoDeclaredNestedType.GetCustomAttribute<CmdContextAttribute>();
 			if (contextAttribute != null) {

@@ -86,20 +86,6 @@ public static class ManagedConfigurationHelpers {
 			return false;
 		}
 
-		if (path.Length < endOfIndexer + 1) {
-			object newItem;
-			try {
-				newItem = prop.GetValue(item, requiredIndexers);
-			}
-			catch (Exception) {
-				return false;
-			}
-
-			if (!ResolvePathRecursive(path.Substring(endOfIndexer + 1), newItem, out prop, out requiredIndexers, out newObject)) {
-				return false;
-			}
-		}
-
 		if (path.Length-1>endOfIndexer) {
 			remainingPath = path.Substring(endOfIndexer + 1);
 		}
