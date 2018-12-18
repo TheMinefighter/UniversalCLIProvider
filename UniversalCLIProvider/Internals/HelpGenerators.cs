@@ -1,57 +1,70 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using JetBrains.Annotations;
 using UniversalCLIProvider.Attributes;
+using UniversalCLIProvider.Interpreters;
 
 namespace UniversalCLIProvider.Internals {
 /// <summary>
 ///  Methods generating --description texts
 /// </summary>
-public class HelpGenerators {
+public static class HelpGenerators {
 	[NotNull]
-	private List<string> ActionHelp([NotNull] CmdActionAttribute action, int width, int indent = 3) {
+	private static void ActionHelp([NotNull] CmdActionAttribute action, int width, int indent = 3,TextWriter tw=null) {
+		tw=tw ?? ConsoleIO.MainOut;
 		action.LoadParametersAndAlias();
-		List<string> ret = new List<string> {CommandlineMethods.PadCentered(action.Name, width)};
-		ret.AddRange(action.LongDescription.SelectMany(x => CommandlineMethods.PrintWithPotentialIndent(x, width, 0)));
+		StringBuilder helpBuilder= new StringBuilder();
+		helpBuilder.Append(CommandlineMethods.PadCentered(action.Name, width));
+		if (!(action.LongDescription is null)) {
+			foreach (string s in action.LongDescription) {
+				CommandlineMethods.PrintWithPotentialIndent(s, width, 0, tw);
+			}
+		}
+
 		if (action.Parameters.Count != 0) {
-			ret.Add(CommandlineMethods.PadCentered("Parameters", indent));
+			tw.Write(CommandlineMethods.PadCentered("Parameters", width));
 		}
 
 		foreach (CmdParameterAttribute parameter in action.Parameters) {
 			if (parameter.Usage.HasFlag(CmdParameterUsage.SupportRaw)) {
 				if (parameter.Description is null) {
-					ret.Add((parameter.ShortForm is null ? "--" : "-" + parameter.ShortForm + " | --") + parameter.Name);
+					tw.WriteLine((parameter.ShortForm is null ? "--" : "-" + parameter.ShortForm + " | --") + parameter.Name);
 				}
 				else {
-					ret.AddRange(CommandlineMethods.PrintWithPotentialIndent(
+					CommandlineMethods.PrintWithPotentialIndent(
 						$"{(parameter.ShortForm is null ? "" : "-" + parameter.ShortForm + " | ")}--{parameter.Name}: {parameter.Description}",
-						width, indent));
+						width, indent,tw);
 				}
 			}
 
 			if (parameter.Usage.HasFlag(CmdParameterUsage.SupportDirectAlias) || parameter.Usage.HasFlag(CmdParameterUsage.SupportDeclaredAlias)) {
 				foreach (CmdParameterAliasAttribute alias in parameter.ParameterAliases) {
 					if (alias.Description is null) {
-						ret.Add((alias.ShortForm is null ? "--" : "-" + alias.ShortForm + " | --") + alias.Name);
+						tw.WriteLine((alias.ShortForm is null ? "--" : "-" + alias.ShortForm + " | --") + alias.Name);
 					}
 					else {
-						ret.AddRange(CommandlineMethods.PrintWithPotentialIndent(
+						CommandlineMethods.PrintWithPotentialIndent(
 							$"{(alias.ShortForm is null ? "" : "-" + alias.ShortForm + " | ")}--{alias.Name}: {alias.Description}",
-							width, indent));
+							width, indent,tw);
 					}
 				}
 			}
 		}
 
 		if (!(action.UsageExamples is null)) {
-			ret.AddRange(action.UsageExamples.SelectMany(x => CommandlineMethods.PrintWithPotentialIndent(x, width, indent)));
+			tw.WriteLine(CommandlineMethods.PadCentered("Examples",width));
+			foreach (string s in action.UsageExamples) {
+				CommandlineMethods.PrintWithPotentialIndent(s, width, indent, tw);
+			}
 		}
 
-		return ret;
 	}
 
 	[NotNull]
-	private List<string> ContextHelp([NotNull] CmdContextAttribute context, int width, int indent = 3) {
+	private static List<string> ContextHelp([NotNull] CmdContextAttribute context, int width, int indent = 3) {
 		context.LoadIfNot();
 		List<string> ret = new List<string> {CommandlineMethods.PadCentered(context.Name, width)};
 		ret.AddRange(context.LongDescription.SelectMany(x => CommandlineMethods.PrintWithPotentialIndent(x, width, 0)));
@@ -77,11 +90,14 @@ public class HelpGenerators {
 				ret.Add(action.Name);
 			}
 			else {
-				ret.AddRange(CommandlineMethods.PrintWithPotentialIndent($"{action.Name}: {action.LongDescription}", width, indent));
+				ret.AddRange(CommandlineMethods.PrintWithPotentialIndent($"{action.Name}: {action.Description}", width, indent));
 			}
 		}
 
 		return ret;
 	}
+
+	public static void PrintActionHelp(CmdActionAttribute action, BaseInterpreter interpreter) =>
+		ActionHelp(action, Console.WindowWidth, interpreter.TopInterpreter.Options.DefaultIndent).ForEach(ConsoleIO.WriteToMain);
 }
 }

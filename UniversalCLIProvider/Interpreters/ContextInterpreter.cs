@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UniversalCLIProvider.Attributes;
+using UniversalCLIProvider.Internals;
 
 namespace UniversalCLIProvider.Interpreters {
 public class ContextInterpreter : BaseInterpreter {
@@ -41,7 +42,7 @@ public class ContextInterpreter : BaseInterpreter {
 							lastStringBuilder = new StringBuilder();
 						}
 
-						arguments.Add("");
+						//arguments.Add("");
 					}
 					else {
 						lastStringBuilder.Append(c);
@@ -81,6 +82,14 @@ public class ContextInterpreter : BaseInterpreter {
 		}
 
 		newCtx = null;
+		if (TopInterpreter.Args.Length==0) {
+			if (TopInterpreter.Options.StandardDefaultAction is null) {
+				InteractiveInterpreter();//TODO Replace with clean code
+			}
+			else {
+				TopInterpreter.Options.StandardDefaultAction.Interpret(this);
+			}
+		}
 		string search = TopInterpreter.Args[Offset];
 		foreach (CmdContextAttribute cmdContextAttribute in MyContextAttribute.subCtx) {
 			if (IsParameterEqual(cmdContextAttribute.Name, search, interactive)) {
@@ -114,7 +123,9 @@ public class ContextInterpreter : BaseInterpreter {
 			if (IsParameterEqual(cmdActionAttribute.Name, search, true)) {
 				IncreaseOffset();
 				ActionInterpreter actionInterpreter = new ActionInterpreter(cmdActionAttribute, this, Offset);
-				actionInterpreter.Interpret();
+				if (!actionInterpreter.Interpret()) {
+					HelpGenerators.PrintActionHelp(cmdActionAttribute,this);
+				}
 				newCtx = this;
 				return true;
 			}
@@ -123,7 +134,7 @@ public class ContextInterpreter : BaseInterpreter {
 		foreach (CmdParameterAttribute cmdParameterAttribute in MyContextAttribute.ctxParameters) {
 			//TODO Implement this
 		}
-
+//TODO if null
 		MyContextAttribute.DefaultAction.Interpret(this);
 		return false;
 	}

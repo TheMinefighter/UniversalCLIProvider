@@ -48,23 +48,24 @@ public class ActionInterpreter : BaseInterpreter, IDisposable {
 
 	internal override bool Interpret(bool printErrors = true) {
 		LoadParameters();
-		//Dictionary<CmdParameterAttribute, object> invokationArguments = new Dictionary<CmdParameterAttribute, object>();
-		Dictionary<CmdParameterAttribute, object> invokationArguments;
+		//Dictionary<CmdParameterAttribute, object> invocationArguments = new Dictionary<CmdParameterAttribute, object>();
+		Dictionary<CmdParameterAttribute, object> invocationArguments;
 		if (Offset != TopInterpreter.Args.Length) {
-			if (!GetValues(out invokationArguments)) {
-				return true;
+			if (!GetValues(out invocationArguments)) {
+				return false;
+				//TODO Error Message
 			}
 		}
 		else {
-			invokationArguments = new Dictionary<CmdParameterAttribute, object>();
+			invocationArguments = new Dictionary<CmdParameterAttribute, object>();
 		}
 
 		ParameterInfo[] allParameterInfos = MyActionAttribute.UnderlyingMethod.GetParameters();
 		object[] invokers = new object[allParameterInfos.Length];
 		bool[] invokersDeclared = new bool[allParameterInfos.Length];
-		foreach (KeyValuePair<CmdParameterAttribute, object> invokationArgument in invokationArguments) {
-			int position = (invokationArgument.Key.UnderlyingParameter as ParameterInfo).Position;
-			invokers[position] = invokationArgument.Value;
+		foreach (KeyValuePair<CmdParameterAttribute, object> invocationArgument in invocationArguments) {
+			int position = (invocationArgument.Key.UnderlyingParameter as ParameterInfo).Position;
+			invokers[position] = invocationArgument.Value;
 			invokersDeclared[position] = true;
 		}
 
@@ -120,7 +121,8 @@ public class ActionInterpreter : BaseInterpreter, IDisposable {
 				         CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], parameterType, out object given)) {
 					invokationArguments.Add(found, given);
 				}
-				else if (found.Usage.HasFlag(CmdParameterUsage.SupportRaw) && parameterType.GetInterfaces().Any(x => {
+				else if (!(((ParameterInfo) found.UnderlyingParameter ).GetCustomAttribute<ParamArrayAttribute>() is null) &&
+				         found.Usage.HasFlag(CmdParameterUsage.SupportRaw) && parameterType.GetInterfaces().Any(x => {
 						         bool isIEnumerable = x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>);
 						         iEnumerableCache = x;
 						         return isIEnumerable;

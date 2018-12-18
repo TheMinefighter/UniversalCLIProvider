@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace UniversalCLIProvider {
 /// <summary>
@@ -17,6 +18,8 @@ public class ConsoleIO {
 	/// </summary>
 	public Action<string> Write;
 
+	public TextWriter Out;
+
 	/// <summary>
 	///  Writes a message to Console and a linebreak afterwards
 	/// </summary>
@@ -25,7 +28,8 @@ public class ConsoleIO {
 	public static ConsoleIO DefaultIO => new ConsoleIO {
 		ReadLine = Console.ReadLine,
 		WriteLine = Console.WriteLine,
-		Write = Console.Write
+		Write = Console.Write,
+		Out = Console.Out
 	};
 
 	public ConsoleIO(bool isPrimary = true) {
@@ -34,6 +38,7 @@ public class ConsoleIO {
 		}
 	}
 
+	public static TextWriter MainOut => _primary.Out;
 	/// <summary>
 	///  Writes a message to Console and a linebreak afterwards
 	/// </summary>
@@ -46,7 +51,7 @@ public class ConsoleIO {
 	///  Reads a line from Console
 	/// </summary>
 	/// <returns>The line the user entered</returns>
-	public static string ReadLineFrommain() => _primary.ReadLine();
+	public static string ReadLineFromMain() => _primary.ReadLine();
 
 	/// <summary>
 	///  Writes a message to Console

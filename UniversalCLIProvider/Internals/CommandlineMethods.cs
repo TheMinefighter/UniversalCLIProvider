@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
@@ -100,9 +102,13 @@ public static class CommandlineMethods {
 	/// <param name="text"> The text to format</param>
 	/// <param name="width"> The width of the textoutput to format for</param>
 	/// <param name="indent"> The indent to use for each new line</param>
-	/// <returns>The formatted text</returns>
-	[ItemNotNull]
-	public static IEnumerable<string> PrintWithPotentialIndent([NotNull] string text, int width, int indent) {
+	/// <param name="tw">The builder to append the formatted text to</param>
+	public static void PrintWithPotentialIndent([NotNull] string text, int width, int indent,TextWriter tw=null) {
+		tw=tw ?? ConsoleIO.MainOut;
+		if (text.Length<width) {
+			tw.WriteLine(text) ;
+			return;
+		}
 		bool firstLine = true;
 		int lastFallback = -1;
 		int lineStart = 0;
@@ -110,11 +116,12 @@ public static class CommandlineMethods {
 			if (i - lineStart == width) {
 				int breakIndex = lastFallback != -1 ? lastFallback : i;
 				if (!firstLine) {
-					yield return text.Substring(lineStart,
-						breakIndex - lineStart - (lastFallback == -1 ? 0 : 1)); //last removes redundant space
+					tw.WriteLine(text.Substring(lineStart,
+						breakIndex - lineStart - (lastFallback == -1 ? 0 : 1)));
 				}
 				else {
-					yield return new string(' ', indent) + text.Substring(lineStart, breakIndex - lineStart);
+					tw.Write(new string(' ', indent));
+					tw.WriteLine(text.Substring(lineStart, breakIndex - lineStart));
 				}
 
 				lineStart = i;
@@ -129,6 +136,9 @@ public static class CommandlineMethods {
 				lastFallback = i;
 			}
 		}
+
+		tw.Write(new string(' ', indent));
+		tw.WriteLine(text.Substring(lineStart));
 	}
 
 	/// <summary>

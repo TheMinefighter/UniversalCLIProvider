@@ -68,7 +68,7 @@ public static class ManagedConfigurationHelpers {
 	/// <param name="typeInfoOfItem">The <see cref="TypeInfo"/> of the <paramref name="item"/></param>
 	/// <param name="prop">The resolved indexing property</param>
 	/// <param name="requiredIndexers">The indexing operators to be used</param>
-	/// <param name="remainingPath"></param>
+	/// <param name="remainingPath">The path remaining to be resolved later on</param>
 	/// <returns>Whether the operation were successful</returns>
 	private static bool ResolveIndexerInPath([NotNull] string path, [NotNull] object item, [NotNull] TypeInfo typeInfoOfItem,
 		ref PropertyInfo prop, ref object[] requiredIndexers, out string remainingPath) {

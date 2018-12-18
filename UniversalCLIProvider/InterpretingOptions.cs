@@ -12,6 +12,7 @@ public class InterpretingOptions {
 
 	public char PreferredArgumentPrefix = '/';
 	public string RootName = ".";
+	public int DefaultIndent=3;
 
 	public ContextDefaultAction StandardDefaultAction;
 }
