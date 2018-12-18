@@ -49,7 +49,6 @@ public static class HexArgumentEncoding {
 
 		Encoding encoding = Encoding.GetEncoding(int.Parse(arg.Substring(currentOffset, 8), NumberStyles.HexNumber));
 		currentOffset += 8;
-		int typicalEncodingLength = encoding.GetByteCount("s");
 		int count = 0;
 		newArgs = new List<string>(16);
 		while (true) {

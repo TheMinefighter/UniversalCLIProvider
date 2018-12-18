@@ -7,30 +7,43 @@ using Newtonsoft.Json;
 
 namespace UniversalCLIProvider.Internals {
 public static class ManagedConfigurationHelpers {
-	public static bool ResolvePath([CanBeNull] string path, [NotNull] object item, out PropertyInfo prop, out object[] requiredIndexers,
+	public static bool ResolvePathRecursive([CanBeNull] string path, [NotNull] object item, out PropertyInfo prop, out object[] requiredIndexers,
 		out object newObject) {
 		prop = null;
 		newObject = null;
 		requiredIndexers = null;
 		path = path.Trim();
 		TypeInfo typeInfoOfItem = item.GetType().GetTypeInfo();
+		string remainingPath=null;
 		if (path.StartsWith("[")) {
-			return ResolveIndexerInPath(path, item, typeInfoOfItem, ref prop, ref requiredIndexers, ref newObject);
+			if(!ResolveIndexerInPath(path, item, typeInfoOfItem, ref prop, ref requiredIndexers, out remainingPath)) {
+				return false;
+			}
+		}
+		else {
+			int dotIndex = path.IndexOf('.');
+			int bracketIndex = path.IndexOf('[');
+			int endOfCurrentBlock=path.Length;
+			if (bracketIndex!=dotIndex) {//Implies that one of them exists and that the recursion has to go deeper
+					if (bracketIndex==-1||(dotIndex<bracketIndex&&dotIndex!=-1)) {
+						endOfCurrentBlock = dotIndex;
+						remainingPath = path.Substring(dotIndex + 1);
+					}
+					else {
+						endOfCurrentBlock = bracketIndex;
+						remainingPath = path.Substring(dotIndex + 1);
+					}
+			}
+			string currentPath = endOfCurrentBlock != -1 ? path.Substring(0, endOfCurrentBlock) : path;
+
+			prop = typeInfoOfItem.GetUnderlyingTypes().SelectMany(x => x.DeclaredProperties)
+				.FirstOrDefault(x => x.Name.Equals(currentPath, StringComparison.OrdinalIgnoreCase));
+			if (prop is null) {
+				return false;
+			}
 		}
 
-		string currentPath = path;
-		int dotIndex = path.IndexOf('.');
-		if (dotIndex != -1) {
-			currentPath = path.Substring(0, dotIndex);
-		}
-
-		prop = typeInfoOfItem.GetUnderlyingTypes().SelectMany(x => x.DeclaredProperties)
-			.FirstOrDefault(x => x.Name.Equals(currentPath, StringComparison.OrdinalIgnoreCase));
-		if (prop is null) {
-			return false;
-		}
-
-		if (dotIndex != -1) {
+		if (!(remainingPath is null)) {
 			object newItem;
 			try {
 				newItem = prop.GetValue(item);
@@ -39,7 +52,7 @@ public static class ManagedConfigurationHelpers {
 				return false;
 			}
 
-			if (!ResolvePath(path.Substring(dotIndex + 1), newItem, out prop, out requiredIndexers, out newObject)) {
+			if (!ResolvePathRecursive(remainingPath, newItem, out prop, out requiredIndexers, out newObject)) {
 				return false;
 			}
 		}
@@ -47,9 +60,19 @@ public static class ManagedConfigurationHelpers {
 		return true;
 	}
 
+	/// <summary>
+	/// Resolves a given indexing operator in a path
+	/// </summary>
+	/// <param name="path">The path starting with a [</param>
+	/// <param name="item">The item to which the indexing operator should be applied to</param>
+	/// <param name="typeInfoOfItem">The <see cref="TypeInfo"/> of the <paramref name="item"/></param>
+	/// <param name="prop">The resolved indexing property</param>
+	/// <param name="requiredIndexers">The indexing operators to be used</param>
+	/// <param name="remainingPath"></param>
+	/// <returns>Whether the operation were successful</returns>
 	private static bool ResolveIndexerInPath([NotNull] string path, [NotNull] object item, [NotNull] TypeInfo typeInfoOfItem,
-		ref PropertyInfo prop, ref object[] requiredIndexers,
-		ref object newObject) {
+		ref PropertyInfo prop, ref object[] requiredIndexers, out string remainingPath) {
+		remainingPath = null;
 		int endOfIndexer = path.IndexOf(']');
 		if (endOfIndexer == -1) {
 			return false;
@@ -72,11 +95,14 @@ public static class ManagedConfigurationHelpers {
 				return false;
 			}
 
-			if (!ResolvePath(path.Substring(endOfIndexer + 1), newItem, out prop, out requiredIndexers, out newObject)) {
+			if (!ResolvePathRecursive(path.Substring(endOfIndexer + 1), newItem, out prop, out requiredIndexers, out newObject)) {
 				return false;
 			}
 		}
 
+		if (path.Length-1>endOfIndexer) {
+			remainingPath = path.Substring(endOfIndexer + 1);
+		}
 		return true;
 	}
 

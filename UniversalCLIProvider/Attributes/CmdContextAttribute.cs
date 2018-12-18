@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -47,8 +47,7 @@ public class CmdContextAttribute : Attribute {
 			}
 		}
 
-		IEnumerable<MemberInfo> members = UnderlyingType.DeclaredFields.Cast<MemberInfo>().Concat(UnderlyingType.DeclaredProperties);
-		foreach (MemberInfo memberInfo in members) {
+		foreach (MemberInfo memberInfo in UnderlyingType.DeclaredFields.Cast<MemberInfo>().Concat(UnderlyingType.DeclaredProperties)) {
 			CmdParameterAttribute parameterAttribute = memberInfo.GetCustomAttribute<CmdParameterAttribute>();
 			if (parameterAttribute != null) {
 				parameterAttribute.UnderlyingParameter = memberInfo;

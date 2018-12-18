@@ -10,9 +10,9 @@ public enum CmdParameterUsage {
 	///  The default usage will be replaced with one of the other ones once loaded
 	/// </summary>
 	Default = 0,
-	SupportDeclaredAlias = 0b0001,
-	SupportDirectAlias = 0b0010,
-	SupportRaw = 0b0100,
+	SupportDeclaredAlias = 1<<0,//1
+	SupportDirectAlias = 1<<1,//2
+	SupportRaw = 1<<2,//4
 	RawValueWithDeclaration = SupportRaw | SupportDeclaredAlias,
 	OnlyDirectAlias = SupportDirectAlias,
 	NoRawsButDeclaration = SupportDeclaredAlias,
