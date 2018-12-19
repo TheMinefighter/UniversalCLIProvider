@@ -14,7 +14,7 @@ namespace UniversalCLIProvider.Internals {
 public static class HelpGenerators {
 	[NotNull]
 	private static void ActionHelp([NotNull] CmdActionAttribute action, int width, int indent = 3,TextWriter tw=null) {
-		tw=tw ?? ConsoleIO.MainOut;
+		tw=tw ?? Console.Out;
 		action.LoadParametersAndAlias();
 		StringBuilder helpBuilder= new StringBuilder();
 		helpBuilder.Append(CommandlineMethods.PadCentered(action.Name, width));

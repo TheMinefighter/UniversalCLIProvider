@@ -7,14 +7,12 @@ using UniversalCLIProvider.Internals;
 namespace UniversalCLIProvider.Interpreters {
 public class CommandlineOptionInterpreter {
 	public string[] Args;
-	public ConsoleIO ConsoleIO;
 
 	//    internal int ArgsLengthMinus1; 
 	public InterpretingOptions Options;
 
-	public CommandlineOptionInterpreter(string[] args, InterpretingOptions options = null, ConsoleIO consoleIO = null) {
+	public CommandlineOptionInterpreter(string[] args, InterpretingOptions options = null) {
 		Args = args;
-		ConsoleIO = consoleIO ?? ConsoleIO.DefaultIO;
 		Options = options ?? InterpretingOptions.DefaultOptions;
 	}
 

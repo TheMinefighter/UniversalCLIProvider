@@ -24,7 +24,7 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 			new int[] {_namespaces.Keys.Select(x => x.Help.Length).Max(), _values.Keys.Select(x => x.Help.Length).Max()}.Max() +
 			1;
 		StringBuilder ConsoleStack = new StringBuilder();
-		TopInterpreter.ConsoleIO.WriteLine($"Syntax: {Path} ");
+		Console.WriteLine($"Syntax: {Path} ");
 		foreach (CmdConfigurationNamespaceAttribute cmdConfigurationNamespaceAttribute in _namespaces.Keys) {
 			//  TopInterpreter.ConsoleIO.WriteLineToConsole
 			ConsoleStack.Append(cmdConfigurationNamespaceAttribute.Name.PadRight(maxlength) +
@@ -32,7 +32,7 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 			ConsoleStack.Append(Environment.NewLine);
 		}
 
-		TopInterpreter.ConsoleIO.Write(ConsoleStack.ToString());
+		Console.Write(ConsoleStack.ToString());
 		throw new NotImplementedException();
 	}
 
@@ -53,7 +53,7 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 			}
 			else {
 				if (_rootRequired == RootRequiremnts.RootRequired) {
-					TopInterpreter.ConsoleIO.WriteLine($"Expected token (\"{_configurationRootName}\") not found");
+					Console.WriteLine($"Expected token (\"{_configurationRootName}\") not found");
 					return false;
 				}
 			}

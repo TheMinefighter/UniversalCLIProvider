@@ -104,7 +104,7 @@ public static class CommandlineMethods {
 	/// <param name="indent"> The indent to use for each new line</param>
 	/// <param name="tw">The builder to append the formatted text to</param>
 	public static void PrintWithPotentialIndent([NotNull] string text, int width, int indent,TextWriter tw=null) {
-		tw=tw ?? ConsoleIO.MainOut;
+		tw=tw ?? Console.Out;
 		if (text.Length<width) {
 			tw.WriteLine(text) ;
 			return;

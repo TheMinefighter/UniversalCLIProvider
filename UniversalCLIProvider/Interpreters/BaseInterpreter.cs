@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UniversalCLIProvider.Attributes;
 
@@ -60,7 +61,7 @@ public abstract class BaseInterpreter {
 
 
 	public void PrintEror(string argName = null) {
-		TopInterpreter.ConsoleIO.Write(
+		Console.Write(
 			$"An error occurred while parsing argument {argName ?? Name} use {TopInterpreter.Options.PreferredArgumentPrefix}? for description");
 	}
 

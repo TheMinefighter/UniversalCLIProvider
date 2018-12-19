@@ -27,11 +27,11 @@ public class ContextInterpreter : BaseInterpreter {
 				TopInterpreter.Args = args.ToArray();
 			}
 			else {
-				TopInterpreter.ConsoleIO.Write(string.Join(" ", currentContextInterpreter.Path) + ">");
+				Console.Write(string.Join(" ", currentContextInterpreter.Path) + ">");
 				List<string> arguments = new List<string>();
 				StringBuilder lastStringBuilder = new StringBuilder();
 				bool quoting = false;
-				foreach (char c in TopInterpreter.ConsoleIO.ReadLine()) {
+				foreach (char c in Console.ReadLine()) {
 					if (c == '"') {
 						quoting ^= true;
 					}
