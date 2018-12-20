@@ -10,7 +10,7 @@ namespace UniversalCLIProvider.Interpreters {
 public class ActionInterpreter : BaseInterpreter, IDisposable {
 	private bool _cached;
 	public CmdActionAttribute UnderlyingActionAttribute;
-	private IEnumerable<CmdParameterAttribute> _parameters;
+	private List<CmdParameterAttribute> _parameters;
 
 	public ActionInterpreter(CommandlineOptionInterpreter top, int i) : base(top) {
 		i++;
@@ -34,18 +34,20 @@ public class ActionInterpreter : BaseInterpreter, IDisposable {
 	}
 
 	private void LoadParametersWithoutCache() {
-		_parameters = UnderlyingActionAttribute.UnderlyingMethod.GetParameters().Select(x =>
-				new KeyValuePair<ParameterInfo, Attribute>(x, x.GetCustomAttribute(typeof(CmdParameterAttribute))))
-			.Where(x => x.Value != null).Select(x => {
-				CmdParameterAttribute cmdParameterAttribute = x.Value as CmdParameterAttribute;
-				cmdParameterAttribute.UnderlyingParameter = x.Key;
-				cmdParameterAttribute.ParameterAliases =
-					x.Key.GetCustomAttributes(typeof(CmdParameterAliasAttribute)).Cast<CmdParameterAliasAttribute>();
-				cmdParameterAttribute.LoadAlias();
-				return cmdParameterAttribute;
-			});
+		_parameters = new List<CmdParameterAttribute>();
+		foreach (ParameterInfo parameterInfo in UnderlyingActionAttribute.UnderlyingMethod.GetParameters()) {
+			CmdParameterAttribute cmdParameterAttribute = parameterInfo.GetCustomAttribute(typeof(CmdParameterAttribute)) as CmdParameterAttribute;
+			if (cmdParameterAttribute is null) {
+				continue;
+			}
+			cmdParameterAttribute.UnderlyingParameter = parameterInfo;
+			cmdParameterAttribute.ParameterAliases =
+				parameterInfo.GetCustomAttributes<CmdParameterAliasAttribute>();
+			cmdParameterAttribute.LoadAlias();
+			_parameters.Add( cmdParameterAttribute);
+		}
 	}
-
+	
 	internal override bool Interpret(bool printErrors = true) {
 		LoadParameters();
 		//Dictionary<CmdParameterAttribute, object> invocationArguments = new Dictionary<CmdParameterAttribute, object>();
@@ -64,7 +66,7 @@ public class ActionInterpreter : BaseInterpreter, IDisposable {
 		object[] invokers = new object[allParameterInfos.Length];
 		bool[] invokersDeclared = new bool[allParameterInfos.Length];
 		foreach (KeyValuePair<CmdParameterAttribute, object> invocationArgument in invocationArguments) {
-			int position = (invocationArgument.Key.UnderlyingParameter as ParameterInfo).Position;
+			int position = ((ParameterInfo) invocationArgument.Key.UnderlyingParameter).Position;
 			invokers[position] = invocationArgument.Value;
 			invokersDeclared[position] = true;
 		}
@@ -102,10 +104,10 @@ public class ActionInterpreter : BaseInterpreter, IDisposable {
 	/// <returns></returns>
 	private bool GetValues(out Dictionary<CmdParameterAttribute, object> invokationArguments) {
 		invokationArguments = new Dictionary<CmdParameterAttribute, object>();
-		Type iEnumerableCache = null;
 		// value = null;
 		while (true) {
 			if (IsParameterDeclaration(out CmdParameterAttribute found)) {
+				Type iEnumerableCache = null;//Used to cache the IEnumerable base when  found
 				if (IncreaseOffset()) {
 					//TODO What if Empty Array
 					//throw
@@ -121,8 +123,7 @@ public class ActionInterpreter : BaseInterpreter, IDisposable {
 				         CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], parameterType, out object given)) {
 					invokationArguments.Add(found, given);
 				}
-				else if (!(((ParameterInfo) found.UnderlyingParameter ).GetCustomAttribute<ParamArrayAttribute>() is null) &&
-				         found.Usage.HasFlag(CmdParameterUsage.SupportRaw) && parameterType.GetInterfaces().Any(x => {
+				else if (found.Usage.HasFlag(CmdParameterUsage.SupportRaw) && parameterType.GetInterfaces().Any(x => {
 						         bool isIEnumerable = x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>);
 						         iEnumerableCache = x;
 						         return isIEnumerable;
@@ -187,7 +188,7 @@ public class ActionInterpreter : BaseInterpreter, IDisposable {
 				}
 
 				else {
-					//throw
+					//TODO throw
 					return false;
 				}
 			}
@@ -195,7 +196,7 @@ public class ActionInterpreter : BaseInterpreter, IDisposable {
 				invokationArguments.Add(found, aliasValue);
 			}
 			else {
-				//throw
+				//TODO throw
 				return false;
 			}
 
