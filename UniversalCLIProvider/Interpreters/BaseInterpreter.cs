@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using UniversalCLIProvider.Attributes;
 
 namespace UniversalCLIProvider.Interpreters {
@@ -60,7 +61,7 @@ public abstract class BaseInterpreter {
 	internal abstract bool Interpret(bool printErrors = true);
 
 
-	public void PrintEror(string argName = null) {
+	public void PrintError(string argName = null) {
 		Console.Write(
 			$"An error occurred while parsing argument {argName ?? Name} use {TopInterpreter.Options.PreferredArgumentPrefix}? for description");
 	}
@@ -90,14 +91,11 @@ public abstract class BaseInterpreter {
 		return false;
 	}
 
-	internal bool IsParameterEqual(string expected, string given, bool allowPrefixFree = false) =>
-		IsParameterEqual(expected, given, TopInterpreter.Options.IgnoreParameterCase, allowPrefixFree);
+	internal bool IsParameterEqual(string expected, string given, string expectedShortForm = null, bool allowPrefixFree = false) =>
+		IsParameterEqual(expected, given, TopInterpreter.Options.IgnoreParameterCase, expectedShortForm, allowPrefixFree);
 
-	internal static bool IsParameterEqual(string expected, string given, bool ignoreCase, bool allowPrefixFree = false) {
-		if (expected == null) {
-			return false;
-		}
-
+	internal static bool IsParameterEqual([NotNull] string expected, [NotNull] string given, bool ignoreCase, string expectedShortForm=null,
+		bool allowPrefixFree = false) {
 		if (ignoreCase) {
 			given = given.ToLower();
 			expected = expected.ToLower();

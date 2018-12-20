@@ -21,7 +21,7 @@ public class ContextDefaultAction {
 				ret.Interpret = x => x.InteractiveInterpreter(true);
 				break;
 			case ContextAction.PrintError:
-				ret.Interpret = x => x.PrintEror();
+				ret.Interpret = x => x.PrintError();
 				break;
 			default:
 				throw new ArgumentOutOfRangeException(nameof(action), action, null);
