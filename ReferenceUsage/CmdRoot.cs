@@ -26,13 +26,12 @@ namespace ReferecnceUsage {
 			Console.WriteLine(test);
 		}
 
-		[CmdAction("Move")]
-		public static void Move(
-			[CmdParameterAlias("X", ATestEnum.State1), CmdParameterAlias("Y", ATestEnum.State2),
-			 CmdParameterAlias("Z", ATestEnum.State3), CmdParameter("Type")]
-			ATestEnum moveFileOrFolder = ATestEnum.State3, [CmdParameter("newpath")] string newPath = null
-		) {
-			
+		[CmdAction("AliasTest")]
+		public static void AliasTest(
+			[CmdParameterAlias("StateX", ATestEnum.State1,"Results in State1","X"), CmdParameterAlias("StateY", ATestEnum.State2,"Results in State2", "Y"),
+			 CmdParameterAlias("StateZ", ATestEnum.State3,"Results in State3", "Z"), CmdParameter("Type")]
+			ATestEnum alias = ATestEnum.State3) {
+			Console.WriteLine($"The alias you have entered resulted in {alias}");
 		}
 
 		[CmdAction("AParameterFreeAction")]

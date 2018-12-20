@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniversalCLIProvider", "Uni
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{8049E290-027F-445D-9749-952F5FF1A0EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReferecnceUsage", "ReferecnceUsage\ReferecnceUsage.csproj", "{C3EEE5EC-0B95-495F-8561-186A6753BEC0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReferenceUsage", "ReferenceUsage\ReferenceUsage.csproj", "{C3EEE5EC-0B95-495F-8561-186A6753BEC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
