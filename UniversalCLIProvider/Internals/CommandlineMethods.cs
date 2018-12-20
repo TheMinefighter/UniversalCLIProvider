@@ -124,7 +124,7 @@ public static class CommandlineMethods {
 					tw.WriteLine(text.Substring(lineStart, breakIndex - lineStart));
 				}
 
-				lineStart = i;
+				lineStart = breakIndex+1;
 				if (!firstLine) {
 					width -= indent;
 				}
