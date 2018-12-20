@@ -37,7 +37,7 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 	}
 
 	internal override bool Interpret(bool printErrors = true) {
-		if (Offset == TopInterpreter.Args.Length || IsParameterEqual("?", TopInterpreter.Args[Offset])) {
+		if (Offset == TopInterpreter.Args.Length || IsParameterEqual("?", TopInterpreter.Args[Offset],"?")) {
 			if (printErrors) {
 				PrintHelp();
 			}

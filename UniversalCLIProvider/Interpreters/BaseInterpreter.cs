@@ -69,7 +69,7 @@ public abstract class BaseInterpreter {
 	internal bool IsParameterDeclaration(out CmdParameterAttribute found,
 		IEnumerable<CmdParameterAttribute> possibleParameters, string search) {
 		foreach (CmdParameterAttribute cmdParameterAttribute in possibleParameters) {
-			if (IsParameterEqual(cmdParameterAttribute.Name, search)) {
+			if (IsParameterEqual(cmdParameterAttribute.Name, search,cmdParameterAttribute.ShortForm)) {
 				found = cmdParameterAttribute;
 				return true;
 			}
@@ -80,9 +80,9 @@ public abstract class BaseInterpreter {
 	}
 
 	internal bool IsAlias(CmdParameterAttribute expectedAliasType, out object value, string source = null) {
-		foreach (CmdParameterAliasAttribute cmdParameterAliasAttribute in expectedAliasType.ParameterAliases) {
-			if (IsParameterEqual(cmdParameterAliasAttribute.Name, source ?? TopInterpreter.Args[Offset])) {
-				value = cmdParameterAliasAttribute.Value;
+		foreach (CmdParameterAliasAttribute cmdParameterAlias in expectedAliasType.ParameterAliases) {
+			if (IsParameterEqual(cmdParameterAlias.Name, source ?? TopInterpreter.Args[Offset],cmdParameterAlias.ShortForm)) {
+				value = cmdParameterAlias.Value;
 				return true;
 			}
 		}
