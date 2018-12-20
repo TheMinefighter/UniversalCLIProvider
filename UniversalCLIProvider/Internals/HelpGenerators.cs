@@ -9,9 +9,16 @@ using UniversalCLIProvider.Interpreters;
 
 namespace UniversalCLIProvider.Internals {
 /// <summary>
-///  Methods generating --description texts
+///  Methods generating --help texts
 /// </summary>
 public static class HelpGenerators {
+	/// <summary>
+	/// Writes the help for a action to a textwriter
+	/// </summary>
+	/// <param name="action">The action to provide help</param>
+	/// <param name="width">The width of the console</param>
+	/// <param name="indent">The indent to use for splitted lines</param>
+	/// <param name="tw">The textwriter to output to (defaults to <see cref="Console.Out"/></param>
 	private static void ActionHelp([NotNull] CmdActionAttribute action, int width, int indent = 3,TextWriter tw=null) {
 		tw=tw ?? Console.Out;
 		action.LoadParametersAndAlias();
@@ -61,7 +68,13 @@ public static class HelpGenerators {
 		}
 
 	}
-
+/// <summary>
+/// Writes the help for a context to a textwriter
+/// </summary>
+/// <param name="context">The context to provide help</param>
+/// <param name="width">The width of the console</param>
+/// <param name="indent">The indent to use for splitted lines</param>
+/// <param name="tw">The textwriter to output to (defaults to <see cref="Console.Out"/></param>
 	private static void ContextHelp([NotNull] CmdContextAttribute context, int width, int indent = 3, TextWriter tw = null) {
 		tw=tw ?? Console.Out;
 		context.LoadIfNot();
@@ -96,10 +109,18 @@ public static class HelpGenerators {
 			}
 		}
 	}
-
+/// <summary>
+/// Prints help for an action
+/// </summary>
+/// <param name="action">The action to print help for</param>
+/// <param name="interpreter">The interpreter to use</param>
 	public static void PrintActionHelp(CmdActionAttribute action, BaseInterpreter interpreter) =>
 		ActionHelp(action, Console.WindowWidth, interpreter.TopInterpreter.Options.DefaultIndent);
-	
+	/// <summary>
+	/// Prints help for a context
+	/// </summary>
+	/// <param name="context">The context to print help</param>
+	/// <param name="interpreter">The interpreter to use</param>
 	public static void PrintContextHelp(CmdContextAttribute context, BaseInterpreter interpreter) =>
 		ContextHelp(context, Console.WindowWidth, interpreter.TopInterpreter.Options.DefaultIndent);
 }
