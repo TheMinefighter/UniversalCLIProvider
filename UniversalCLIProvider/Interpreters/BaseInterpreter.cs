@@ -101,7 +101,11 @@ public abstract class BaseInterpreter {
 			expected = expected.ToLower();
 		}
 
-		return '/' + expected == given || '-' + expected == given || allowPrefixFree && expected == given;
+		if (!(expectedShortForm is null) && ('/' + expectedShortForm == given || '-' + expectedShortForm == given)) {
+			return false;
+		}
+
+		return '/' + expected == given || "--" + expected == given || allowPrefixFree && expected == given;
 	}
 }
 }
