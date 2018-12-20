@@ -11,7 +11,7 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 	private string[] _contextTrace;
 	private Dictionary<CmdConfigurationNamespaceAttribute, MemberInfo> _namespaces;
 	private ConfigurationNamespaceInterpreter _root;
-	private RootRequiremnts _rootRequired;
+	private RootRequirements _rootRequired;
 	private Dictionary<CmdConfigurationValueAttribute, MemberInfo> _values;
 
 	protected ManagedConfigurationInterpreter(CommandlineOptionInterpreter top, int offset = 0) : base(top, offset) { }
@@ -47,12 +47,12 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 		}
 
 		_contextTrace = TopInterpreter.Args[Offset].Split('.').Select(x => x.ToLower()).ToArray();
-		if (_rootRequired != RootRequiremnts.RootForbidden) {
+		if (_rootRequired.HasFlag(RootRequirements.RootAllowed)) {
 			if (_contextTrace[0].Equals(_configurationRootName, StringComparison.OrdinalIgnoreCase)) {
 				Offset++;
 			}
 			else {
-				if (_rootRequired == RootRequiremnts.RootRequired) {
+				if (!_rootRequired.HasFlag(RootRequirements.RootFreeAllowed)) {
 					Console.WriteLine($"Expected token (\"{_configurationRootName}\") not found");
 					return false;
 				}
@@ -64,10 +64,11 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 		return true;
 	}
 
-	private enum RootRequiremnts : byte {
-		AllAllowed,
-		RootRequired,
-		RootForbidden
+	[Flags]
+	private enum RootRequirements : byte {
+		RootAllowed=1<<0,
+		RootFreeAllowed=1<<1,
+		AllAllowed=RootAllowed|RootFreeAllowed,
 	}
 }
 }

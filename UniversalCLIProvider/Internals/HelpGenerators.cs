@@ -19,10 +19,10 @@ public static class HelpGenerators {
 	/// <param name="width">The width of the console</param>
 	/// <param name="indent">The indent to use for splitted lines</param>
 	/// <param name="tw">The textwriter to output to (defaults to <see cref="Console.Out"/></param>
-	private static void ActionHelp([NotNull] CmdActionAttribute action, int width, int indent = 3,TextWriter tw=null) {
-		tw=tw ?? Console.Out;
+	private static void ActionHelp([NotNull] CmdActionAttribute action, int width, int indent = 3, TextWriter tw = null) {
+		tw = tw ?? Console.Out;
 		action.LoadParametersAndAlias();
-		StringBuilder helpBuilder= new StringBuilder();
+		StringBuilder helpBuilder = new StringBuilder();
 		helpBuilder.Append(CommandlineMethods.PadCentered(action.Name, width));
 		if (!(action.LongDescription is null)) {
 			foreach (string s in action.LongDescription) {
@@ -42,7 +42,7 @@ public static class HelpGenerators {
 				else {
 					CommandlineMethods.PrintWithPotentialIndent(
 						$"{(parameter.ShortForm is null ? "" : "-" + parameter.ShortForm + " | ")}--{parameter.Name}: {parameter.Description}",
-						width, indent,tw);
+						width, indent, tw);
 				}
 			}
 
@@ -54,36 +54,38 @@ public static class HelpGenerators {
 					else {
 						CommandlineMethods.PrintWithPotentialIndent(
 							$"{(alias.ShortForm is null ? "" : "-" + alias.ShortForm + " | ")}--{alias.Name}: {alias.Description}",
-							width, indent,tw);
+							width, indent, tw);
 					}
 				}
 			}
 		}
 
 		if (!(action.UsageExamples is null)) {
-			tw.Write(CommandlineMethods.PadCentered("Examples",width));
+			tw.Write(CommandlineMethods.PadCentered("Examples", width));
 			foreach (string s in action.UsageExamples) {
 				CommandlineMethods.PrintWithPotentialIndent(s, width, indent, tw);
 			}
 		}
-
 	}
-/// <summary>
-/// Writes the help for a context to a textwriter
-/// </summary>
-/// <param name="context">The context to provide help</param>
-/// <param name="width">The width of the console</param>
-/// <param name="indent">The indent to use for splitted lines</param>
-/// <param name="tw">The textwriter to output to (defaults to <see cref="Console.Out"/></param>
+
+	/// <summary>
+	/// Writes the help for a context to a textwriter
+	/// </summary>
+	/// <param name="context">The context to provide help</param>
+	/// <param name="width">The width of the console</param>
+	/// <param name="indent">The indent to use for splitted lines</param>
+	/// <param name="tw">The textwriter to output to (defaults to <see cref="Console.Out"/></param>
 	private static void ContextHelp([NotNull] CmdContextAttribute context, int width, int indent = 3, TextWriter tw = null) {
-		tw=tw ?? Console.Out;
+		tw = tw ?? Console.Out;
 		context.LoadIfNot();
 		tw.WriteLine(CommandlineMethods.PadCentered(context.Name, width));
-		if (context.subCtx.Count != 0) {		if (!(context.LongDescription is null)) {
+		if (context.subCtx.Count != 0) {
+			if (!(context.LongDescription is null)) {
 				foreach (string s in context.LongDescription) {
 					CommandlineMethods.PrintWithPotentialIndent(s, width, 0, tw);
 				}
 			}
+
 			tw.WriteLine(CommandlineMethods.PadCentered("Contexts", indent));
 		}
 
@@ -92,7 +94,7 @@ public static class HelpGenerators {
 				tw.WriteLine(subCtx.Name);
 			}
 			else {
-				CommandlineMethods.PrintWithPotentialIndent($"{subCtx.Name}: {subCtx.Description}", width, indent,tw);
+				CommandlineMethods.PrintWithPotentialIndent($"{subCtx.Name}: {subCtx.Description}", width, indent, tw);
 			}
 		}
 
@@ -105,17 +107,39 @@ public static class HelpGenerators {
 				tw.WriteLine(action.Name);
 			}
 			else {
-				CommandlineMethods.PrintWithPotentialIndent($"{action.Name}: {action.Description}", width, indent,tw);
+				CommandlineMethods.PrintWithPotentialIndent($"{action.Name}: {action.Description}", width, indent, tw);
 			}
 		}
 	}
-/// <summary>
-/// Prints help for an action
-/// </summary>
-/// <param name="action">The action to print help for</param>
-/// <param name="interpreter">The interpreter to use</param>
+
+	public static void ParameterHelp(CmdParameterAttribute found, int width, int indent = 3, TextWriter tw = null) {
+		if (found.Description is null) {
+			tw.WriteLine((found.ShortForm is null ? "--" : "-" + found.ShortForm + " | --") + found.Name);
+		}
+		else {
+			CommandlineMethods.PrintWithPotentialIndent(
+				$"{(found.ShortForm is null ? "" : "-" + found.ShortForm + " | ")}--{found.Name}: {found.Description}",
+				width, indent, tw);
+		}
+	}
+
+	/// <summary>
+	/// Prints help for an action
+	/// </summary>
+	/// <param name="action">The action to print help for</param>
+	/// <param name="interpreter">The interpreter to use</param>
 	public static void PrintActionHelp(CmdActionAttribute action, BaseInterpreter interpreter) =>
 		ActionHelp(action, Console.WindowWidth, interpreter.TopInterpreter.Options.DefaultIndent);
+
+
+	/// <summary>
+	/// Prints help for an action
+	/// </summary>
+	/// <param name="parameter">The action to print help for</param>
+	/// <param name="interpreter">The interpreter to use</param>
+	public static void PrintParameterHelp(CmdParameterAttribute parameter, BaseInterpreter interpreter) =>
+		ParameterHelp(parameter, Console.WindowWidth, interpreter.TopInterpreter.Options.DefaultIndent);
+
 	/// <summary>
 	/// Prints help for a context
 	/// </summary>

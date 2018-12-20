@@ -7,6 +7,9 @@ using UniversalCLIProvider.Attributes;
 namespace UniversalCLIProvider.Interpreters {
 public abstract class BaseInterpreter {
 	public string Name { get; }
+	/// <summary>
+	/// The index of the argument currently interpreted
+	/// </summary>
 	public int Offset { get; internal set; }
 	public CommandlineOptionInterpreter TopInterpreter { get; }
 	public BaseInterpreter DirectParent { get; }
@@ -67,9 +70,9 @@ public abstract class BaseInterpreter {
 	}
 
 	internal bool IsParameterDeclaration(out CmdParameterAttribute found,
-		IEnumerable<CmdParameterAttribute> possibleParameters, string search) {
+		IEnumerable<CmdParameterAttribute> possibleParameters, string search, bool allowPrefixFree = false) {
 		foreach (CmdParameterAttribute cmdParameterAttribute in possibleParameters) {
-			if (IsParameterEqual(cmdParameterAttribute.Name, search,cmdParameterAttribute.ShortForm)) {
+			if (IsParameterEqual(cmdParameterAttribute.Name, search,cmdParameterAttribute.ShortForm,allowPrefixFree)) {
 				found = cmdParameterAttribute;
 				return true;
 			}
