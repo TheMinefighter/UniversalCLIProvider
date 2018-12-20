@@ -7,13 +7,13 @@ using UniversalCLIProvider.Internals;
 
 namespace UniversalCLIProvider.Interpreters {
 public class ContextInterpreter : BaseInterpreter {
-	public CmdContextAttribute MyContextAttribute;
+	public CmdContextAttribute UnderlyingContextAttribute;
 
 	internal ContextInterpreter(CommandlineOptionInterpreter top, int offset = 0) : base(top, offset) { }
 
 	internal ContextInterpreter(BaseInterpreter parent, CmdContextAttribute attribute, int offset = 0) : base(parent,
 		attribute.Name,
-		offset) => MyContextAttribute = attribute;
+		offset) => UnderlyingContextAttribute = attribute;
 
 	internal override void PrintHelp() { }
 
@@ -58,7 +58,7 @@ public class ContextInterpreter : BaseInterpreter {
 			}
 
 			currentContextInterpreter.Reset();
-			currentContextInterpreter.MyContextAttribute.LoadIfNot();
+			currentContextInterpreter.UnderlyingContextAttribute.LoadIfNot();
 			if (currentContextInterpreter.Interpret(out ContextInterpreter tmpContextInterpreter, true, true)) {
 				currentContextInterpreter = tmpContextInterpreter;
 			}
@@ -90,7 +90,7 @@ public class ContextInterpreter : BaseInterpreter {
 			}
 		}
 		string search = TopInterpreter.Args[Offset];
-		foreach (CmdContextAttribute cmdContextAttribute in MyContextAttribute.subCtx) {
+		foreach (CmdContextAttribute cmdContextAttribute in UnderlyingContextAttribute.subCtx) {
 			if (IsParameterEqual(cmdContextAttribute.Name, search, interactive)) {
 				if (IncreaseOffset()) {
 					if (interactive) {
@@ -118,7 +118,7 @@ public class ContextInterpreter : BaseInterpreter {
 			}
 		}
 
-		foreach (CmdActionAttribute cmdActionAttribute in MyContextAttribute.ctxActions) {
+		foreach (CmdActionAttribute cmdActionAttribute in UnderlyingContextAttribute.ctxActions) {
 			if (IsParameterEqual(cmdActionAttribute.Name, search, true)) {
 				IncreaseOffset();
 				ActionInterpreter actionInterpreter = new ActionInterpreter(cmdActionAttribute, this, Offset);
@@ -130,11 +130,11 @@ public class ContextInterpreter : BaseInterpreter {
 			}
 		}
 
-		foreach (CmdParameterAttribute cmdParameterAttribute in MyContextAttribute.ctxParameters) {
+		foreach (CmdParameterAttribute cmdParameterAttribute in UnderlyingContextAttribute.ctxParameters) {
 			//TODO Implement this
 		}
 //TODO if null
-		MyContextAttribute.DefaultAction.Interpret(this);
+		UnderlyingContextAttribute.DefaultAction.Interpret(this);
 		return false;
 	}
 

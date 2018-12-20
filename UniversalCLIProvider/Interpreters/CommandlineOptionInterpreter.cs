@@ -42,13 +42,13 @@ public class CommandlineOptionInterpreter {
 				 throw new InvalidCLIConfigurationException("The Type provided has no CmdContextAttribute");
 			 }
 			ContextInterpreter contextInterpreter = new ContextInterpreter(this) {
-				MyContextAttribute =
+				UnderlyingContextAttribute =
 					TopContext,
 				Offset = 0
 			};
 
-			contextInterpreter.MyContextAttribute.UnderlyingType = baseContext.GetTypeInfo();
-			contextInterpreter.MyContextAttribute.LoadIfNot();
+			contextInterpreter.UnderlyingContextAttribute.UnderlyingType = baseContext.GetTypeInfo();
+			contextInterpreter.UnderlyingContextAttribute.LoadIfNot();
 			if (Args.Length > 0) {
 				if (contextInterpreter.IsParameterEqual(Options.HexOption, Args[0])) {
 					if (HexadecimalPreprocessor()) {

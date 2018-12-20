@@ -9,19 +9,19 @@ using UniversalCLIProvider.Internals;
 namespace UniversalCLIProvider.Interpreters {
 public class ActionInterpreter : BaseInterpreter, IDisposable {
 	private bool _cached;
-	public CmdActionAttribute MyActionAttribute;
-	private IEnumerable<CmdParameterAttribute> parameters;
+	public CmdActionAttribute UnderlyingActionAttribute;
+	private IEnumerable<CmdParameterAttribute> _parameters;
 
 	public ActionInterpreter(CommandlineOptionInterpreter top, int i) : base(top) {
 		i++;
 	}
 
 	public ActionInterpreter(CmdActionAttribute myActionAttribute, BaseInterpreter parent, int offset = 0) : base(parent,
-		myActionAttribute.Name, offset) => MyActionAttribute = myActionAttribute;
+		myActionAttribute.Name, offset) => UnderlyingActionAttribute = myActionAttribute;
 
 	public void Dispose() {
 		_cached = false;
-		MyActionAttribute = null;
+		UnderlyingActionAttribute = null;
 	}
 
 	internal override void PrintHelp() { }
@@ -34,7 +34,7 @@ public class ActionInterpreter : BaseInterpreter, IDisposable {
 	}
 
 	private void LoadParametersWithoutCache() {
-		parameters = MyActionAttribute.UnderlyingMethod.GetParameters().Select(x =>
+		_parameters = UnderlyingActionAttribute.UnderlyingMethod.GetParameters().Select(x =>
 				new KeyValuePair<ParameterInfo, Attribute>(x, x.GetCustomAttribute(typeof(CmdParameterAttribute))))
 			.Where(x => x.Value != null).Select(x => {
 				CmdParameterAttribute cmdParameterAttribute = x.Value as CmdParameterAttribute;
@@ -60,7 +60,7 @@ public class ActionInterpreter : BaseInterpreter, IDisposable {
 			invocationArguments = new Dictionary<CmdParameterAttribute, object>();
 		}
 
-		ParameterInfo[] allParameterInfos = MyActionAttribute.UnderlyingMethod.GetParameters();
+		ParameterInfo[] allParameterInfos = UnderlyingActionAttribute.UnderlyingMethod.GetParameters();
 		object[] invokers = new object[allParameterInfos.Length];
 		bool[] invokersDeclared = new bool[allParameterInfos.Length];
 		foreach (KeyValuePair<CmdParameterAttribute, object> invocationArgument in invocationArguments) {
@@ -83,7 +83,7 @@ public class ActionInterpreter : BaseInterpreter, IDisposable {
 		}
 
 		InterpretationResult result;
-		object returned = MyActionAttribute.UnderlyingMethod.Invoke(null, invokers);
+		object returned = UnderlyingActionAttribute.UnderlyingMethod.Invoke(null, invokers);
 		if (returned is bool invokationSuccess) {
 			result = invokationSuccess ? InterpretationResult.Success : InterpretationResult.RunError;
 		}
@@ -262,14 +262,14 @@ public class ActionInterpreter : BaseInterpreter, IDisposable {
 	}
 
 	internal bool IsParameterDeclaration(out CmdParameterAttribute found, string search = null) =>
-		IsParameterDeclaration(out found, parameters, search ?? TopInterpreter.Args[Offset]);
+		IsParameterDeclaration(out found, _parameters, search ?? TopInterpreter.Args[Offset]);
 
 //      internal bool IsAlias(CmdParameterAttribute expectedAliasType, out object value, string source = null) {
 //         return base.IsAlias(expectedAliasType, out value, source ?? TopInterpreter.Args[Offset]);
 //      }
 
 	internal bool IsAlias(out CmdParameterAttribute aliasType, out object value, string source = null) {
-		foreach (CmdParameterAttribute cmdParameterAttribute in parameters) {
+		foreach (CmdParameterAttribute cmdParameterAttribute in _parameters) {
 			if (IsAlias(cmdParameterAttribute, out value, source ?? TopInterpreter.Args[Offset])) {
 				aliasType = cmdParameterAttribute;
 				return true;

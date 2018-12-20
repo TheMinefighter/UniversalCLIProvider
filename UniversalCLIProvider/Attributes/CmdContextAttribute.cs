@@ -56,10 +56,10 @@ public class CmdContextAttribute : Attribute {
 
 	public void Load() {
 		subCtx= new List<CmdContextAttribute>();
-		foreach (TypeInfo myInfoDeclaredNestedType in UnderlyingType.DeclaredNestedTypes) {
-			CmdContextAttribute contextAttribute = myInfoDeclaredNestedType.GetCustomAttribute<CmdContextAttribute>();
+		foreach (TypeInfo nestedSubcontext in UnderlyingType.DeclaredNestedTypes) {
+			CmdContextAttribute contextAttribute = nestedSubcontext.GetCustomAttribute<CmdContextAttribute>();
 			if (contextAttribute != null) {
-				contextAttribute.UnderlyingType = myInfoDeclaredNestedType;
+				contextAttribute.UnderlyingType = nestedSubcontext;
 				subCtx.Add(contextAttribute);
 			}
 		}
