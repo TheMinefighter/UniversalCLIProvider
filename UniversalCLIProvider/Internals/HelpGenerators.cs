@@ -12,7 +12,6 @@ namespace UniversalCLIProvider.Internals {
 ///  Methods generating --description texts
 /// </summary>
 public static class HelpGenerators {
-	[NotNull]
 	private static void ActionHelp([NotNull] CmdActionAttribute action, int width, int indent = 3,TextWriter tw=null) {
 		tw=tw ?? Console.Out;
 		action.LoadParametersAndAlias();
@@ -63,22 +62,21 @@ public static class HelpGenerators {
 
 	}
 
-	[NotNull]
-	private static List<string> ContextHelp([NotNull] CmdContextAttribute context, int width, int indent = 3, TextWriter tw=null) {
+	private static void ContextHelp([NotNull] CmdContextAttribute context, int width, int indent = 3, TextWriter tw = null) {
 		tw=tw ?? Console.Out;
 		context.LoadIfNot();
-		List<string> ret = new List<string> {CommandlineMethods.PadCentered(context.Name, width)};
+		tw.WriteLine(CommandlineMethods.PadCentered(context.Name, width));
 		if (context.subCtx.Count != 0) {		if (!(context.LongDescription is null)) {
 				foreach (string s in context.LongDescription) {
 					CommandlineMethods.PrintWithPotentialIndent(s, width, 0, tw);
 				}
 			}
-			ret.Add(CommandlineMethods.PadCentered("Contexts", indent));
+			tw.WriteLine(CommandlineMethods.PadCentered("Contexts", indent));
 		}
 
 		foreach (CmdContextAttribute subCtx in context.subCtx) {
 			if (subCtx.Description is null) {
-				ret.Add(subCtx.Name);
+				tw.WriteLine(subCtx.Name);
 			}
 			else {
 				CommandlineMethods.PrintWithPotentialIndent($"{subCtx.Name}: {subCtx.Description}", width, indent,tw);
@@ -86,19 +84,17 @@ public static class HelpGenerators {
 		}
 
 		if (context.ctxActions.Count != 0) {
-			ret.Add(CommandlineMethods.PadCentered("Actions", indent));
+			tw.WriteLine(CommandlineMethods.PadCentered("Actions", indent));
 		}
 
 		foreach (CmdActionAttribute action in context.ctxActions) {
 			if (action.LongDescription is null) {
-				ret.Add(action.Name);
+				tw.WriteLine(action.Name);
 			}
 			else {
 				CommandlineMethods.PrintWithPotentialIndent($"{action.Name}: {action.Description}", width, indent,tw);
 			}
 		}
-
-		return ret;
 	}
 
 	public static void PrintActionHelp(CmdActionAttribute action, BaseInterpreter interpreter) =>
