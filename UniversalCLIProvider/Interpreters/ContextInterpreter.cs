@@ -52,7 +52,6 @@ public class ContextInterpreter : BaseInterpreter {
 				string lastString = lastStringBuilder.ToString();
 				if (lastString != string.Empty) {
 					arguments.Add(lastString);
-					lastStringBuilder = new StringBuilder();
 				}
 
 				TopInterpreter.Args = arguments.ToArray();

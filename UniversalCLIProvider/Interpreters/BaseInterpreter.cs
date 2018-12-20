@@ -14,7 +14,7 @@ public abstract class BaseInterpreter {
 	public List<string> Path {
 		get {
 			if (Name == null) {
-				return new List<string> {TopInterpreter.Options.RootName};
+				return new List<string> {TopInterpreter.TopContext.Name};
 			}
 
 			List<string> tmpList = DirectParent.Path;

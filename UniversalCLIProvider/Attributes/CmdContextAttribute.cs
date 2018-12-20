@@ -17,18 +17,34 @@ public class CmdContextAttribute : Attribute {
 
 	[CanBeNull] public string Name;
 
-	[CanBeNull] public string ShortName;
+	[CanBeNull] public string ShortForm;
 
-	public IList<CmdContextAttribute> subCtx = new List<CmdContextAttribute>();
+	public IList<CmdContextAttribute> subCtx;
 	public TypeInfo UnderlyingType;
 
-	public CmdContextAttribute(string name) {
-		DefaultAction = ContextAction.PrintHelp;
+	private static readonly char[] IllegalCharactersInName = {':', '=', ' ', '\'', '\"'};
+
+	public CmdContextAttribute([NotNull] string name, string description=null, string[] longDescription=null, string[] usageExamples=null, string shortForm=null) {
+#if DEBUG
+		
+		if (string.IsNullOrWhiteSpace(name)) {
+			throw new InvalidCLIConfigurationException("A name is required for any context",new ArgumentException("Value cannot be null or whitespace.", nameof(name))); 
+		}
+
+		if (name.IndexOfAny(IllegalCharactersInName)!=-1) {
+			throw new InvalidCLIConfigurationException("The name contains at least one illegal character ",new ArgumentException("Illegal name",nameof(name))); 
+		}
+#endif
+
+
 		Name = name;
+		if (longDescription is null&&!(description is null)) {
+			longDescription=new string[]{description};
+		}
+		LongDescription = longDescription;
+		Description = description;
+		ShortForm = shortForm;
 	}
-
-	public CmdContextAttribute() { }
-
 
 	public void LoadIfNot() {
 		if (!_loaded) {
@@ -39,6 +55,7 @@ public class CmdContextAttribute : Attribute {
 	}
 
 	public void Load() {
+		subCtx= new List<CmdContextAttribute>();
 		foreach (TypeInfo myInfoDeclaredNestedType in UnderlyingType.DeclaredNestedTypes) {
 			CmdContextAttribute contextAttribute = myInfoDeclaredNestedType.GetCustomAttribute<CmdContextAttribute>();
 			if (contextAttribute != null) {

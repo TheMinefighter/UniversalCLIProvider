@@ -55,7 +55,7 @@ public static class HelpGenerators {
 		}
 
 		if (!(action.UsageExamples is null)) {
-			tw.WriteLine(CommandlineMethods.PadCentered("Examples",width));
+			tw.Write(CommandlineMethods.PadCentered("Examples",width));
 			foreach (string s in action.UsageExamples) {
 				CommandlineMethods.PrintWithPotentialIndent(s, width, indent, tw);
 			}
@@ -64,11 +64,15 @@ public static class HelpGenerators {
 	}
 
 	[NotNull]
-	private static List<string> ContextHelp([NotNull] CmdContextAttribute context, int width, int indent = 3) {
+	private static List<string> ContextHelp([NotNull] CmdContextAttribute context, int width, int indent = 3, TextWriter tw=null) {
+		tw=tw ?? Console.Out;
 		context.LoadIfNot();
 		List<string> ret = new List<string> {CommandlineMethods.PadCentered(context.Name, width)};
-		ret.AddRange(context.LongDescription.SelectMany(x => CommandlineMethods.PrintWithPotentialIndent(x, width, 0)));
-		if (context.subCtx.Count != 0) {
+		if (context.subCtx.Count != 0) {		if (!(context.LongDescription is null)) {
+				foreach (string s in context.LongDescription) {
+					CommandlineMethods.PrintWithPotentialIndent(s, width, 0, tw);
+				}
+			}
 			ret.Add(CommandlineMethods.PadCentered("Contexts", indent));
 		}
 
@@ -77,7 +81,7 @@ public static class HelpGenerators {
 				ret.Add(subCtx.Name);
 			}
 			else {
-				ret.AddRange(CommandlineMethods.PrintWithPotentialIndent($"{subCtx.Name}: {subCtx.Description}", width, indent));
+				CommandlineMethods.PrintWithPotentialIndent($"{subCtx.Name}: {subCtx.Description}", width, indent,tw);
 			}
 		}
 
@@ -90,7 +94,7 @@ public static class HelpGenerators {
 				ret.Add(action.Name);
 			}
 			else {
-				ret.AddRange(CommandlineMethods.PrintWithPotentialIndent($"{action.Name}: {action.Description}", width, indent));
+				CommandlineMethods.PrintWithPotentialIndent($"{action.Name}: {action.Description}", width, indent,tw);
 			}
 		}
 
@@ -98,6 +102,6 @@ public static class HelpGenerators {
 	}
 
 	public static void PrintActionHelp(CmdActionAttribute action, BaseInterpreter interpreter) =>
-		ActionHelp(action, Console.WindowWidth, interpreter.TopInterpreter.Options.DefaultIndent).ForEach(ConsoleIO.WriteToMain);
+		ActionHelp(action, Console.WindowWidth, interpreter.TopInterpreter.Options.DefaultIndent);
 }
 }

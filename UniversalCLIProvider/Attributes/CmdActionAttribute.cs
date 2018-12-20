@@ -15,11 +15,19 @@ public class CmdActionAttribute : Attribute {
 	public MethodInfo UnderlyingMethod;
 	public readonly string[] UsageExamples;
 	public readonly string ShortForm;
+	private static readonly char[] IllegalCharactersInName = {':', '=', ' ', '\'', '\"'};
 
 	public CmdActionAttribute([NotNull] string name, string description=null, string[] longDescription=null, string[] usageExamples=null, string shortForm=null) {
-		if (string.IsNullOrWhiteSpace(name)) {
-			throw new InvalidCLIConfigurationException("A name is required for any action",new ArgumentException("Value cannot be null or whitespace.", nameof(name))); 
-		}
+#if DEBUG
+				if (string.IsNullOrWhiteSpace(name)) {
+      			throw new InvalidCLIConfigurationException("A name is required for any action",new ArgumentException("Value cannot be null or whitespace.", nameof(name))); 
+      		}
+
+				if (name.IndexOfAny(IllegalCharactersInName)!=-1) {
+					throw new InvalidCLIConfigurationException("The name contains at least one illegal character ",new ArgumentException("Illegal name",nameof(name))); 
+				}
+#endif
+
 
 		Name = name;
 		UsageExamples = usageExamples;

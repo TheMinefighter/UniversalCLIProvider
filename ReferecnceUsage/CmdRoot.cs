@@ -8,44 +8,37 @@ using UniversalCLIProvider;
 using UniversalCLIProvider.Attributes;
 
 namespace ReferecnceUsage {
-	[CmdContext]
+	[CmdContext("ReferenceUsage")]
 	public abstract class CmdRootContext {
-		public enum FileOrFolder {
-			File,
-			Folder,
-			Automatic
+		public enum ATestEnum {
+			State1,
+			State2,
+			State3
 		}
-
-		internal const string StartupProceedFileName = "StorageManagementProceed.lnk";
 
 		[CmdAction("TestA")]
 		public static void A([CmdParameter("TestArg")] params string[] args) {
-			ConsoleIO.WriteLineToMain($"You have successfully entered action a with the parameters {string.Join(",",args)}");
+			Console.WriteLine($"You have successfully entered action a with the parameters {string.Join(",",args)}");
 		}
 
 		[CmdAction("TestB","This is test B",new []{"Roses are red","violets are blue","this is a test and the rest of this class too"},new []{"ReferenceUsage /TestB LOL","Writes LOL to the console"},"B")]
 		public static void B([CmdParameter("Argument-One")] string test) {
-			ConsoleIO.WriteLineToMain(test);
+			Console.WriteLine(test);
 		}
 
 		[CmdAction("Move")]
 		public static void Move(
 			[CmdParameter("Srcpath")] string[] oldPaths,
-			[CmdParameterAlias("File", FileOrFolder.File), CmdParameterAlias("Folder", FileOrFolder.Folder),
-			 CmdParameterAlias("Auto-detect", FileOrFolder.Automatic), CmdParameter("Type")]
-			FileOrFolder moveFileOrFolder = FileOrFolder.Automatic, [CmdParameter("newpath")] string newPath = null
+			[CmdParameterAlias("State1", ATestEnum.State1), CmdParameterAlias("State2", ATestEnum.State2),
+			 CmdParameterAlias("Auto-detect", ATestEnum.State3), CmdParameter("Type")]
+			ATestEnum moveFileOrFolder = ATestEnum.State3, [CmdParameter("newpath")] string newPath = null
 		) {
 			
 		}
 
-		[CmdAction("Background")]
+		[CmdAction("AParameterFreeAction")]
 		public static void Back() {
-
-		}
-
-		[CmdAction("ProtectInstallationFolder")]
-		public static void ProtectInstallationFolder() {
-			
+	Console.WriteLine("You have successfully entered a action that has no parameters");
 		}
 
 		[CmdContext("SendTo")]
