@@ -23,7 +23,7 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 		int maxlength =
 			new int[] {_namespaces.Keys.Select(x => x.Help.Length).Max(), _values.Keys.Select(x => x.Help.Length).Max()}.Max() +
 			1;
-		StringBuilder ConsoleStack = new StringBuilder();
+		StringBuilder ConsoleStack = new StringBuilder();//TODO replace with textwriter
 		Console.WriteLine($"Syntax: {Path} ");
 		foreach (CmdConfigurationNamespaceAttribute cmdConfigurationNamespaceAttribute in _namespaces.Keys) {
 			//  TopInterpreter.ConsoleIO.WriteLineToConsole

@@ -119,7 +119,7 @@ public class ContextInterpreter : BaseInterpreter {
 		}
 
 		foreach (CmdActionAttribute cmdActionAttribute in UnderlyingContextAttribute.ctxActions) {
-			if (IsParameterEqual(cmdActionAttribute.Name, search, true)) {
+			if (IsParameterEqual(cmdActionAttribute.Name, search,allowPrefixFree: true)) {
 				IncreaseOffset();
 				ActionInterpreter actionInterpreter = new ActionInterpreter(cmdActionAttribute, this, Offset);
 				if (!actionInterpreter.Interpret()) {

@@ -7,7 +7,7 @@ using UniversalCLIProvider.Attributes;
 using UniversalCLIProvider.Internals;
 
 namespace UniversalCLIProvider.Interpreters {
-public class ActionInterpreter : BaseInterpreter, IDisposable {
+public class ActionInterpreter : BaseInterpreter {
 	private bool _cached;
 	public CmdActionAttribute UnderlyingActionAttribute;
 	private List<CmdParameterAttribute> _parameters;
@@ -18,11 +18,6 @@ public class ActionInterpreter : BaseInterpreter, IDisposable {
 
 	public ActionInterpreter(CmdActionAttribute myActionAttribute, BaseInterpreter parent, int offset = 0) : base(parent,
 		myActionAttribute.Name, offset) => UnderlyingActionAttribute = myActionAttribute;
-
-	public void Dispose() {
-		_cached = false;
-		UnderlyingActionAttribute = null;
-	}
 
 	internal override void PrintHelp() { }
 
@@ -40,14 +35,15 @@ public class ActionInterpreter : BaseInterpreter, IDisposable {
 			if (cmdParameterAttribute is null) {
 				continue;
 			}
+
 			cmdParameterAttribute.UnderlyingParameter = parameterInfo;
 			cmdParameterAttribute.ParameterAliases =
 				parameterInfo.GetCustomAttributes<CmdParameterAliasAttribute>();
 			cmdParameterAttribute.LoadAlias();
-			_parameters.Add( cmdParameterAttribute);
+			_parameters.Add(cmdParameterAttribute);
 		}
 	}
-	
+
 	internal override bool Interpret(bool printErrors = true) {
 		LoadParameters();
 		//Dictionary<CmdParameterAttribute, object> invocationArguments = new Dictionary<CmdParameterAttribute, object>();
@@ -107,7 +103,7 @@ public class ActionInterpreter : BaseInterpreter, IDisposable {
 		// value = null;
 		while (true) {
 			if (IsParameterDeclaration(out CmdParameterAttribute found)) {
-				Type iEnumerableCache = null;//Used to cache the IEnumerable base when  found
+				Type iEnumerableCache = null; //Used to cache the IEnumerable base when  found
 				if (IncreaseOffset()) {
 					//TODO What if Empty Array
 					//throw
@@ -123,11 +119,8 @@ public class ActionInterpreter : BaseInterpreter, IDisposable {
 				         CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], parameterType, out object given)) {
 					invokationArguments.Add(found, given);
 				}
-				else if (found.Usage.HasFlag(CmdParameterUsage.SupportRaw) && parameterType.GetInterfaces().Any(x => {
-						         bool isIEnumerable = x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>);
-						         iEnumerableCache = x;
-						         return isIEnumerable;
-					         }
+				else if (found.Usage.HasFlag(CmdParameterUsage.SupportRaw) && parameterType.GetInterfaces().Any(
+					         x => (iEnumerableCache = x).IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>)
 				         )
 				) {
 					#region Based upon https://stackoverflow.com/a/2493258/6730162 last access 04.03.2018
@@ -173,6 +166,7 @@ public class ActionInterpreter : BaseInterpreter, IDisposable {
 						invokationArguments.Add(found, arrayOfRealType);
 					}
 					else {
+						//Just to provide an open interface for custom types
 						ConstructorInfo constructorInfo;
 						try {
 							constructorInfo =

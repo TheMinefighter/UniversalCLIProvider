@@ -1,13 +1,7 @@
 using System;
-using System.Diagnostics;
-using System.IO;
-using System.Security.AccessControl;
-using System.Security.Principal;
-using System.Xml;
-using UniversalCLIProvider;
 using UniversalCLIProvider.Attributes;
 
-namespace ReferecnceUsage {
+namespace ReferenceUsage {
 	[CmdContext("ReferenceUsage")]
 	public abstract class CmdRootContext {
 		public enum ATestEnum {

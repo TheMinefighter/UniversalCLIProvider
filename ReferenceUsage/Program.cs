@@ -1,7 +1,6 @@
-﻿using UniversalCLIProvider;
-using UniversalCLIProvider.Interpreters;
+﻿using UniversalCLIProvider.Interpreters;
 
-namespace ReferecnceUsage {
+namespace ReferenceUsage {
 internal class Program {
 	public static void Main(string[] args) {
 		new CommandlineOptionInterpreter(args).Interpret<CmdRootContext>();
