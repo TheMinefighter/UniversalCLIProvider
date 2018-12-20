@@ -9,6 +9,7 @@ public enum CmdParameterUsage {
 	/// <summary>
 	///  The default usage will be replaced with one of the other ones once loaded
 	/// </summary>
+	/// <remarks>When there is no alias it will result in <see cref="SupportRaw"/> otherwise in <see cref="SupportDirectAlias"/></remarks>
 	Default = 0,
 	SupportDeclaredAlias = 1<<0,//1
 	SupportDirectAlias = 1<<1,//2

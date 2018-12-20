@@ -29,7 +29,7 @@ public class CmdParameterAttribute : Attribute {
 			ParameterAliases = UnderlyingParameter.GetCustomAttributes(typeof(CmdParameterAliasAttribute), false)
 				.Cast<CmdParameterAliasAttribute>();
 			if (Usage == CmdParameterUsage.Default) {
-				Usage = ParameterAliases.Any() ? CmdParameterUsage.OnlyDirectAlias : CmdParameterUsage.RawValueWithDeclaration;
+				Usage = ParameterAliases.Any() ? CmdParameterUsage.SupportDirectAlias : CmdParameterUsage.SupportRaw;
 			}
 
 			_loaded = true;

@@ -28,9 +28,8 @@ namespace ReferecnceUsage {
 
 		[CmdAction("Move")]
 		public static void Move(
-			[CmdParameter("Srcpath")] string[] oldPaths,
-			[CmdParameterAlias("State1", ATestEnum.State1), CmdParameterAlias("State2", ATestEnum.State2),
-			 CmdParameterAlias("Auto-detect", ATestEnum.State3), CmdParameter("Type")]
+			[CmdParameterAlias("X", ATestEnum.State1), CmdParameterAlias("Y", ATestEnum.State2),
+			 CmdParameterAlias("Z", ATestEnum.State3), CmdParameter("Type")]
 			ATestEnum moveFileOrFolder = ATestEnum.State3, [CmdParameter("newpath")] string newPath = null
 		) {
 			

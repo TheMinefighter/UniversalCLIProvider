@@ -103,5 +103,8 @@ public static class HelpGenerators {
 
 	public static void PrintActionHelp(CmdActionAttribute action, BaseInterpreter interpreter) =>
 		ActionHelp(action, Console.WindowWidth, interpreter.TopInterpreter.Options.DefaultIndent);
+	
+	public static void PrintContextHelp(CmdContextAttribute context, BaseInterpreter interpreter) =>
+		ContextHelp(context, Console.WindowWidth, interpreter.TopInterpreter.Options.DefaultIndent);
 }
 }
