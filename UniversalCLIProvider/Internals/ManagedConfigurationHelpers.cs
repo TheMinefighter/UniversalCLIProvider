@@ -14,26 +14,27 @@ public static class ManagedConfigurationHelpers {
 		requiredIndexers = null;
 		path = path.Trim();
 		TypeInfo typeInfoOfItem = item.GetType().GetTypeInfo();
-		string remainingPath=null;
+		string remainingPath = null;
 		if (path.StartsWith("[")) {
-			if(!ResolveIndexerInPath(path, item, typeInfoOfItem, ref prop, ref requiredIndexers, out remainingPath)) {
+			if (!ResolveIndexerInPath(path, item, typeInfoOfItem, ref prop, ref requiredIndexers, out remainingPath)) {
 				return false;
 			}
 		}
 		else {
 			int dotIndex = path.IndexOf('.');
 			int bracketIndex = path.IndexOf('[');
-			int endOfCurrentBlock=path.Length;
-			if (bracketIndex!=dotIndex) {//Implies that one of them exists and that the recursion has to go deeper
-					if (bracketIndex==-1||(dotIndex<bracketIndex&&dotIndex!=-1)) {
-						endOfCurrentBlock = dotIndex;
-						remainingPath = path.Substring(dotIndex + 1);
-					}
-					else {
-						endOfCurrentBlock = bracketIndex;
-						remainingPath = path.Substring(dotIndex + 1);
-					}
+			int endOfCurrentBlock = path.Length;
+			if (bracketIndex != dotIndex) { //Implies that one of them exists and that the recursion has to go deeper
+				if (bracketIndex == -1 || dotIndex < bracketIndex && dotIndex != -1) {
+					endOfCurrentBlock = dotIndex;
+					remainingPath = path.Substring(dotIndex + 1);
+				}
+				else {
+					endOfCurrentBlock = bracketIndex;
+					remainingPath = path.Substring(dotIndex + 1);
+				}
 			}
+
 			string currentPath = endOfCurrentBlock != -1 ? path.Substring(0, endOfCurrentBlock) : path;
 
 			prop = typeInfoOfItem.GetUnderlyingTypes().SelectMany(x => x.DeclaredProperties)
@@ -61,11 +62,11 @@ public static class ManagedConfigurationHelpers {
 	}
 
 	/// <summary>
-	/// Resolves a given indexing operator in a path
+	///  Resolves a given indexing operator in a path
 	/// </summary>
 	/// <param name="path">The path starting with a [</param>
 	/// <param name="item">The item to which the indexing operator should be applied to</param>
-	/// <param name="typeInfoOfItem">The <see cref="TypeInfo"/> of the <paramref name="item"/></param>
+	/// <param name="typeInfoOfItem">The <see cref="TypeInfo" /> of the <paramref name="item" /></param>
 	/// <param name="prop">The resolved indexing property</param>
 	/// <param name="requiredIndexers">The indexing operators to be used</param>
 	/// <param name="remainingPath">The path remaining to be resolved later on</param>
@@ -86,9 +87,10 @@ public static class ManagedConfigurationHelpers {
 			return false;
 		}
 
-		if (path.Length-1>endOfIndexer) {
+		if (path.Length - 1 > endOfIndexer) {
 			remainingPath = path.Substring(endOfIndexer + 1);
 		}
+
 		return true;
 	}
 

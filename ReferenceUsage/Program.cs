@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text;
-using UniversalCLIProvider.Interpreters;
+﻿using UniversalCLIProvider.Interpreters;
 
 namespace ReferenceUsage {
 internal static class Program {

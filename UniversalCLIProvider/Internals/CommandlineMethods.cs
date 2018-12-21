@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
@@ -103,12 +101,13 @@ public static class CommandlineMethods {
 	/// <param name="width"> The width of the textoutput to format for</param>
 	/// <param name="indent"> The indent to use for each new line</param>
 	/// <param name="tw">The builder to append the formatted text to</param>
-	public static void PrintWithPotentialIndent([NotNull] string text, int width, int indent,TextWriter tw=null) {
-		tw=tw ?? Console.Out;
-		if (text.Length<width) {
-			tw.WriteLine(text) ;
+	public static void PrintWithPotentialIndent([NotNull] string text, int width, int indent, TextWriter tw = null) {
+		tw = tw ?? Console.Out;
+		if (text.Length < width) {
+			tw.WriteLine(text);
 			return;
 		}
+
 		bool firstLine = true;
 		int lastFallback = -1;
 		int lineStart = 0;
@@ -124,7 +123,7 @@ public static class CommandlineMethods {
 					tw.WriteLine(text.Substring(lineStart, breakIndex - lineStart));
 				}
 
-				lineStart = breakIndex+1;
+				lineStart = breakIndex + 1;
 				if (!firstLine) {
 					width -= indent;
 				}

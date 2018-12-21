@@ -23,7 +23,7 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 		int maxlength =
 			new int[] {_namespaces.Keys.Select(x => x.Help.Length).Max(), _values.Keys.Select(x => x.Help.Length).Max()}.Max() +
 			1;
-		StringBuilder ConsoleStack = new StringBuilder();//TODO replace with textwriter
+		StringBuilder ConsoleStack = new StringBuilder(); //TODO replace with textwriter
 		Console.WriteLine($"Syntax: {Path} ");
 		foreach (CmdConfigurationNamespaceAttribute cmdConfigurationNamespaceAttribute in _namespaces.Keys) {
 			//  TopInterpreter.ConsoleIO.WriteLineToConsole
@@ -37,7 +37,7 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 	}
 
 	internal override bool Interpret(bool printErrors = true) {
-		if (Offset == TopInterpreter.Args.Length || IsParameterEqual("?", TopInterpreter.Args[Offset],"?")) {
+		if (Offset == TopInterpreter.Args.Length || IsParameterEqual("?", TopInterpreter.Args[Offset], "?")) {
 			if (printErrors) {
 				PrintHelp();
 			}
@@ -66,9 +66,9 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 
 	[Flags]
 	private enum RootRequirements : byte {
-		RootAllowed=1<<0,
-		RootFreeAllowed=1<<1,
-		AllAllowed=RootAllowed|RootFreeAllowed,
+		RootAllowed = 1 << 0,
+		RootFreeAllowed = 1 << 1,
+		AllAllowed = RootAllowed | RootFreeAllowed
 	}
 }
 }

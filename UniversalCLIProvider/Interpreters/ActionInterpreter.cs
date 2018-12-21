@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using UniversalCLIProvider.Attributes;
@@ -46,28 +45,29 @@ public class ActionInterpreter : BaseInterpreter {
 
 	internal override bool Interpret(bool printErrors = true) {
 		LoadParameters();
-		if (TopInterpreter.Args.Skip(Offset-1).Any(x=>IsParameterEqual("help",x,"?"))) {
-			if (TopInterpreter.Args.Length-1==Offset) {
-HelpGenerators.PrintActionHelp(UnderlyingAction,this);
-return true;
+		if (TopInterpreter.Args.Skip(Offset - 1).Any(x => IsParameterEqual("help", x, "?"))) {
+			if (TopInterpreter.Args.Length - 1 == Offset) {
+				HelpGenerators.PrintActionHelp(UnderlyingAction, this);
+				return true;
 			}
 
-			if (TopInterpreter.Args.Length==Offset) {
+			if (TopInterpreter.Args.Length == Offset) {
 				IncreaseOffset();
-				if (IsParameterDeclaration(out CmdParameterAttribute found,allowPrefixFree: true)) {
+				if (IsParameterDeclaration(out CmdParameterAttribute found, allowPrefixFree: true)) {
 					HelpGenerators.PrintParameterHelp(found, this);
 					return true;
-
 				}
 
-				CmdParameterAliasAttribute aliasAttribute = UnderlyingAction.Parameters.SelectMany(x=>x.ParameterAliases).FirstOrDefault();
+				CmdParameterAliasAttribute aliasAttribute = UnderlyingAction.Parameters.SelectMany(x => x.ParameterAliases).FirstOrDefault();
 				if (aliasAttribute is null) {
 					//TODO special error
-					HelpGenerators.PrintActionHelp(UnderlyingAction,this);
+					HelpGenerators.PrintActionHelp(UnderlyingAction, this);
 				}
-				HelpGenerators.PrintAliasHelp(aliasAttribute,this);
+
+				HelpGenerators.PrintAliasHelp(aliasAttribute, this);
 			}
 		}
+
 		//Dictionary<CmdParameterAttribute, object> invocationArguments = new Dictionary<CmdParameterAttribute, object>();
 		Dictionary<CmdParameterAttribute, object> invocationArguments;
 		if (Offset == TopInterpreter.Args.Length) {
@@ -192,7 +192,7 @@ return true;
 							constructorInfo =
 								parameterType.GetConstructor(new Type[] {typeof(IEnumerable<>).MakeGenericType(realType)});
 						}
-						catch (Exception e) {//TODO custom
+						catch (Exception e) { //TODO custom
 							Console.WriteLine(e);
 							throw;
 						}
@@ -225,8 +225,8 @@ return true;
 		}
 	}
 
-	internal bool IsParameterDeclaration(out CmdParameterAttribute found, string search = null,bool allowPrefixFree=false) =>
-		IsParameterDeclaration(out found, UnderlyingAction.Parameters, search ?? TopInterpreter.Args[Offset],allowPrefixFree);
+	internal bool IsParameterDeclaration(out CmdParameterAttribute found, string search = null, bool allowPrefixFree = false) =>
+		IsParameterDeclaration(out found, UnderlyingAction.Parameters, search ?? TopInterpreter.Args[Offset], allowPrefixFree);
 
 //      internal bool IsAlias(CmdParameterAttribute expectedAliasType, out object value, string source = null) {
 //         return base.IsAlias(expectedAliasType, out value, source ?? TopInterpreter.Args[Offset]);

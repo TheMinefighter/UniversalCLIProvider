@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
 using UniversalCLIProvider.Attributes;
@@ -13,7 +11,7 @@ namespace UniversalCLIProvider.Internals {
 /// </summary>
 public static class HelpGenerators {
 	/// <summary>
-	/// Prints help for an action
+	///  Prints help for an action
 	/// </summary>
 	/// <param name="action">The action to print help for</param>
 	/// <param name="interpreter">The interpreter to use</param>
@@ -21,12 +19,12 @@ public static class HelpGenerators {
 		ActionHelp(action, Console.WindowWidth, interpreter.TopInterpreter.Options.DefaultIndent);
 
 	/// <summary>
-	/// Writes the help for a action to a textwriter
+	///  Writes the help for a action to a textwriter
 	/// </summary>
 	/// <param name="action">The action to provide help</param>
 	/// <param name="width">The width of the console</param>
 	/// <param name="indent">The indent to use for splitted lines</param>
-	/// <param name="tw">The textwriter to output to (defaults to <see cref="Console.Out"/></param>
+	/// <param name="tw">The textwriter to output to (defaults to <see cref="Console.Out" /></param>
 	private static void ActionHelp([NotNull] CmdActionAttribute action, int width, int indent = 3, TextWriter tw = null) {
 		tw = tw ?? Console.Out;
 		action.LoadParametersAndAlias();
@@ -77,7 +75,7 @@ public static class HelpGenerators {
 	}
 
 	/// <summary>
-	/// Prints help for a context
+	///  Prints help for a context
 	/// </summary>
 	/// <param name="context">The context to print help</param>
 	/// <param name="interpreter">The interpreter to use</param>
@@ -85,12 +83,12 @@ public static class HelpGenerators {
 		ContextHelp(context, Console.WindowWidth, interpreter.TopInterpreter.Options.DefaultIndent);
 
 	/// <summary>
-	/// Writes the help for a context to a textwriter
+	///  Writes the help for a context to a textwriter
 	/// </summary>
 	/// <param name="context">The context to provide help</param>
 	/// <param name="width">The width of the console</param>
 	/// <param name="indent">The indent to use for splitted lines</param>
-	/// <param name="tw">The textwriter to output to (defaults to <see cref="Console.Out"/></param>
+	/// <param name="tw">The textwriter to output to (defaults to <see cref="Console.Out" /></param>
 	private static void ContextHelp([NotNull] CmdContextAttribute context, int width, int indent = 3, TextWriter tw = null) {
 		tw = tw ?? Console.Out;
 		context.LoadIfNot();
@@ -142,13 +140,13 @@ public static class HelpGenerators {
 
 
 	/// <summary>
-	/// Prints help for an parameter
+	///  Prints help for an parameter
 	/// </summary>
 	/// <param name="parameter">The parameter to print help for </param>
 	/// <param name="interpreter">The interpreter to use</param>
 	public static void PrintParameterHelp(CmdParameterAttribute parameter, BaseInterpreter interpreter) =>
 		ParameterHelp(parameter, Console.WindowWidth, interpreter.TopInterpreter.Options.DefaultIndent);
-	
+
 	public static void AliasHelp(CmdParameterAliasAttribute alias, int width, int indent = 3, TextWriter tw = null) {
 		tw = tw ?? Console.Out;
 		if (alias.Description is null) {
@@ -163,7 +161,7 @@ public static class HelpGenerators {
 
 
 	/// <summary>
-	/// Prints help for an alias
+	///  Prints help for an alias
 	/// </summary>
 	/// <param name="alias">The alias to print help for</param>
 	/// <param name="interpreter">The interpreter to use</param>

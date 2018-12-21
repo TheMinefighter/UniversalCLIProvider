@@ -81,14 +81,15 @@ public class ContextInterpreter : BaseInterpreter {
 		}
 
 		newCtx = null;
-		if (TopInterpreter.Args.Length==0) {
+		if (TopInterpreter.Args.Length == 0) {
 			if (TopInterpreter.Options.StandardDefaultAction is null) {
-				InteractiveInterpreter();//TODO Replace with clean code
+				InteractiveInterpreter(); //TODO Replace with clean code
 			}
 			else {
 				TopInterpreter.Options.StandardDefaultAction.Interpret(this);
 			}
 		}
+
 		string search = TopInterpreter.Args[Offset];
 		foreach (CmdContextAttribute cmdContextAttribute in UnderlyingContextAttribute.subCtx) {
 			if (IsParameterEqual(cmdContextAttribute.Name, search, interactive)) {
@@ -119,12 +120,13 @@ public class ContextInterpreter : BaseInterpreter {
 		}
 
 		foreach (CmdActionAttribute cmdActionAttribute in UnderlyingContextAttribute.ctxActions) {
-			if (IsParameterEqual(cmdActionAttribute.Name, search,allowPrefixFree: true)) {
+			if (IsParameterEqual(cmdActionAttribute.Name, search, allowPrefixFree: true)) {
 				IncreaseOffset();
 				ActionInterpreter actionInterpreter = new ActionInterpreter(cmdActionAttribute, this, Offset);
 				if (!actionInterpreter.Interpret()) {
-					HelpGenerators.PrintActionHelp(cmdActionAttribute,this);
+					HelpGenerators.PrintActionHelp(cmdActionAttribute, this);
 				}
+
 				newCtx = this;
 				return true;
 			}
@@ -133,6 +135,7 @@ public class ContextInterpreter : BaseInterpreter {
 		foreach (CmdParameterAttribute cmdParameterAttribute in UnderlyingContextAttribute.ctxParameters) {
 			//TODO Implement this
 		}
+
 //TODO if null
 		UnderlyingContextAttribute.DefaultAction.Interpret(this);
 		return false;

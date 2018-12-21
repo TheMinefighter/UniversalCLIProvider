@@ -7,10 +7,12 @@ using UniversalCLIProvider.Attributes;
 namespace UniversalCLIProvider.Interpreters {
 public abstract class BaseInterpreter {
 	public string Name { get; }
+
 	/// <summary>
-	/// The index of the argument currently interpreted
+	///  The index of the argument currently interpreted
 	/// </summary>
 	public int Offset { get; internal set; }
+
 	public CommandlineOptionInterpreter TopInterpreter { get; }
 	public BaseInterpreter DirectParent { get; }
 	public List<BaseInterpreter> ParentInterpreters { get; }
@@ -72,7 +74,7 @@ public abstract class BaseInterpreter {
 	internal bool IsParameterDeclaration(out CmdParameterAttribute found,
 		IEnumerable<CmdParameterAttribute> possibleParameters, string search, bool allowPrefixFree = false) {
 		foreach (CmdParameterAttribute cmdParameterAttribute in possibleParameters) {
-			if (IsParameterEqual(cmdParameterAttribute.Name, search,cmdParameterAttribute.ShortForm,allowPrefixFree)) {
+			if (IsParameterEqual(cmdParameterAttribute.Name, search, cmdParameterAttribute.ShortForm, allowPrefixFree)) {
 				found = cmdParameterAttribute;
 				return true;
 			}
@@ -84,7 +86,7 @@ public abstract class BaseInterpreter {
 
 	internal bool IsAlias(CmdParameterAttribute expectedAliasType, out object value, string source = null) {
 		foreach (CmdParameterAliasAttribute cmdParameterAlias in expectedAliasType.ParameterAliases) {
-			if (IsParameterEqual(cmdParameterAlias.Name, source ?? TopInterpreter.Args[Offset],cmdParameterAlias.ShortForm)) {
+			if (IsParameterEqual(cmdParameterAlias.Name, source ?? TopInterpreter.Args[Offset], cmdParameterAlias.ShortForm)) {
 				value = cmdParameterAlias.Value;
 				return true;
 			}
@@ -97,7 +99,7 @@ public abstract class BaseInterpreter {
 	internal bool IsParameterEqual(string expected, string given, string expectedShortForm = null, bool allowPrefixFree = false) =>
 		IsParameterEqual(expected, given, TopInterpreter.Options.IgnoreParameterCase, expectedShortForm, allowPrefixFree);
 
-	internal static bool IsParameterEqual([NotNull] string expected, [NotNull] string given, bool ignoreCase, string expectedShortForm=null,
+	internal static bool IsParameterEqual([NotNull] string expected, [NotNull] string given, bool ignoreCase, string expectedShortForm = null,
 		bool allowPrefixFree = false) {
 		if (ignoreCase) {
 			given = given.ToLower();

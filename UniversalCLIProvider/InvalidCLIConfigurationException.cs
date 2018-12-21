@@ -1,9 +1,9 @@
 using System;
 
 namespace UniversalCLIProvider {
-/// <inheritdoc/>
+/// <inheritdoc />
 /// <summary>
-/// Wraps all exceptions caused by a library user configuring the CLI wrong, cannot be caused by weird user input alone
+///  Wraps all exceptions caused by a library user configuring the CLI wrong, cannot be caused by weird user input alone
 /// </summary>
 public class InvalidCLIConfigurationException : Exception {
 	/// <inheritdoc />
