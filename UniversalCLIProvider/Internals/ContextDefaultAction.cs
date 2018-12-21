@@ -1,7 +1,7 @@
 ﻿using System;
 using UniversalCLIProvider.Interpreters;
 
-namespace UniversalCLIProvider {
+namespace UniversalCLIProvider.Internals {
 public class ContextDefaultAction {
 	private bool direct;
 	public Action<ContextInterpreter> Interpret { get; internal set; }

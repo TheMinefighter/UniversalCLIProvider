@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
 
-namespace UniversalCLIProvider.Attributes {
+namespace UniversalCLIProvider.Internals.Attributes {
 [AttributeUsage(AttributeTargets.GenericParameter | AttributeTargets.Parameter | AttributeTargets.Field |
                 AttributeTargets.Property), UsedImplicitly]
 //TODO Add Defaults
@@ -29,7 +29,7 @@ public class CmdParameterAttribute : Attribute {
 			ParameterAliases = UnderlyingParameter.GetCustomAttributes(typeof(CmdParameterAliasAttribute), false)
 				.Cast<CmdParameterAliasAttribute>();
 			if (Usage == CmdParameterUsage.Default) {
-				Usage = ParameterAliases.Any() ? CmdParameterUsage.SupportDirectAlias : CmdParameterUsage.SupportRaw;
+				Usage = ParameterAliases.Any() ? CmdParameterUsage.SupportDirectAlias : CmdParameterUsage.SupportDeclaredRaw;
 			}
 
 			_loaded = true;

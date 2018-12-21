@@ -1,4 +1,4 @@
-﻿namespace UniversalCLIProvider {
+﻿namespace UniversalCLIProvider.Internals {
 public enum InterpretationResult {
 	Unknown,
 	Success,

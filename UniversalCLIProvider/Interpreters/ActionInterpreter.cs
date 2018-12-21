@@ -10,27 +10,27 @@ using UniversalCLIProvider.Internals;
 namespace UniversalCLIProvider.Interpreters {
 public class ActionInterpreter : BaseInterpreter {
 	private bool _cached;
-	public CmdActionAttribute UnderlyingActionAttribute;
+	public CmdActionAttribute UnderlyingAction;
 
 	public ActionInterpreter(CommandlineOptionInterpreter top, int i) : base(top) {
 		i++;
 	}
 
 	public ActionInterpreter(CmdActionAttribute myActionAttribute, BaseInterpreter parent, int offset = 0) : base(parent,
-		myActionAttribute.Name, offset) => UnderlyingActionAttribute = myActionAttribute;
+		myActionAttribute.Name, offset) => UnderlyingAction = myActionAttribute;
 
 	internal override void PrintHelp() { }
 
 	internal void LoadParameters() {
 		if (!_cached) {
-			UnderlyingActionAttribute.LoadParametersAndAlias();
+			UnderlyingAction.LoadParametersAndAlias();
 			_cached = true;
 		}
 	}
 
 	private void LoadParametersWithoutCache() {
-		UnderlyingActionAttribute.Parameters = new List<CmdParameterAttribute>();
-		foreach (ParameterInfo parameterInfo in UnderlyingActionAttribute.UnderlyingMethod.GetParameters()) {
+		UnderlyingAction.Parameters = new List<CmdParameterAttribute>();
+		foreach (ParameterInfo parameterInfo in UnderlyingAction.UnderlyingMethod.GetParameters()) {
 			CmdParameterAttribute cmdParameterAttribute = parameterInfo.GetCustomAttribute(typeof(CmdParameterAttribute)) as CmdParameterAttribute;
 			if (cmdParameterAttribute is null) {
 				continue;
@@ -40,7 +40,7 @@ public class ActionInterpreter : BaseInterpreter {
 			cmdParameterAttribute.ParameterAliases =
 				parameterInfo.GetCustomAttributes<CmdParameterAliasAttribute>();
 			cmdParameterAttribute.LoadAlias();
-			UnderlyingActionAttribute.Parameters.Add(cmdParameterAttribute);
+			UnderlyingAction.Parameters.Add(cmdParameterAttribute);
 		}
 	}
 
@@ -48,20 +48,24 @@ public class ActionInterpreter : BaseInterpreter {
 		LoadParameters();
 		if (TopInterpreter.Args.Skip(Offset-1).Any(x=>IsParameterEqual("help",x,"?"))) {
 			if (TopInterpreter.Args.Length-1==Offset) {
-HelpGenerators.PrintActionHelp(UnderlyingActionAttribute,this);
+HelpGenerators.PrintActionHelp(UnderlyingAction,this);
+return true;
 			}
 
 			if (TopInterpreter.Args.Length==Offset) {
 				IncreaseOffset();
 				if (IsParameterDeclaration(out CmdParameterAttribute found,allowPrefixFree: true)) {
-					TextWriter tw;
-					int width;
-					int indent;
-					HelpGenerators.ParameterHelp(found, tw, width, indent);
-					
+					HelpGenerators.PrintParameterHelp(found, this);
+					return true;
+
 				}
-				//TODO Add Alias help
-				//TODO throw error
+
+				CmdParameterAliasAttribute aliasAttribute = UnderlyingAction.Parameters.SelectMany(x=>x.ParameterAliases).FirstOrDefault();
+				if (aliasAttribute is null) {
+					//TODO special error
+					HelpGenerators.PrintActionHelp(UnderlyingAction,this);
+				}
+				HelpGenerators.PrintAliasHelp(aliasAttribute,this);
 			}
 		}
 		//Dictionary<CmdParameterAttribute, object> invocationArguments = new Dictionary<CmdParameterAttribute, object>();
@@ -76,7 +80,7 @@ HelpGenerators.PrintActionHelp(UnderlyingActionAttribute,this);
 			}
 		}
 
-		ParameterInfo[] allParameterInfos = UnderlyingActionAttribute.UnderlyingMethod.GetParameters();
+		ParameterInfo[] allParameterInfos = UnderlyingAction.UnderlyingMethod.GetParameters();
 		object[] invokers = new object[allParameterInfos.Length];
 		bool[] invokersDeclared = new bool[allParameterInfos.Length];
 		foreach (KeyValuePair<CmdParameterAttribute, object> invocationArgument in invocationArguments) {
@@ -99,7 +103,7 @@ HelpGenerators.PrintActionHelp(UnderlyingActionAttribute,this);
 		}
 
 		InterpretationResult result;
-		object returned = UnderlyingActionAttribute.UnderlyingMethod.Invoke(null, invokers);
+		object returned = UnderlyingAction.UnderlyingMethod.Invoke(null, invokers);
 		if (returned is bool invokationSuccess) {
 			result = invokationSuccess ? InterpretationResult.Success : InterpretationResult.RunError;
 		}
@@ -131,11 +135,11 @@ HelpGenerators.PrintActionHelp(UnderlyingActionAttribute,this);
 				if (IsAlias(found, out object aliasValue)) {
 					invokationArguments.Add(found, aliasValue);
 				}
-				else if (found.Usage.HasFlag(CmdParameterUsage.SupportRaw) &&
+				else if (found.Usage.HasFlag(CmdParameterUsage.SupportDeclaredRaw) &&
 				         CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], parameterType, out object given)) {
 					invokationArguments.Add(found, given);
 				}
-				else if (found.Usage.HasFlag(CmdParameterUsage.SupportRaw) && parameterType.GetInterfaces().Any(
+				else if (found.Usage.HasFlag(CmdParameterUsage.SupportDeclaredRaw) && parameterType.GetInterfaces().Any(
 					         x => (iEnumerableCache = x).IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>)
 				         )
 				) {
@@ -222,14 +226,14 @@ HelpGenerators.PrintActionHelp(UnderlyingActionAttribute,this);
 	}
 
 	internal bool IsParameterDeclaration(out CmdParameterAttribute found, string search = null,bool allowPrefixFree=false) =>
-		IsParameterDeclaration(out found, UnderlyingActionAttribute.Parameters, search ?? TopInterpreter.Args[Offset],allowPrefixFree);
+		IsParameterDeclaration(out found, UnderlyingAction.Parameters, search ?? TopInterpreter.Args[Offset],allowPrefixFree);
 
 //      internal bool IsAlias(CmdParameterAttribute expectedAliasType, out object value, string source = null) {
 //         return base.IsAlias(expectedAliasType, out value, source ?? TopInterpreter.Args[Offset]);
 //      }
 
 	internal bool IsAlias(out CmdParameterAttribute aliasType, out object value, string source = null) {
-		foreach (CmdParameterAttribute cmdParameterAttribute in UnderlyingActionAttribute.Parameters) {
+		foreach (CmdParameterAttribute cmdParameterAttribute in UnderlyingAction.Parameters) {
 			if (IsAlias(cmdParameterAttribute, out value, source ?? TopInterpreter.Args[Offset])) {
 				aliasType = cmdParameterAttribute;
 				return true;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
+using UniversalCLIProvider.Internals;
 
 namespace UniversalCLIProvider.Attributes {
 [AttributeUsage(AttributeTargets.Class), UsedImplicitly]

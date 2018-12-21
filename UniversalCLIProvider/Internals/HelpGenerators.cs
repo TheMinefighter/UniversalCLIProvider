@@ -13,6 +13,14 @@ namespace UniversalCLIProvider.Internals {
 /// </summary>
 public static class HelpGenerators {
 	/// <summary>
+	/// Prints help for an action
+	/// </summary>
+	/// <param name="action">The action to print help for</param>
+	/// <param name="interpreter">The interpreter to use</param>
+	public static void PrintActionHelp(CmdActionAttribute action, BaseInterpreter interpreter) =>
+		ActionHelp(action, Console.WindowWidth, interpreter.TopInterpreter.Options.DefaultIndent);
+
+	/// <summary>
 	/// Writes the help for a action to a textwriter
 	/// </summary>
 	/// <param name="action">The action to provide help</param>
@@ -35,7 +43,7 @@ public static class HelpGenerators {
 		}
 
 		foreach (CmdParameterAttribute parameter in action.Parameters) {
-			if (parameter.Usage.HasFlag(CmdParameterUsage.SupportRaw)) {
+			if (parameter.Usage.HasFlag(CmdParameterUsage.SupportDeclaredRaw)) {
 				if (parameter.Description is null) {
 					tw.WriteLine((parameter.ShortForm is null ? "--" : "-" + parameter.ShortForm + " | --") + parameter.Name);
 				}
@@ -67,6 +75,14 @@ public static class HelpGenerators {
 			}
 		}
 	}
+
+	/// <summary>
+	/// Prints help for a context
+	/// </summary>
+	/// <param name="context">The context to print help</param>
+	/// <param name="interpreter">The interpreter to use</param>
+	public static void PrintContextHelp(CmdContextAttribute context, BaseInterpreter interpreter) =>
+		ContextHelp(context, Console.WindowWidth, interpreter.TopInterpreter.Options.DefaultIndent);
 
 	/// <summary>
 	/// Writes the help for a context to a textwriter
@@ -112,40 +128,46 @@ public static class HelpGenerators {
 		}
 	}
 
-	public static void ParameterHelp(CmdParameterAttribute found, int width, int indent = 3, TextWriter tw = null) {
-		if (found.Description is null) {
-			tw.WriteLine((found.ShortForm is null ? "--" : "-" + found.ShortForm + " | --") + found.Name);
+	public static void ParameterHelp(CmdParameterAttribute parameter, int width, int indent = 3, TextWriter tw = null) {
+		tw = tw ?? Console.Out;
+		if (parameter.Description is null) {
+			tw.WriteLine((parameter.ShortForm is null ? "--" : "-" + parameter.ShortForm + " | --") + parameter.Name);
 		}
 		else {
 			CommandlineMethods.PrintWithPotentialIndent(
-				$"{(found.ShortForm is null ? "" : "-" + found.ShortForm + " | ")}--{found.Name}: {found.Description}",
+				$"{(parameter.ShortForm is null ? "" : "-" + parameter.ShortForm + " | ")}--{parameter.Name}: {parameter.Description}",
 				width, indent, tw);
 		}
 	}
 
-	/// <summary>
-	/// Prints help for an action
-	/// </summary>
-	/// <param name="action">The action to print help for</param>
-	/// <param name="interpreter">The interpreter to use</param>
-	public static void PrintActionHelp(CmdActionAttribute action, BaseInterpreter interpreter) =>
-		ActionHelp(action, Console.WindowWidth, interpreter.TopInterpreter.Options.DefaultIndent);
-
 
 	/// <summary>
-	/// Prints help for an action
+	/// Prints help for an parameter
 	/// </summary>
-	/// <param name="parameter">The action to print help for</param>
+	/// <param name="parameter">The parameter to print help for </param>
 	/// <param name="interpreter">The interpreter to use</param>
 	public static void PrintParameterHelp(CmdParameterAttribute parameter, BaseInterpreter interpreter) =>
 		ParameterHelp(parameter, Console.WindowWidth, interpreter.TopInterpreter.Options.DefaultIndent);
+	
+	public static void AliasHelp(CmdParameterAliasAttribute alias, int width, int indent = 3, TextWriter tw = null) {
+		tw = tw ?? Console.Out;
+		if (alias.Description is null) {
+			tw.WriteLine((alias.ShortForm is null ? "--" : "-" + alias.ShortForm + " | --") + alias.Name);
+		}
+		else {
+			CommandlineMethods.PrintWithPotentialIndent(
+				$"{(alias.ShortForm is null ? "" : "-" + alias.ShortForm + " | ")}--{alias.Name}: {alias.Description}",
+				width, indent, tw);
+		}
+	}
+
 
 	/// <summary>
-	/// Prints help for a context
+	/// Prints help for an alias
 	/// </summary>
-	/// <param name="context">The context to print help</param>
+	/// <param name="alias">The alias to print help for</param>
 	/// <param name="interpreter">The interpreter to use</param>
-	public static void PrintContextHelp(CmdContextAttribute context, BaseInterpreter interpreter) =>
-		ContextHelp(context, Console.WindowWidth, interpreter.TopInterpreter.Options.DefaultIndent);
+	public static void PrintAliasHelp(CmdParameterAliasAttribute alias, BaseInterpreter interpreter) =>
+		AliasHelp(alias, Console.WindowWidth, interpreter.TopInterpreter.Options.DefaultIndent);
 }
 }

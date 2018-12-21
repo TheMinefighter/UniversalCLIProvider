@@ -1,4 +1,4 @@
-﻿namespace UniversalCLIProvider {
+﻿namespace UniversalCLIProvider.Internals {
 public enum ContextAction : byte {
 	PrintError = 3,
 	PrintHelp = 2,

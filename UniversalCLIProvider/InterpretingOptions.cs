@@ -1,4 +1,6 @@
-﻿namespace UniversalCLIProvider {
+﻿using UniversalCLIProvider.Internals;
+
+namespace UniversalCLIProvider {
 public class InterpretingOptions {
 	public static InterpretingOptions DefaultOptions = new InterpretingOptions {
 		IgnoreParameterCase = true,
