@@ -15,7 +15,7 @@ public class CommandlineOptionInterpreter {
 
 	public CommandlineOptionInterpreter(string[] args, InterpretingOptions options = null) {
 		Args = args;
-		Options = options ?? InterpretingOptions.DefaultOptions;
+		Options = options ?? new InterpretingOptions();
 	}
 
 	public void Interpret<T>(Action defaultAction = null) {

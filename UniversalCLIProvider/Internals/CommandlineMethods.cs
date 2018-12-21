@@ -160,5 +160,13 @@ public static class CommandlineMethods {
 			return new string(pad, (width - src.Length) / 2) + src + new string(pad, (width - src.Length + 1) / 2);
 		}
 	}
+
+	public static void WriteColorfulLine(string toWrite, ConsoleColor? foreground = null, ConsoleColor? background = null) {
+		(ConsoleColor, ConsoleColor) backup = (Console.BackgroundColor, Console.ForegroundColor);
+			Console.BackgroundColor = background??Console.BackgroundColor;
+			Console.ForegroundColor = foreground??Console.ForegroundColor;
+			Console.WriteLine(toWrite);
+		 (Console.BackgroundColor, Console.ForegroundColor)= backup;
+	}
 }
 }
