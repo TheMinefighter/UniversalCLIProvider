@@ -58,13 +58,13 @@ public class ContextInterpreter : BaseInterpreter {
 
 			currentContextInterpreter.Reset();
 			currentContextInterpreter.UnderlyingContextAttribute.LoadIfNot();
-			if (currentContextInterpreter.Interpret(out ContextInterpreter tmpContextInterpreter, true, true)) {
+			if (currentContextInterpreter.Interpret(out ContextInterpreter tmpContextInterpreter, true)) {
 				currentContextInterpreter = tmpContextInterpreter;
 			}
 		}
 	}
 
-	internal bool Interpret(out ContextInterpreter newCtx, bool printErrors = true, bool interactive = false) {
+	internal bool Interpret(out ContextInterpreter newCtx, bool interactive = false) {
 		if (interactive) {
 			if (TopInterpreter.Args[Offset] == "..") {
 				if (DirectParent == null) {
@@ -102,7 +102,7 @@ public class ContextInterpreter : BaseInterpreter {
 				ContextInterpreter subInterpreter = new ContextInterpreter(this, cmdContextAttribute, Offset);
 				cmdContextAttribute.LoadIfNot();
 				if (interactive) {
-					subInterpreter.Interpret(out newCtx, printErrors, interactive);
+					subInterpreter.Interpret(out newCtx, interactive);
 					return newCtx != null;
 				}
 				else {
@@ -135,6 +135,6 @@ public class ContextInterpreter : BaseInterpreter {
 		return false;
 	}
 
-	internal override bool Interpret(bool printErrors = true) => Interpret(out ContextInterpreter _, printErrors, false);
+	internal override bool Interpret(bool printErrors = true) => Interpret(out ContextInterpreter _, false);
 }
 }

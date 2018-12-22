@@ -18,8 +18,8 @@ public class CommandlineOptionInterpreter {
 		Options = options ?? new InterpretingOptions();
 	}
 
-	public void Interpret<T>(Action defaultAction = null) {
-		Interpret(typeof(T), defaultAction);
+	public void Interpret<T>() {
+		Interpret(typeof(T));
 	}
 
 	public bool HexadecimalPreprocessor() {
@@ -32,20 +32,14 @@ public class CommandlineOptionInterpreter {
 		return true;
 	}
 
-	public void Interpret(Type baseContext, Action defaultAction = null) {
-		if (Args.Length == 0 && defaultAction != null) {
-			defaultAction();
-		}
-
-		else {
+	public void Interpret(Type baseContext) {
 			TopContext = baseContext.GetCustomAttribute(typeof(CmdContextAttribute)) as CmdContextAttribute;
 			if (TopContext is null) {
 				throw new InvalidCLIConfigurationException("The Type provided has no CmdContextAttribute");
 			}
 
 			ContextInterpreter contextInterpreter = new ContextInterpreter(this) {
-				UnderlyingContextAttribute =
-					TopContext,
+				UnderlyingContextAttribute = TopContext,
 				Offset = 0
 			};
 
@@ -54,7 +48,7 @@ public class CommandlineOptionInterpreter {
 			if (Args.Length > 0) {
 				if (contextInterpreter.IsParameterEqual(Options.HexOption, Args[0])) {
 					if (HexadecimalPreprocessor()) {
-						Interpret(baseContext, defaultAction);
+						Interpret(baseContext);
 					}
 
 					return;
@@ -67,7 +61,6 @@ public class CommandlineOptionInterpreter {
 			}
 
 			contextInterpreter.Interpret();
-		}
 	}
 }
 }
