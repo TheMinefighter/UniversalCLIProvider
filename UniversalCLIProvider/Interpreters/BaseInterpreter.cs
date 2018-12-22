@@ -91,8 +91,11 @@ public abstract class BaseInterpreter {
 	internal bool IsParameterEqual(string expected, string given, string expectedShortForm = null, bool allowPrefixFree = false) =>
 		IsParameterEqual(expected, given, TopInterpreter.Options.IgnoreParameterCase, expectedShortForm, allowPrefixFree);
 
-	internal static bool IsParameterEqual([NotNull] string expected, [NotNull] string given, bool ignoreCase, string expectedShortForm = null,
+	internal static bool IsParameterEqual([CanBeNull] string expected, [NotNull] string given, bool ignoreCase, string expectedShortForm = null,
 		bool allowPrefixFree = false) {
+		if (expected is null) {
+			return false;
+		}
 		if (ignoreCase) {
 			given = given.ToLower();
 			expected = expected.ToLower();
