@@ -18,8 +18,6 @@ public class ActionInterpreter : BaseInterpreter {
 	public ActionInterpreter(CmdActionAttribute myActionAttribute, BaseInterpreter parent, int offset = 0) : base(parent,
 		myActionAttribute.Name, offset) => UnderlyingAction = myActionAttribute;
 
-	internal override void PrintHelp() { }
-
 	internal void LoadParameters() {
 		if (!_cached) {
 			UnderlyingAction.LoadParametersAndAlias();

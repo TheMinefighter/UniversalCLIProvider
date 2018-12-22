@@ -62,7 +62,6 @@ public abstract class BaseInterpreter {
 		Offset = 0;
 	}
 
-	internal abstract void PrintHelp();
 	internal abstract bool Interpret(bool printErrors = true);
 
 

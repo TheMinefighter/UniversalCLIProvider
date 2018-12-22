@@ -15,7 +15,6 @@ public class ContextInterpreter : BaseInterpreter {
 		attribute.Name,
 		offset) => UnderlyingContextAttribute = attribute;
 
-	internal override void PrintHelp() { }
 
 	internal void InteractiveInterpreter(bool interpretOn = false) {
 		ContextInterpreter currentContextInterpreter = this;

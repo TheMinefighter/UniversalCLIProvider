@@ -19,7 +19,7 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 	protected ManagedConfigurationInterpreter(BaseInterpreter parent, string name, int offset = 0) :
 		base(parent, name, offset) { }
 
-	internal override void PrintHelp() {
+	internal  void PrintHelp() {
 		int maxlength =
 			new int[] {_namespaces.Keys.Select(x => x.Help.Length).Max(), _values.Keys.Select(x => x.Help.Length).Max()}.Max() +
 			1;
