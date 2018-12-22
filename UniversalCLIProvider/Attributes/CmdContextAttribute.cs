@@ -4,29 +4,74 @@ using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
 using UniversalCLIProvider.Internals;
-using UniversalCLIProvider.Attributes;
 using UniversalCLIProvider.Interpreters;
 
 namespace UniversalCLIProvider.Attributes {
 [AttributeUsage(AttributeTargets.Class), UsedImplicitly]
 public class CmdContextAttribute : Attribute {
+	/// <summary>
+	/// The characters forbidden 
+	/// </summary>
 	private static readonly char[] IllegalCharactersInName = {':', '=', ' ', '\'', '\"'};
-	private bool _loaded;
-	public IList<CmdActionAttribute> ctxActions = new List<CmdActionAttribute>();
-	public IList<CmdParameterAttribute> ctxParameters = new List<CmdParameterAttribute>();
-	public ContextDefaultAction DefaultAction;
-	[CanBeNull] public string Description;
-
-	[CanBeNull] public string[] LongDescription;
-
-	[NotNull] public string Name;
-
-	[CanBeNull] public string ShortForm;
-
-	public IList<CmdContextAttribute> subCtx;
+	/// <summary>
+	/// The owner type of this context
+	/// </summary>
 	public TypeInfo UnderlyingType;
 
-	public CmdContextAttribute([NotNull] string name, string description = null, string[] longDescription = null, string[] usageExamples = null,
+	/// <summary>
+	/// If the context has been loaded with the <see cref="Load"/> function
+	/// </summary>
+	private bool _loaded;
+	/// <summary>
+	/// All context parameters of this context, initialized by the <see cref="Load"/> function
+	/// </summary>
+	internal IList<CmdActionAttribute> CtxActions;
+	/// <summary>
+	/// All actions of this context, initialized by the <see cref="Load"/> function
+	/// </summary>
+	internal IList<CmdParameterAttribute> CtxParameters;
+/// <summary>
+/// All subcontexts of this context, initialized by the <see cref="Load"/> function
+/// </summary>
+	public IList<CmdContextAttribute> SubCtx;
+
+	/// <summary>
+	/// The action to be run when no further Arguments are supplied, can easily be set with the defaultActionPreset constructor parameter
+	/// or the <see cref="CmdDefaultActionAttribute"/>
+	/// </summary>
+	[NotNull] public ContextDefaultAction DefaultAction;
+
+	/// <summary>
+	/// The short description of the context, only shown in the help of the parent context
+	/// </summary>
+	/// <remarks>Doing nothing for the root context</remarks>
+	[CanBeNull] public readonly string Description;
+
+	/// <summary>
+/// The Long description of the context, each element in the array represents one paragraph, linebreaks within the paragraph will be created automatically
+/// </summary>
+	[CanBeNull] public readonly string[] LongDescription;
+
+	/// <summary>
+/// The name of the context
+/// </summary>
+	[NotNull] public readonly string Name;
+
+	/// <summary>
+/// The shortform of the context, making it callable with <c>-shortForm</c>
+/// </summary>
+	[CanBeNull] public readonly string ShortForm;
+
+	/// <summary>
+	/// Initializes a new <see cref="CmdContextAttribute"/>
+	/// </summary>
+	/// <param name="name">the name of the newly created context</param>
+	/// <param name="description">The description of the context, defaults to null</param>
+	/// <param name="longDescription">The extended description of the context, each item of the array representing a paragraph, defaults to null</param>
+	/// <param name="shortForm">A shortform for this context</param>
+	/// <param name="defaultActionPreset">The preset for the <see cref="ContextDefaultAction"/>, aka the action to run when no further arguments are supplied</param>
+	/// <exception cref="InvalidCLIConfigurationException">When the CLI is not configured correctly</exception>
+	public CmdContextAttribute([NotNull] string name, string description = null, string[] longDescription = null,
 		string shortForm = null, ContextDefaultActionPreset defaultActionPreset = ContextDefaultActionPreset.Help) {
 #if DEBUG
 
@@ -64,7 +109,9 @@ public class CmdContextAttribute : Attribute {
 		Description = description;
 		ShortForm = shortForm;
 	}
-
+/// <summary>
+/// Loads the context if not loaded yet
+/// </summary>
 	public void LoadIfNot() {
 		if (!_loaded) {
 			Load();
@@ -73,14 +120,20 @@ public class CmdContextAttribute : Attribute {
 		}
 	}
 
-	public void Load() {
-		subCtx = new List<CmdContextAttribute>();
+	/// <summary>
+	/// Loads the context internally, bypassing caching
+	/// </summary>
+	/// <exception cref="InvalidCLIConfigurationException">When the CLI is not configured correctly</exception>
+	private void Load() {
+		SubCtx = new List<CmdContextAttribute>();
+		CtxActions = new List<CmdActionAttribute>();
+		CtxParameters = new List<CmdParameterAttribute>();
 		foreach (TypeInfo nestedSubcontext in UnderlyingType.DeclaredNestedTypes) {
 			CmdContextAttribute contextAttribute = nestedSubcontext.GetCustomAttribute<CmdContextAttribute>();
 			if (contextAttribute != null) {
 				contextAttribute.UnderlyingType = nestedSubcontext;
 				contextAttribute.DefaultAction = this.DefaultAction;
-				subCtx.Add(contextAttribute);
+				SubCtx.Add(contextAttribute);
 			}
 		}
 
@@ -88,7 +141,7 @@ public class CmdContextAttribute : Attribute {
 			CmdParameterAttribute parameterAttribute = memberInfo.GetCustomAttribute<CmdParameterAttribute>();
 			if (parameterAttribute != null) {
 				parameterAttribute.UnderlyingParameter = memberInfo;
-				ctxParameters.Add(parameterAttribute);
+				CtxParameters.Add(parameterAttribute);
 			}
 		}
 
@@ -96,7 +149,7 @@ public class CmdContextAttribute : Attribute {
 			CmdActionAttribute actionAttribute = methodInfo.GetCustomAttribute<CmdActionAttribute>();
 			if (actionAttribute != null) {
 				actionAttribute.UnderlyingMethod = methodInfo;
-				ctxActions.Add(actionAttribute);
+				CtxActions.Add(actionAttribute);
 			}
 
 			CmdDefaultActionAttribute defaultActionAttribute = methodInfo.GetCustomAttribute<CmdDefaultActionAttribute>();

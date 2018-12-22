@@ -93,7 +93,7 @@ public static class HelpGenerators {
 		tw = tw ?? Console.Out;
 		context.LoadIfNot();
 		tw.WriteLine(CommandlineMethods.PadCentered(context.Name, width));
-		if (context.subCtx.Count != 0) {
+		if (context.SubCtx.Count != 0) {
 			if (!(context.LongDescription is null)) {
 				foreach (string s in context.LongDescription) {
 					CommandlineMethods.PrintWithPotentialIndent(s, width, 0, tw);
@@ -103,7 +103,7 @@ public static class HelpGenerators {
 			tw.WriteLine(CommandlineMethods.PadCentered("Contexts", indent));
 		}
 
-		foreach (CmdContextAttribute subCtx in context.subCtx) {
+		foreach (CmdContextAttribute subCtx in context.SubCtx) {
 			if (subCtx.Description is null) {
 				tw.WriteLine(subCtx.Name);
 			}
@@ -112,11 +112,11 @@ public static class HelpGenerators {
 			}
 		}
 
-		if (context.ctxActions.Count != 0) {
+		if (context.CtxActions.Count != 0) {
 			tw.WriteLine(CommandlineMethods.PadCentered("Actions", indent));
 		}
 
-		foreach (CmdActionAttribute action in context.ctxActions) {
+		foreach (CmdActionAttribute action in context.CtxActions) {
 			if (action.LongDescription is null) {
 				tw.WriteLine(action.Name);
 			}

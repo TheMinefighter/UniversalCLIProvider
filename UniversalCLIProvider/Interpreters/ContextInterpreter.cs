@@ -91,7 +91,7 @@ public class ContextInterpreter : BaseInterpreter {
 		}
 
 		string search = TopInterpreter.Args[Offset];
-		foreach (CmdContextAttribute cmdContextAttribute in UnderlyingContextAttribute.subCtx) {
+		foreach (CmdContextAttribute cmdContextAttribute in UnderlyingContextAttribute.SubCtx) {
 			if (IsParameterEqual(cmdContextAttribute.Name, search, interactive)) {
 				if (IncreaseOffset()) {
 					if (interactive) {
@@ -119,7 +119,7 @@ public class ContextInterpreter : BaseInterpreter {
 			}
 		}
 
-		foreach (CmdActionAttribute cmdActionAttribute in UnderlyingContextAttribute.ctxActions) {
+		foreach (CmdActionAttribute cmdActionAttribute in UnderlyingContextAttribute.CtxActions) {
 			if (IsParameterEqual(cmdActionAttribute.Name, search, allowPrefixFree: true)) {
 				IncreaseOffset();
 				ActionInterpreter actionInterpreter = new ActionInterpreter(cmdActionAttribute, this, Offset);
@@ -132,7 +132,7 @@ public class ContextInterpreter : BaseInterpreter {
 			}
 		}
 
-		foreach (CmdParameterAttribute cmdParameterAttribute in UnderlyingContextAttribute.ctxParameters) {
+		foreach (CmdParameterAttribute cmdParameterAttribute in UnderlyingContextAttribute.CtxParameters) {
 			//TODO Implement this
 		}
 
