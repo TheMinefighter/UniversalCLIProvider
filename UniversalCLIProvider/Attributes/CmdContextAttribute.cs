@@ -15,7 +15,7 @@ public class CmdContextAttribute : Attribute {
 	public IList<CmdActionAttribute> ctxActions = new List<CmdActionAttribute>();
 	public IList<CmdParameterAttribute> ctxParameters = new List<CmdParameterAttribute>();
 	public ContextDefaultAction DefaultAction;
-	[NotNull] public string Description;
+	[CanBeNull] public string Description;
 
 	[CanBeNull] public string[] LongDescription;
 
