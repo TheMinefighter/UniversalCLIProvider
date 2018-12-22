@@ -1,6 +1,9 @@
 ﻿using JetBrains.Annotations;
 
 namespace UniversalCLIProvider {
+/// <summary>
+/// Some really basic options for CL interpretation
+/// </summary>
 public class InterpretingOptions {
 	/// <summary>
 	/// Whether the case of parameters shall be ignored
