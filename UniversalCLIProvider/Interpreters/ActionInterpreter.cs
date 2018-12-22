@@ -136,12 +136,12 @@ public class ActionInterpreter : BaseInterpreter {
 					invokationArguments.Add(found, aliasValue);
 				}
 				else if (found.Usage.HasFlag(CmdParameterUsage.SupportDeclaredRaw) &&
-				         CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], parameterType, out object given)) {
+					CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], parameterType, out object given)) {
 					invokationArguments.Add(found, given);
 				}
 				else if (found.Usage.HasFlag(CmdParameterUsage.SupportDeclaredRaw) && parameterType.GetInterfaces().Any(
-					         x => (iEnumerableCache = x).IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>)
-				         )
+						x => (iEnumerableCache = x).IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>)
+					)
 				) {
 					#region Based upon https://stackoverflow.com/a/2493258/6730162 last access 04.03.2018
 
@@ -160,8 +160,8 @@ public class ActionInterpreter : BaseInterpreter {
 						}
 
 						if (IsAlias(out CmdParameterAttribute tmpParameterAttribute, out object _) &&
-						    tmpParameterAttribute.Usage.HasFlag(CmdParameterUsage.SupportDirectAlias) ||
-						    IsParameterDeclaration(out CmdParameterAttribute _)) {
+							tmpParameterAttribute.Usage.HasFlag(CmdParameterUsage.SupportDirectAlias) ||
+							IsParameterDeclaration(out CmdParameterAttribute _)) {
 							break;
 						}
 

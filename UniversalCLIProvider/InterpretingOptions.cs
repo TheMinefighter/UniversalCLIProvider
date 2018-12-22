@@ -12,6 +12,6 @@ public class InterpretingOptions {
 
 	public string PreferredArgumentPrefix = "/";
 
-	[NotNull] public ContextDefaultAction StandardDefaultAction=ContextDefaultAction.PrintHelp();
+	[NotNull] public ContextDefaultAction StandardDefaultAction = ContextDefaultAction.PrintHelp();
 }
 }

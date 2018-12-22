@@ -28,7 +28,7 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 		foreach (CmdConfigurationNamespaceAttribute cmdConfigurationNamespaceAttribute in _namespaces.Keys) {
 			//  TopInterpreter.ConsoleIO.WriteLineToConsole
 			ConsoleStack.Append(cmdConfigurationNamespaceAttribute.Name.PadRight(maxlength) +
-			                    cmdConfigurationNamespaceAttribute.Help);
+				cmdConfigurationNamespaceAttribute.Help);
 			ConsoleStack.Append(Environment.NewLine);
 		}
 

@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
-using UniversalCLIProvider.Attributes;
 
 namespace UniversalCLIProvider.Attributes {
 [AttributeUsage(AttributeTargets.GenericParameter | AttributeTargets.Parameter | AttributeTargets.Field |
-                AttributeTargets.Property), UsedImplicitly]
+	 AttributeTargets.Property), UsedImplicitly]
 //TODO Add Defaults
 public class CmdParameterAttribute : Attribute {
 	private bool _loaded;

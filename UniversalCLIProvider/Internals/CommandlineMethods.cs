@@ -60,9 +60,9 @@ public static class CommandlineMethods {
 		value = null;
 		if (enableCustomCompatSupport) {
 			if (expectedType.IsEnum ||
-			    expectedType.IsGenericType && expectedType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-			    expectedType.GenericTypeArguments.Length == 1 &&
-			    expectedType.GenericTypeArguments[0].IsEnum && Enum.IsDefined(expectedType, source)) {
+				expectedType.IsGenericType && expectedType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
+				expectedType.GenericTypeArguments.Length == 1 &&
+				expectedType.GenericTypeArguments[0].IsEnum && Enum.IsDefined(expectedType, source)) {
 				value = Enum.Parse(expectedType, source);
 				return true;
 			}
@@ -163,10 +163,10 @@ public static class CommandlineMethods {
 
 	public static void WriteColorfulLine(string toWrite, ConsoleColor? foreground = null, ConsoleColor? background = null) {
 		(ConsoleColor, ConsoleColor) backup = (Console.BackgroundColor, Console.ForegroundColor);
-			Console.BackgroundColor = background??Console.BackgroundColor;
-			Console.ForegroundColor = foreground??Console.ForegroundColor;
-			Console.WriteLine(toWrite);
-		 (Console.BackgroundColor, Console.ForegroundColor)= backup;
+		Console.BackgroundColor = background ?? Console.BackgroundColor;
+		Console.ForegroundColor = foreground ?? Console.ForegroundColor;
+		Console.WriteLine(toWrite);
+		(Console.BackgroundColor, Console.ForegroundColor) = backup;
 	}
 }
 }

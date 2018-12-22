@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace UniversalCLIProvider.Attributes {
 [AttributeUsage(AttributeTargets.GenericParameter | AttributeTargets.Parameter | AttributeTargets.Property |
-                AttributeTargets.Field,
+	 AttributeTargets.Field,
 	 AllowMultiple = true), UsedImplicitly]
 public class CmdParameterAliasAttribute : Attribute {
 	[CanBeNull] public readonly string Description;

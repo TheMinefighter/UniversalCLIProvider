@@ -108,7 +108,8 @@ public static class HelpGenerators {
 				tw.WriteLine(subCtx.Name);
 			}
 			else {
-				CommandlineMethods.PrintWithPotentialIndent($"{(subCtx.ShortForm is null ? "" : "-" + subCtx.ShortForm + " | ")}--{subCtx.Name}: {subCtx.Description}", width, indent, tw);
+				CommandlineMethods.PrintWithPotentialIndent(
+					$"{(subCtx.ShortForm is null ? "" : "-" + subCtx.ShortForm + " | ")}--{subCtx.Name}: {subCtx.Description}", width, indent, tw);
 			}
 		}
 
