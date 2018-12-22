@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using UniversalCLIProvider.Attributes;
@@ -63,12 +62,6 @@ public abstract class BaseInterpreter {
 	}
 
 	internal abstract bool Interpret(bool printErrors = true);
-
-
-	public void PrintError(string argName = null) {
-		Console.Write(
-			$"An error occurred while parsing argument {argName ?? Name} use {TopInterpreter.Options.PreferredArgumentPrefix}? for description");
-	}
 
 	internal bool IsParameterDeclaration(out CmdParameterAttribute found,
 		IEnumerable<CmdParameterAttribute> possibleParameters, string search, bool allowPrefixFree = false) {
