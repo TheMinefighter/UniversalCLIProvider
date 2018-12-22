@@ -81,12 +81,7 @@ public class ContextInterpreter : BaseInterpreter {
 
 		newCtx = null;
 		if (TopInterpreter.Args.Length == 0) {
-			if (TopInterpreter.Options.StandardDefaultAction is null) {
-				InteractiveInterpreter(); //TODO Replace with clean code
-			}
-			else {
-				TopInterpreter.Options.StandardDefaultAction.Interpret(this);
-			}
+			UnderlyingContextAttribute.DefaultAction.Interpret(this);
 		}
 
 		string search = TopInterpreter.Args[Offset];
