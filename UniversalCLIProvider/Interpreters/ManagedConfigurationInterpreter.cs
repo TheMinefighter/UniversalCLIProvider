@@ -68,7 +68,20 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 	private enum RootRequirements : byte {
 		RootAllowed = 1 << 0,
 		RootFreeAllowed = 1 << 1,
-		AllAllowed = RootAllowed | RootFreeAllowed
+		BothAllowed = RootAllowed | RootFreeAllowed
 	}
 }
 }
+/* Rethought the way managed configurations will work here my current Proposal:
+Program --config --path PathOfValue --Get
+Wil output the value
+Program --config --path PathOfValue --Set NewValue
+Sets the value
+Program --config --path PathOfValue --Add AdditionalValue
+Adds a value to an ICollection
+Program --config --path PathOfValue --RemoveAt Index
+Removes a value from an ICollection at the given Index
+Program --config --path PathOfValue --Remove element
+Removes all elements from the ICollection where the element equals the described one 
+this might be subject to change
+*/

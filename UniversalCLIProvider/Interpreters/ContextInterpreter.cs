@@ -11,10 +11,8 @@ public class ContextInterpreter : BaseInterpreter {
 
 	internal ContextInterpreter(CommandlineOptionInterpreter top, int offset = 0) : base(top, offset) { }
 
-	internal ContextInterpreter(BaseInterpreter parent, CmdContextAttribute attribute, int offset = 0) : base(parent,
-		attribute.Name,
-		offset) => UnderlyingContextAttribute = attribute;
-
+	internal ContextInterpreter(BaseInterpreter parent, CmdContextAttribute attribute, int offset = 0) : base(parent, attribute.Name, offset) =>
+		UnderlyingContextAttribute = attribute;
 
 	internal void InteractiveInterpreter(bool interpretOn = false) {
 		ContextInterpreter currentContextInterpreter = this;
@@ -30,21 +28,23 @@ public class ContextInterpreter : BaseInterpreter {
 				List<string> arguments = new List<string>();
 				StringBuilder lastStringBuilder = new StringBuilder();
 				bool quoting = false;
-				foreach (char c in Console.ReadLine()) {
-					if (c == '"') {
-						quoting ^= true;
-					}
-					else if (c == ' ' && !quoting) {
-						string tmpString = lastStringBuilder.ToString();
-						if (tmpString != string.Empty) {
-							arguments.Add(tmpString);
-							lastStringBuilder = new StringBuilder();
-						}
+				foreach (char c in Console.ReadLine()) {//TODO Might want to add support for backslashed quotes
+					switch (c) {
+						case '"':
+							quoting ^= true;
+							break;
+						case ' ' when !quoting: {
+							string tmpString = lastStringBuilder.ToString();
+							if (tmpString != string.Empty) {
+								arguments.Add(tmpString);
+								lastStringBuilder = new StringBuilder();
+							}
 
-						//arguments.Add("");
-					}
-					else {
-						lastStringBuilder.Append(c);
+							break;
+						}
+						default:
+							lastStringBuilder.Append(c);
+							break;
 					}
 				}
 
@@ -135,6 +135,6 @@ public class ContextInterpreter : BaseInterpreter {
 		return false;
 	}
 
-	internal override bool Interpret(bool printErrors = true) => Interpret(out ContextInterpreter _, false);
+	internal override bool Interpret(bool printErrors = true) => Interpret(out ContextInterpreter _);
 }
 }
