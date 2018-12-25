@@ -79,6 +79,10 @@ public static class CommandlineMethods {
 				}
 
 				if (!source.StartsWith("\"")) {
+					if (expectedType == typeof(string)) {
+						value = source;
+						return true;
+					}
 					source = "\"" + source + "\"";
 				}
 			}
