@@ -84,4 +84,8 @@ Removes a value from an ICollection at the given Index
 Program --config --path PathOfValue --Remove element
 Removes all elements from the ICollection where the element equals the described one 
 this might be subject to change
+
+Further Ideas: Remove Root Requirements completely
+Quoteless strings will be directly returned
+Support single quote string globally
 */
