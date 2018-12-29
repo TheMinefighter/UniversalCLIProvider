@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using UniversalCLIProvider.Internals;
 using Xunit;
@@ -26,6 +27,10 @@ public class StaticTests {
 	public void GetValueFromString(string src, Type expectedType, bool expectedSuccess, object expectedResult) {
 		bool success = CommandlineMethods.GetValueFromString(src, expectedType, out object result);
 		Assert.Equal(expectedSuccess, success);
+
+		var v = from i in Enumerable.Range(1, 1000)
+			where i.ToString().Sum(x => int.Parse(x.ToString())) == 11
+			select i;
 		if (success) {
 			Assert.Equal(expectedResult, result);
 		}

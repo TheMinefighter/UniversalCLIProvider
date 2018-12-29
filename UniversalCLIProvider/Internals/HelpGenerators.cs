@@ -168,5 +168,13 @@ public static class HelpGenerators {
 	/// <param name="interpreter">The interpreter to use</param>
 	public static void PrintAliasHelp(CmdParameterAliasAttribute alias, BaseInterpreter interpreter) =>
 		AliasHelp(alias, Console.WindowWidth, interpreter.TopInterpreter.Options.DefaultIndent);
+	/// <summary>
+	///  Prints help for an alias
+	/// </summary>
+	/// <param name="alias">The alias to print help for</param>
+	/// <param name="interpreter">The interpreter to use</param>
+	public static void PrintConfigurationContextHelp(CmdConfigurationNamespaceAttribute alias, BaseInterpreter interpreter) =>
+		throw new NotImplementedException("This is a placeholder");
 }
+
 }

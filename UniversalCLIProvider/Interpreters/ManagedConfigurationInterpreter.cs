@@ -59,7 +59,7 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 			}
 		}
 
-		_root.Interpret();
+		_root.Interpret(printErrors);
 		throw new NotImplementedException();
 		return true;
 	}
@@ -88,4 +88,5 @@ this might be subject to change
 Further Ideas: Remove Root Requirements completely
 Quoteless strings will be directly returned
 Support single quote string globally
+Decision has fallen, old namespace based interpretation wil be dropped
 */
