@@ -28,7 +28,7 @@ public class StaticTests {
 		bool success = CommandlineMethods.GetValueFromString(src, expectedType, out object result);
 		Assert.Equal(expectedSuccess, success);
 
-		var v = from i in Enumerable.Range(1, 1000)
+		IEnumerable<int> v = from i in Enumerable.Range(1, 1000)
 			where i.ToString().Sum(x => int.Parse(x.ToString())) == 11
 			select i;
 		if (success) {

@@ -9,20 +9,6 @@ namespace UniversalCLIProvider.Internals {
 ///  Provides Methods needed for basic interpretation tasks
 /// </summary>
 public static class CommandlineMethods {
-//      public static bool GetAliasValue(out object value, CmdParameterAttribute cmdParameterAttribute, string search) {
-//         value = null;
-//         bool success = false;
-//         foreach (CmdParameterAliasAttribute commandlineParameterAlias in cmdParameterAttribute.ParameterAliases) {
-//            if (BaseInterpreter.IsParameterEqual(commandlineParameterAlias.Name, search)) {
-//               success = true;
-//               value = commandlineParameterAlias.Value;
-//               break;
-//            }
-//         }
-//
-//         return success;
-//      }
-
 	/// <summary>
 	///  The nullable types for which <see cref="GetValueFromString" /> overrides quote and null behaviour
 	/// </summary>
@@ -83,6 +69,7 @@ public static class CommandlineMethods {
 						value = source;
 						return true;
 					}
+
 					source = "\"" + source + "\"";
 				}
 			}
@@ -165,6 +152,12 @@ public static class CommandlineMethods {
 		}
 	}
 
+	/// <summary>
+	///  Writes a line in a given color
+	/// </summary>
+	/// <param name="toWrite">The test to write</param>
+	/// <param name="foreground">the new foreground color, null keeps it unchanged, defaults to null</param>
+	/// <param name="background">the new background color, null keeps it unchanged, defaults to null</param>
 	public static void WriteColorfulLine(string toWrite, ConsoleColor? foreground = null, ConsoleColor? background = null) {
 		(ConsoleColor, ConsoleColor) backup = (Console.BackgroundColor, Console.ForegroundColor);
 		Console.BackgroundColor = background ?? Console.BackgroundColor;

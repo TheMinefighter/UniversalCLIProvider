@@ -96,6 +96,7 @@ public abstract class BaseInterpreter {
 		if (expected is null) {
 			return false;
 		}
+
 		if (ignoreCase) {
 			given = given.ToLower();
 			expected = expected.ToLower();

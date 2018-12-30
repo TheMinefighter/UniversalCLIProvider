@@ -33,34 +33,34 @@ public class CommandlineOptionInterpreter {
 	}
 
 	public void Interpret(Type baseContext) {
-			TopContext = baseContext.GetCustomAttribute(typeof(CmdContextAttribute)) as CmdContextAttribute;
-			if (TopContext is null) {
-				throw new InvalidCLIConfigurationException("The Type provided has no CmdContextAttribute");
-			}
+		TopContext = baseContext.GetCustomAttribute(typeof(CmdContextAttribute)) as CmdContextAttribute;
+		if (TopContext is null) {
+			throw new InvalidCLIConfigurationException("The Type provided has no CmdContextAttribute");
+		}
 
-			ContextInterpreter contextInterpreter = new ContextInterpreter(this) {
-				UnderlyingContextAttribute = TopContext,
-				Offset = 0
-			};
+		var contextInterpreter = new ContextInterpreter(this) {
+			UnderlyingContextAttribute = TopContext,
+			Offset = 0
+		};
 
-			contextInterpreter.UnderlyingContextAttribute.UnderlyingType = baseContext.GetTypeInfo();
-			contextInterpreter.UnderlyingContextAttribute.LoadIfNot();
-			if (Args.Length > 0) {
-				if (contextInterpreter.IsParameterEqual(Options.HexOption, Args[0])) {
-					if (HexadecimalPreprocessor()) {
-						Interpret(baseContext);
-					}
-
-					return;
+		contextInterpreter.UnderlyingContextAttribute.UnderlyingType = baseContext.GetTypeInfo();
+		contextInterpreter.UnderlyingContextAttribute.LoadIfNot();
+		if (Args.Length > 0) {
+			if (contextInterpreter.IsParameterEqual(Options.HexOption, Args[0])) {
+				if (HexadecimalPreprocessor()) {
+					Interpret(baseContext);
 				}
 
-				if (contextInterpreter.IsParameterEqual(Options.InteractiveOption, Args[0])) {
-					contextInterpreter.IncreaseOffset();
-					contextInterpreter.InteractiveInterpreter(contextInterpreter.Offset < Args.Length);
-				}
+				return;
 			}
 
-			contextInterpreter.Interpret();
+			if (contextInterpreter.IsParameterEqual(Options.InteractiveOption, Args[0])) {
+				contextInterpreter.IncreaseOffset();
+				contextInterpreter.InteractiveInterpreter(contextInterpreter.Offset < Args.Length);
+			}
+		}
+
+		contextInterpreter.Interpret();
 	}
 }
 }

@@ -26,9 +26,9 @@ public class ContextInterpreter : BaseInterpreter {
 			else {
 				Console.Write(string.Join(" ", currentContextInterpreter.Path) + ">");
 				List<string> arguments = new List<string>();
-				StringBuilder lastStringBuilder = new StringBuilder();
+				var lastStringBuilder = new StringBuilder();
 				bool quoting = false;
-				foreach (char c in Console.ReadLine()) {//TODO Might want to add support for backslashed quotes
+				foreach (char c in Console.ReadLine()) { //TODO Might want to add support for backslashed quotes
 					switch (c) {
 						case '"':
 							quoting ^= true;
@@ -71,7 +71,7 @@ public class ContextInterpreter : BaseInterpreter {
 					Environment.Exit(0);
 				}
 				else {
-					ContextInterpreter parentInterpreter = DirectParent as ContextInterpreter;
+					var parentInterpreter = DirectParent as ContextInterpreter;
 					parentInterpreter.Reset();
 					newCtx = parentInterpreter;
 					return true;
@@ -99,7 +99,7 @@ public class ContextInterpreter : BaseInterpreter {
 					}
 				}
 
-				ContextInterpreter subInterpreter = new ContextInterpreter(this, cmdContextAttribute, Offset);
+				var subInterpreter = new ContextInterpreter(this, cmdContextAttribute, Offset);
 				cmdContextAttribute.LoadIfNot();
 				if (interactive) {
 					subInterpreter.Interpret(out newCtx, interactive);
@@ -116,7 +116,7 @@ public class ContextInterpreter : BaseInterpreter {
 		foreach (CmdActionAttribute cmdActionAttribute in UnderlyingContextAttribute.CtxActions) {
 			if (IsParameterEqual(cmdActionAttribute.Name, search, allowPrefixFree: true)) {
 				IncreaseOffset();
-				ActionInterpreter actionInterpreter = new ActionInterpreter(cmdActionAttribute, this, Offset);
+				var actionInterpreter = new ActionInterpreter(cmdActionAttribute, this, Offset);
 				if (!actionInterpreter.Interpret()) {
 					HelpGenerators.PrintActionHelp(cmdActionAttribute, this);
 				}

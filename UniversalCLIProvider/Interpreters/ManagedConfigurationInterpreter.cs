@@ -10,7 +10,7 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 	private string _configurationRootName;
 	private string[] _contextTrace;
 	private Dictionary<CmdConfigurationNamespaceAttribute, MemberInfo> _namespaces;
-	private ConfigurationNamespaceInterpreter _root;
+	private CmdConfigurationNamespaceAttribute _root;
 	private RootRequirements _rootRequired;
 	private Dictionary<CmdConfigurationValueAttribute, MemberInfo> _values;
 
@@ -19,16 +19,16 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 	protected ManagedConfigurationInterpreter(BaseInterpreter parent, string name, int offset = 0) :
 		base(parent, name, offset) { }
 
-	internal  void PrintHelp() {
+	internal void PrintHelp() {
 		int maxlength =
-			new int[] {_namespaces.Keys.Select(x => x.Help.Length).Max(), _values.Keys.Select(x => x.Help.Length).Max()}.Max() +
+			new int[] {_namespaces.Keys.Select(x => x.Description.Length).Max(), _values.Keys.Select(x => x.Help.Length).Max()}.Max() +
 			1;
-		StringBuilder ConsoleStack = new StringBuilder(); //TODO replace with textwriter
+		var ConsoleStack = new StringBuilder(); //TODO replace with textwriter
 		Console.WriteLine($"Syntax: {Path} ");
 		foreach (CmdConfigurationNamespaceAttribute cmdConfigurationNamespaceAttribute in _namespaces.Keys) {
 			//  TopInterpreter.ConsoleIO.WriteLineToConsole
 			ConsoleStack.Append(cmdConfigurationNamespaceAttribute.Name.PadRight(maxlength) +
-				cmdConfigurationNamespaceAttribute.Help);
+				cmdConfigurationNamespaceAttribute.Description);
 			ConsoleStack.Append(Environment.NewLine);
 		}
 
@@ -74,6 +74,8 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 }
 /* Rethought the way managed configurations will work here my current Proposal:
 Program --config --path PathOfValue --Get
+Wil output the value
+Program --config --path PathOfValueOrCtx --Help
 Wil output the value
 Program --config --path PathOfValue --Set NewValue
 Sets the value

@@ -28,7 +28,7 @@ public class ActionInterpreter : BaseInterpreter {
 	private void LoadParametersWithoutCache() {
 		UnderlyingAction.Parameters = new List<CmdParameterAttribute>();
 		foreach (ParameterInfo parameterInfo in UnderlyingAction.UnderlyingMethod.GetParameters()) {
-			CmdParameterAttribute cmdParameterAttribute = parameterInfo.GetCustomAttribute(typeof(CmdParameterAttribute)) as CmdParameterAttribute;
+			var cmdParameterAttribute = parameterInfo.GetCustomAttribute(typeof(CmdParameterAttribute)) as CmdParameterAttribute;
 			if (cmdParameterAttribute is null) {
 				continue;
 			}

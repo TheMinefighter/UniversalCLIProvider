@@ -144,7 +144,7 @@ public class CmdContextAttribute : Attribute {
 		CtxActions = new List<CmdActionAttribute>();
 		CtxParameters = new List<CmdParameterAttribute>();
 		foreach (TypeInfo nestedSubcontext in UnderlyingType.DeclaredNestedTypes) {
-			CmdContextAttribute contextAttribute = nestedSubcontext.GetCustomAttribute<CmdContextAttribute>();
+			var contextAttribute = nestedSubcontext.GetCustomAttribute<CmdContextAttribute>();
 			if (contextAttribute != null) {
 				contextAttribute.UnderlyingType = nestedSubcontext;
 				contextAttribute.DefaultAction = DefaultAction;
@@ -153,7 +153,7 @@ public class CmdContextAttribute : Attribute {
 		}
 
 		foreach (MemberInfo memberInfo in UnderlyingType.DeclaredFields.Cast<MemberInfo>().Concat(UnderlyingType.DeclaredProperties)) {
-			CmdParameterAttribute parameterAttribute = memberInfo.GetCustomAttribute<CmdParameterAttribute>();
+			var parameterAttribute = memberInfo.GetCustomAttribute<CmdParameterAttribute>();
 			if (parameterAttribute != null) {
 				parameterAttribute.UnderlyingParameter = memberInfo;
 				CtxParameters.Add(parameterAttribute);
@@ -161,13 +161,13 @@ public class CmdContextAttribute : Attribute {
 		}
 
 		foreach (MethodInfo methodInfo in UnderlyingType.DeclaredMethods) {
-			CmdActionAttribute actionAttribute = methodInfo.GetCustomAttribute<CmdActionAttribute>();
+			var actionAttribute = methodInfo.GetCustomAttribute<CmdActionAttribute>();
 			if (actionAttribute != null) {
 				actionAttribute.UnderlyingMethod = methodInfo;
 				CtxActions.Add(actionAttribute);
 			}
 
-			CmdDefaultActionAttribute defaultActionAttribute = methodInfo.GetCustomAttribute<CmdDefaultActionAttribute>();
+			var defaultActionAttribute = methodInfo.GetCustomAttribute<CmdDefaultActionAttribute>();
 			if (defaultActionAttribute != null) {
 				if (methodInfo.GetParameters().Length == defaultActionAttribute.Parameters.Length) {
 					DefaultAction = new ContextDefaultAction(() => methodInfo.Invoke(null, defaultActionAttribute.Parameters));

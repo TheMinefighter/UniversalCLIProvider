@@ -20,7 +20,7 @@ public static class HexArgumentEncoding {
 	public static string ToHexArgumentString([NotNull] string[] originalArguments, [CanBeNull] Encoding encoding = null) {
 		encoding = encoding ?? Encoding.UTF8;
 		int typicalEncodingLength = encoding.GetByteCount("s");
-		StringBuilder stringBuilder =
+		var stringBuilder =
 			new StringBuilder(typicalEncodingLength * originalArguments.Sum(x => x.Length) + originalArguments.Length * 8 + 8);
 		stringBuilder.Append(encoding.CodePage.ToString("x8"));
 		foreach (string argument in originalArguments) {

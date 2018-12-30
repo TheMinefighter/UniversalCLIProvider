@@ -28,7 +28,7 @@ public static class HelpGenerators {
 	private static void ActionHelp([NotNull] CmdActionAttribute action, int width, int indent = 3, TextWriter tw = null) {
 		tw = tw ?? Console.Out;
 		action.LoadParametersAndAlias();
-		StringBuilder helpBuilder = new StringBuilder();
+		var helpBuilder = new StringBuilder();
 		helpBuilder.Append(CommandlineMethods.PadCentered(action.Name, width));
 		if (!(action.LongDescription is null)) {
 			foreach (string s in action.LongDescription) {
@@ -168,6 +168,7 @@ public static class HelpGenerators {
 	/// <param name="interpreter">The interpreter to use</param>
 	public static void PrintAliasHelp(CmdParameterAliasAttribute alias, BaseInterpreter interpreter) =>
 		AliasHelp(alias, Console.WindowWidth, interpreter.TopInterpreter.Options.DefaultIndent);
+
 	/// <summary>
 	///  Prints help for an alias
 	/// </summary>
@@ -176,5 +177,4 @@ public static class HelpGenerators {
 	public static void PrintConfigurationContextHelp(CmdConfigurationNamespaceAttribute alias, BaseInterpreter interpreter) =>
 		throw new NotImplementedException("This is a placeholder");
 }
-
 }
