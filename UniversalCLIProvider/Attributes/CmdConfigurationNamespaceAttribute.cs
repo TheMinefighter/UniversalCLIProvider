@@ -28,13 +28,12 @@ public class CmdConfigurationNamespaceAttribute : Attribute {
 			List<CmdConfigurationValueAttribute> newValues = new List<CmdConfigurationValueAttribute>();
 			foreach (PropertyOrFieldInfo propertyOrFieldInfo in _underlyingType.DeclaredPropertiesAndFields()) {
 				var attribute = propertyOrFieldInfo.GetCustomAttribute<CmdConfigurationValueAttribute>();
-				if (attribute is null) { continue;
-				
-					
-				}
-				
+				if (attribute is null) continue;
+				attribute.UnderlyingPropertyOrFieldInfo = propertyOrFieldInfo;
+				newValues.Add(attribute);
 			}
 
+			_configurationValues = newValues.ToArray();
 			_loaded = true;
 		}
 	}

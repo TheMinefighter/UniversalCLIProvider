@@ -59,7 +59,7 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 			}
 		}
 
-		_root.Interpret(printErrors);
+		//_root.Interpret(printErrors);
 		throw new NotImplementedException();
 		return true;
 	}
