@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using UniversalCLIProvider.Attributes;
+using UniversalCLIProvider.Internals;
 
 namespace UniversalCLIProvider.Interpreters {
 public class ManagedConfigurationInterpreter : BaseInterpreter {
@@ -11,39 +11,15 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 	private string[] _contextTrace;
 	private Dictionary<CmdConfigurationNamespaceAttribute, MemberInfo> _namespaces;
 	private CmdConfigurationNamespaceAttribute _root;
-	private RootRequirements _rootRequired;
 	private Dictionary<CmdConfigurationValueAttribute, MemberInfo> _values;
 
-	protected ManagedConfigurationInterpreter(CommandlineOptionInterpreter top, int offset = 0) : base(top, offset) { }
-
-	protected ManagedConfigurationInterpreter(BaseInterpreter parent, string name, int offset = 0) :
-		base(parent, name, offset) { }
-
-	internal void PrintHelp() {
-		int maxlength =
-			new int[] {_namespaces.Keys.Select(x => x.Description.Length).Max(), _values.Keys.Select(x => x.Help.Length).Max()}.Max() +
-			1;
-		var ConsoleStack = new StringBuilder(); //TODO replace with textwriter
-		Console.WriteLine($"Syntax: {Path} ");
-		foreach (CmdConfigurationNamespaceAttribute cmdConfigurationNamespaceAttribute in _namespaces.Keys) {
-			//  TopInterpreter.ConsoleIO.WriteLineToConsole
-			ConsoleStack.Append(cmdConfigurationNamespaceAttribute.Name.PadRight(maxlength) +
-				cmdConfigurationNamespaceAttribute.Description);
-			ConsoleStack.Append(Environment.NewLine);
-		}
-
-		Console.Write(ConsoleStack.ToString());
-		throw new NotImplementedException();
-	}
+	protected ManagedConfigurationInterpreter(CommandlineOptionInterpreter top, CmdConfigurationNamespaceAttribute root, int offset = 0) : base(top,
+		offset) {
+		_root = root; }
 
 	internal override bool Interpret(bool printErrors = true) {
-		if (Offset == TopInterpreter.Args.Length || IsParameterEqual("?", TopInterpreter.Args[Offset], "?")) {
-			if (printErrors) {
-				PrintHelp();
-			}
-			else {
-				return false;
-			}
+		if (Offset == TopInterpreter.Args.Length || IsParameterEqual("help", TopInterpreter.Args[Offset], "?")) {
+			HelpGenerators.PrintConfigurationContextHelp(_root,this);
 		}
 
 		_contextTrace = TopInterpreter.Args[Offset].Split('.').Select(x => x.ToLower()).ToArray();
@@ -62,13 +38,6 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 		//_root.Interpret(printErrors);
 		throw new NotImplementedException();
 		return true;
-	}
-
-	[Flags]
-	private enum RootRequirements : byte {
-		RootAllowed = 1 << 0,
-		RootFreeAllowed = 1 << 1,
-		BothAllowed = RootAllowed | RootFreeAllowed
 	}
 }
 }
@@ -90,5 +59,5 @@ this might be subject to change
 Further Ideas: Remove Root Requirements completely
 Quoteless strings will be directly returned
 Support single quote string globally
-Decision has fallen, old namespace based interpretation wil be dropped
+Decision has fallen, old namespace based interpretation wil be dropped-> done
 */
