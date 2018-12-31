@@ -1,38 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using UniversalCLIProvider.Attributes;
 using UniversalCLIProvider.Internals;
 
 namespace UniversalCLIProvider.Interpreters {
 public class ManagedConfigurationInterpreter : BaseInterpreter {
-	private string _configurationRootName;
-	private string[] _contextTrace;
-	private Dictionary<CmdConfigurationNamespaceAttribute, MemberInfo> _namespaces;
-	private CmdConfigurationNamespaceAttribute _root;
-	private Dictionary<CmdConfigurationValueAttribute, MemberInfo> _values;
+	private readonly CmdConfigurationNamespaceAttribute _root;
 
 	protected ManagedConfigurationInterpreter(CommandlineOptionInterpreter top, CmdConfigurationNamespaceAttribute root, int offset = 0) : base(top,
-		offset) {
-		_root = root; }
+		offset) => _root = root;
 
 	internal override bool Interpret(bool printErrors = true) {
 		if (Offset == TopInterpreter.Args.Length || IsParameterEqual("help", TopInterpreter.Args[Offset], "?")) {
-			HelpGenerators.PrintConfigurationContextHelp(_root,this);
-		}
-
-		_contextTrace = TopInterpreter.Args[Offset].Split('.').Select(x => x.ToLower()).ToArray();
-		if (_rootRequired.HasFlag(RootRequirements.RootAllowed)) {
-			if (_contextTrace[0].Equals(_configurationRootName, StringComparison.OrdinalIgnoreCase)) {
-				Offset++;
-			}
-			else {
-				if (!_rootRequired.HasFlag(RootRequirements.RootFreeAllowed)) {
-					Console.WriteLine($"Expected token (\"{_configurationRootName}\") not found");
-					return false;
-				}
-			}
+			HelpGenerators.PrintConfigurationContextHelp(_root, this);
 		}
 
 		//_root.Interpret(printErrors);
