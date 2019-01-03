@@ -77,8 +77,7 @@ public static class HexArgumentEncoding {
 			}
 
 			byte[] rawArgument = new byte[proposedLength];
-			for (int i = 0; i < proposedLength; i++) {
-				//TODO Can be optimized later (dual counter)
+			for (int i = 0; i < proposedLength; i++) { //TODO Can be optimized later (dual counter)
 				rawArgument[i] = byte.Parse(arg.Substring(currentOffset, 2), NumberStyles.HexNumber);
 				currentOffset += 2;
 			}

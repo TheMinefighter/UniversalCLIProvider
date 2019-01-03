@@ -39,9 +39,7 @@ public abstract class CmdRootContext {
 	public abstract class SendTo {
 		[CmdAction("Set")]
 		public static void SetSendTo(
-			[CmdParameter("Enabled"), CmdParameterAlias("Enable", true),
-			 CmdParameterAlias("Disable", false)]
-			bool enable = true) { }
+			[CmdParameter("Enabled"), CmdParameterAlias("Enable", true), CmdParameterAlias("Disable", false)] bool enable = true) { }
 
 		[CmdAction("Get")]
 		public static void GetSendTo() { }

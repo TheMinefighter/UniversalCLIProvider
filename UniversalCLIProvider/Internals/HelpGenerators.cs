@@ -172,9 +172,21 @@ public static class HelpGenerators {
 	/// <summary>
 	///  Prints help for an alias
 	/// </summary>
-	/// <param name="alias">The alias to print help for</param>
+	/// <param name="namespaceAttribute">The alias to print help for</param>
 	/// <param name="interpreter">The interpreter to use</param>
-	public static void PrintConfigurationContextHelp(CmdConfigurationNamespaceAttribute alias, BaseInterpreter interpreter) =>
+	/// <param name="showGenericConfigurationInfo"></param>
+	public static void PrintConfigurationContextHelp(CmdConfigurationNamespaceAttribute namespaceAttribute, BaseInterpreter interpreter,
+		bool showGenericConfigurationInfo = false) =>
+		throw new NotImplementedException("This is a placeholder");
+
+	/// <summary>
+	///  Prints help for an alias
+	/// </summary>
+	/// <param name="valueAttribute">The alias to print help for</param>
+	/// <param name="interpreter">The interpreter to use</param>
+	/// <param name="showGenericConfigurationInfo"></param>
+	public static void PrintConfigurationValueHelp(CmdConfigurationValueAttribute valueAttribute, BaseInterpreter interpreter,
+		bool showGenericConfigurationInfo = false) =>
 		throw new NotImplementedException("This is a placeholder");
 }
 }

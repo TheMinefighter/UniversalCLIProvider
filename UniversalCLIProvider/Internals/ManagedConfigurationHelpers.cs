@@ -7,16 +7,16 @@ using Newtonsoft.Json;
 
 namespace UniversalCLIProvider.Internals {
 public static class ManagedConfigurationHelpers {
-	public static bool ResolvePathRecursive([CanBeNull] string path, [NotNull] object item, out PropertyInfo prop, out object[] requiredIndexers,
-		out object newObject) {
+	public static bool ResolvePathRecursive([NotNull] string path, [NotNull] TypeInfo typeInfoOfItem, ref object currentItem, out PropertyInfo prop,
+		out object[] requiredIndexers,
+		out PropertyInfo lastNonIndexer) {
 		prop = null;
-		newObject = null;
 		requiredIndexers = null;
+		lastNonIndexer = null;
 		path = path.Trim();
-		TypeInfo typeInfoOfItem = item.GetType().GetTypeInfo();
 		string remainingPath = null;
 		if (path.StartsWith("[")) {
-			if (!ResolveIndexerInPath(path, item, typeInfoOfItem, ref prop, ref requiredIndexers, out remainingPath)) {
+			if (!ResolveIndexerInPath(path, typeInfoOfItem, ref prop, ref requiredIndexers, out remainingPath)) {
 				return false;
 			}
 		}
@@ -36,25 +36,32 @@ public static class ManagedConfigurationHelpers {
 			}
 
 			string currentPath = endOfCurrentBlock != -1 ? path.Substring(0, endOfCurrentBlock) : path;
-
 			prop = typeInfoOfItem.GetUnderlyingTypes().SelectMany(x => x.DeclaredProperties)
 				.FirstOrDefault(x => x.Name.Equals(currentPath, StringComparison.OrdinalIgnoreCase));
 			if (prop is null) {
 				return false;
 			}
+
+			lastNonIndexer = prop;
 		}
 
-		if (!(remainingPath is null)) {
-			object newItem;
+		if (!string.IsNullOrEmpty(remainingPath)) { //Initiating the next recursive step
 			try {
-				newItem = prop.GetValue(item);
+				currentItem = requiredIndexers is null
+					? prop.GetValue(currentItem, requiredIndexers)
+					: prop.GetValue(currentItem); //Evaluating props value when another recursive step shall be performed
 			}
 			catch (Exception) {
 				return false;
 			}
 
-			if (!ResolvePathRecursive(remainingPath, newItem, out prop, out requiredIndexers, out newObject)) {
+			if (!ResolvePathRecursive(remainingPath, typeInfoOfItem, ref currentItem, out prop, out requiredIndexers,
+				out PropertyInfo possibleLastNonIndexer)) {
 				return false;
+			}
+
+			if (!(possibleLastNonIndexer is null)) {
+				lastNonIndexer = possibleLastNonIndexer;
 			}
 		}
 
@@ -65,14 +72,13 @@ public static class ManagedConfigurationHelpers {
 	///  Resolves a given indexing operator in a path
 	/// </summary>
 	/// <param name="path">The path starting with a [</param>
-	/// <param name="item">The item to which the indexing operator should be applied to</param>
-	/// <param name="typeInfoOfItem">The <see cref="TypeInfo" /> of the <paramref name="item" /></param>
+	/// <param name="typeInfoOfItem">The <see cref="TypeInfo" /> of the item to which indexer shall be resolved</param>
 	/// <param name="prop">The resolved indexing property</param>
 	/// <param name="requiredIndexers">The indexing operators to be used</param>
 	/// <param name="remainingPath">The path remaining to be resolved later on</param>
 	/// <returns>Whether the operation were successful</returns>
-	private static bool ResolveIndexerInPath([NotNull] string path, [NotNull] object item, [NotNull] TypeInfo typeInfoOfItem,
-		ref PropertyInfo prop, ref object[] requiredIndexers, out string remainingPath) {
+	private static bool ResolveIndexerInPath([NotNull] string path, [NotNull] TypeInfo typeInfoOfItem, ref PropertyInfo prop,
+		ref object[] requiredIndexers, out string remainingPath) {
 		remainingPath = null;
 		int endOfIndexer = path.IndexOf(']');
 		if (endOfIndexer == -1) {
@@ -124,9 +130,8 @@ public static class ManagedConfigurationHelpers {
 		if (!src.Contains(',')) {
 			result = new[] {src};
 			return true;
-		}
+		} //TODO Implement
 
-		//TODO Implement
 		throw new NotImplementedException("Multiple Indexer parameters haven't been implemented yet");
 	}
 
