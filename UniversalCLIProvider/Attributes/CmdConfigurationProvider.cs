@@ -12,7 +12,7 @@ public class CmdConfigurationProviderAttribute : Attribute {
 	[CanBeNull] public string ShortForm;
 	public PropertyOrFieldInfo UnderlyingPropertyOrField;
 	public CmdConfigurationNamespaceAttribute Root;
-	public CmdConfigurationProviderAttribute([CanBeNull] string shortForm, [NotNull] string name) {
+	public CmdConfigurationProviderAttribute([NotNull] string name, [CanBeNull] string shortForm=null) {
 		this.ShortForm = shortForm;
 		this.Name = name;
 	}

@@ -2,7 +2,7 @@ using System;
 using UniversalCLIProvider.Attributes;
 
 namespace ReferenceUsage {
-[CmdContext("ReferenceUsage")]
+[CmdContext("ReferenceUsage",defaultActionPreset: ContextDefaultActionPreset.Interactive)]
 public abstract class CmdRootContext {
 	public enum ATestEnum {
 		State1,
@@ -44,5 +44,8 @@ public abstract class CmdRootContext {
 		[CmdAction("Get")]
 		public static void GetSendTo() { }
 	}
+
+	[CmdConfigurationProvider("cfg")]
+	public ReferenceConfig Cfg { get; set; } = new ReferenceConfig();
 }
 }

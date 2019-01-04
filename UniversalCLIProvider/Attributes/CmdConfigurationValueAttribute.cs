@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 using PropertyOrFieldInfoPackage;
 
 namespace UniversalCLIProvider.Attributes {
-[AttributeUsage(AttributeTargets.Parameter), UsedImplicitly]
+[AttributeUsage(AttributeTargets.Property|AttributeTargets.Field), UsedImplicitly]
 public class CmdConfigurationValueAttribute : Attribute {
 	public string[] LongDescription;
 	public string Description;
@@ -11,7 +11,7 @@ public class CmdConfigurationValueAttribute : Attribute {
 	public string Name;
 	internal PropertyOrFieldInfo UnderlyingPropertyOrFieldInfo;
 
-	public CmdConfigurationValueAttribute(string description = null, string[] longDescription = null, bool isReadonly = false, string name = null) {
+	public CmdConfigurationValueAttribute(string name, string description = null, string[] longDescription = null, bool isReadonly = false) {
 		Name = name;
 		IsReadonly = isReadonly;
 		Description = description;

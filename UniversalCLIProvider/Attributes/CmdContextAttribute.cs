@@ -10,11 +10,7 @@ using UniversalCLIProvider.Interpreters;
 namespace UniversalCLIProvider.Attributes {
 [AttributeUsage(AttributeTargets.Class), UsedImplicitly]
 public class CmdContextAttribute : Attribute {
-	public enum ContextDefaultActionPreset : byte {
-		Help,
-		Exit,
-		Interactive
-	}
+
 
 	/// <summary>
 	///  The characters forbidden
@@ -159,24 +155,23 @@ public class CmdContextAttribute : Attribute {
 			}
 		}
 
-		foreach (PropertyOrFieldInfo memberInfo in UnderlyingType.DeclaredPropertiesAndFields()) {
-			var parameterAttribute = memberInfo.GetCustomAttribute<CmdParameterAttribute>();
+		foreach (PropertyOrFieldInfo propertyOrField in UnderlyingType.DeclaredPropertiesAndFields()) {
+			var parameterAttribute = propertyOrField.MemberInfo.GetCustomAttribute<CmdParameterAttribute>();
 			if (parameterAttribute != null) {
-				parameterAttribute.UnderlyingParameter = memberInfo;
+				parameterAttribute.UnderlyingParameter = propertyOrField;
 				CtxParameters.Add(parameterAttribute);
 			}
 
-			var configurationProviderAttribute = memberInfo.GetCustomAttribute<CmdConfigurationProviderAttribute>();
+			var configurationProviderAttribute = propertyOrField.MemberInfo.GetCustomAttribute<CmdConfigurationProviderAttribute>();
 			if (!(configurationProviderAttribute is null)) {
-				configurationProviderAttribute.UnderlyingPropertyOrField = memberInfo;
+				configurationProviderAttribute.UnderlyingPropertyOrField = propertyOrField;
 				configurationProviderAttribute.Root =
 					configurationProviderAttribute.UnderlyingPropertyOrField.ValueType.GetCustomAttribute<CmdConfigurationNamespaceAttribute>();
 #if DEBUG
-				
-
 				if (configurationProviderAttribute.Root is null) {
-					throw new InvalidCLIConfigurationException($"The type of the property/field \"{memberInfo.Name}\", which is marked with a CmdConfigurationProviderAttribute, ({configurationProviderAttribute.UnderlyingPropertyOrField.ValueType}) has no CmdConfigurationNamespaceAttribute as required.");
-				}#endif
+					throw new InvalidCLIConfigurationException($"The type of the property/field \"{propertyOrField.Name}\", which is marked with a CmdConfigurationProviderAttribute, ({configurationProviderAttribute.UnderlyingPropertyOrField.ValueType}) has no CmdConfigurationNamespaceAttribute as required.");
+				}
+#endif
 				CfgProviders.Add(configurationProviderAttribute);
 			}
 		}

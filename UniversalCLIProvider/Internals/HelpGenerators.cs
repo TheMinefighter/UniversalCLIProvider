@@ -100,7 +100,7 @@ public static class HelpGenerators {
 				}
 			}
 
-			tw.WriteLine(CommandlineMethods.PadCentered("Contexts", indent));
+			tw.Write(CommandlineMethods.PadCentered("Contexts", width));
 		}
 
 		foreach (CmdContextAttribute subCtx in context.SubCtx) {
@@ -114,7 +114,7 @@ public static class HelpGenerators {
 		}
 
 		if (context.CtxActions.Count != 0) {
-			tw.WriteLine(CommandlineMethods.PadCentered("Actions", indent));
+			tw.Write(CommandlineMethods.PadCentered("Actions", width));
 		}
 
 		foreach (CmdActionAttribute action in context.CtxActions) {

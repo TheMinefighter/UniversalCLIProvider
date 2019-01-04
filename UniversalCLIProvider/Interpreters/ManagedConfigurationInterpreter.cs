@@ -85,6 +85,10 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 				Console.WriteLine(e);
 				return false;
 			}
+
+			if (_referenceToObject is IConfigurationRoot iCfgRoot) {
+				iCfgRoot.Save();
+			}
 			return true;
 			//TODO Remove and Add missing
 		}

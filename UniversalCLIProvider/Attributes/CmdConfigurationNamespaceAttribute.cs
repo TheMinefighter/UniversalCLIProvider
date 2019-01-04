@@ -15,7 +15,7 @@ public class CmdConfigurationNamespaceAttribute : Attribute {
 	public string[] LongDescription;
 	public string Name;
 
-	public CmdConfigurationNamespaceAttribute(string name, bool isReadonly, string description, string[] longDescription) {
+	public CmdConfigurationNamespaceAttribute(string name, string description, string[] longDescription=null, bool isReadonly=false) {
 		IsReadonly = isReadonly;
 		Name = name;
 		Description = description;
