@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
+using PropertyOrFieldInfoPackage;
 using UniversalCLIProvider.Internals;
 using UniversalCLIProvider.Interpreters;
 
@@ -56,6 +57,11 @@ public class CmdContextAttribute : Attribute {
 	///  All actions of this context, initialized by the <see cref="Load" /> function
 	/// </summary>
 	internal IList<CmdParameterAttribute> CtxParameters;
+
+	/// <summary>
+	/// All configuration providers of this context, initialized by the <see cref="Load" /> function
+	/// </summary>
+	internal IList<CmdConfigurationProviderAttribute> CfgProviders;
 
 	/// <summary>
 	///  The action to be run when no further Arguments are supplied, can easily be set with the defaultActionPreset constructor parameter
@@ -142,6 +148,7 @@ public class CmdContextAttribute : Attribute {
 	private void Load() {
 		SubCtx = new List<CmdContextAttribute>();
 		CtxActions = new List<CmdActionAttribute>();
+		CfgProviders = new List<CmdConfigurationProviderAttribute>();
 		CtxParameters = new List<CmdParameterAttribute>();
 		foreach (TypeInfo nestedSubcontext in UnderlyingType.DeclaredNestedTypes) {
 			var contextAttribute = nestedSubcontext.GetCustomAttribute<CmdContextAttribute>();
@@ -152,11 +159,25 @@ public class CmdContextAttribute : Attribute {
 			}
 		}
 
-		foreach (MemberInfo memberInfo in UnderlyingType.DeclaredFields.Cast<MemberInfo>().Concat(UnderlyingType.DeclaredProperties)) {
+		foreach (PropertyOrFieldInfo memberInfo in UnderlyingType.DeclaredPropertiesAndFields()) {
 			var parameterAttribute = memberInfo.GetCustomAttribute<CmdParameterAttribute>();
 			if (parameterAttribute != null) {
 				parameterAttribute.UnderlyingParameter = memberInfo;
 				CtxParameters.Add(parameterAttribute);
+			}
+
+			var configurationProviderAttribute = memberInfo.GetCustomAttribute<CmdConfigurationProviderAttribute>();
+			if (!(configurationProviderAttribute is null)) {
+				configurationProviderAttribute.UnderlyingPropertyOrField = memberInfo;
+				configurationProviderAttribute.Root =
+					configurationProviderAttribute.UnderlyingPropertyOrField.ValueType.GetCustomAttribute<CmdConfigurationNamespaceAttribute>();
+#if DEBUG
+				
+
+				if (configurationProviderAttribute.Root is null) {
+					throw new InvalidCLIConfigurationException($"The type of the property/field \"{memberInfo.Name}\", which is marked with a CmdConfigurationProviderAttribute, ({configurationProviderAttribute.UnderlyingPropertyOrField.ValueType}) has no CmdConfigurationNamespaceAttribute as required.");
+				}#endif
+				CfgProviders.Add(configurationProviderAttribute);
 			}
 		}
 

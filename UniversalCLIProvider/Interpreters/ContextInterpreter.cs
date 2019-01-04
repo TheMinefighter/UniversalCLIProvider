@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using UniversalCLIProvider.Attributes;
 using UniversalCLIProvider.Internals;
@@ -126,6 +127,12 @@ public class ContextInterpreter : BaseInterpreter {
 			}
 		}
 
+		foreach (CmdConfigurationProviderAttribute provider in UnderlyingContextAttribute.CfgProviders) {
+			if (IsParameterEqual(provider.Name,search, provider.ShortForm,true)) {
+				var cfgInterpreter= new ManagedConfigurationInterpreter(TopInterpreter,provider.Root,provider.UnderlyingPropertyOrField.GetValue(null),provider.UnderlyingPropertyOrField.ValueType.GetTypeInfo());
+				cfgInterpreter.Interpret();
+			}
+		}
 		foreach (CmdParameterAttribute cmdParameterAttribute in UnderlyingContextAttribute.CtxParameters) {
 			//TODO Implement this
 		}

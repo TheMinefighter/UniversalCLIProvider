@@ -8,14 +8,14 @@ namespace UniversalCLIProvider.Interpreters {
 public class ManagedConfigurationInterpreter : BaseInterpreter {
 	private readonly CmdConfigurationNamespaceAttribute _root;
 	private readonly object _referenceToObject;
-	private readonly TypeInfo _typeInfo;
+	private readonly TypeInfo _typeInfoOfConfiguration;
 
-	protected ManagedConfigurationInterpreter(CommandlineOptionInterpreter top, CmdConfigurationNamespaceAttribute root, object referenceToObject,
-		TypeInfo typeInfo, int offset = 0) : base(top,
+	public ManagedConfigurationInterpreter(CommandlineOptionInterpreter top, CmdConfigurationNamespaceAttribute root, object referenceToObject,
+		TypeInfo typeInfoOfConfiguration, int offset = 0) : base(top,
 		offset) {
 		_root = root;
 		_referenceToObject = referenceToObject;
-		_typeInfo = typeInfo;
+		_typeInfoOfConfiguration = typeInfoOfConfiguration;
 	}
 
 	internal override bool Interpret(bool printErrors = true) {
@@ -24,8 +24,8 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 		}
 
 		IncreaseOffset();
-		object requiredObject;
-		if (!ManagedConfigurationHelpers.ResolvePathRecursive(TopInterpreter.Args[Offset], _typeInfo, ref requiredObject, out PropertyInfo prop,
+		object requiredObject= _referenceToObject;
+		if (!ManagedConfigurationHelpers.ResolvePathRecursive(TopInterpreter.Args[Offset], _typeInfoOfConfiguration, ref requiredObject, out PropertyInfo prop,
 			out object[] indexers, out PropertyInfo lastNonIndexer)) {
 			return false;
 		}
@@ -33,24 +33,62 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 		IncreaseOffset();
 		string Operator = TopInterpreter.Args[Offset];
 		if (IsParameterEqual("Help", Operator, allowPrefixFree: true)) {
-			var attribute = lastNonIndexer.GetCustomAttribute<CmdConfigurationValueAttribute>();
-			HelpGenerators.PrintConfigurationValueHelp(attribute, this);
-			return true;
+			var contextAttribute = lastNonIndexer.PropertyType.GetCustomAttribute<CmdConfigurationNamespaceAttribute>();
+			if (contextAttribute is null) {
+				var valueAttribute = lastNonIndexer.GetCustomAttribute<CmdConfigurationValueAttribute>();
+				HelpGenerators.PrintConfigurationValueHelp(valueAttribute, this);
+				return true;
+			}
+			else {
+				HelpGenerators.PrintConfigurationContextHelp(contextAttribute, this);
+			}
 		}
 
 		if (IsParameterEqual("Get", Operator, allowPrefixFree: true)) {
-			object val = null;
+			object currentValue;
 			try {
-				val = indexers is null ? prop.GetValue(requiredObject) : prop.GetValue(requiredObject, indexers);
+				currentValue = indexers is null ? prop.GetValue(requiredObject) : prop.GetValue(requiredObject, indexers);
 			}
 			catch (Exception e) {
 				Console.WriteLine("An error occurred while obtaining the value requested:"); //Err
 				Console.WriteLine(e);
+				return false;
 			}
 
-			Console.WriteLine(JsonConvert.SerializeObject(val));
+			Console.WriteLine(JsonConvert.SerializeObject(currentValue));
+			return true;
 		}
+		if (IsParameterEqual("Set", Operator, allowPrefixFree: true)) {
+			var valueAttribute = prop.GetCustomAttribute<CmdConfigurationValueAttribute>();
+			if ((!(valueAttribute is null)&& valueAttribute.IsReadonly)||!prop.CanWrite) {
+				Console.WriteLine("The given value is not writable");//Err
+			}
 
+			if (IncreaseOffset()) {
+				Console.WriteLine("Please supply a value to set the given value to!");//Err
+			}
+
+			if (!CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset],prop.PropertyType, out object newValue)) {
+				Console.WriteLine($"The given string couldn't be parsed to {prop.PropertyType}!");//Err
+				return false;
+			}
+			try {
+				if (indexers is null) {
+					prop.SetValue(requiredObject,newValue);
+				}
+				else {
+					prop.SetValue(requiredObject, newValue, indexers);
+				}
+			}
+			catch (Exception e) {
+				Console.WriteLine("An error occurred while writing the value:"); //Err
+				Console.WriteLine(e);
+				return false;
+			}
+			return true;
+			//TODO Remove and Add missing
+		}
+		
 		//_root.Interpret(printErrors);
 		throw new NotImplementedException();
 		return true;
