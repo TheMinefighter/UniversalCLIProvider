@@ -19,7 +19,7 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 	}
 
 	internal override bool Interpret(bool printErrors = true) {
-		if (Offset + 1 < TopInterpreter.Args.Length || IsParameterEqual("help", TopInterpreter.Args[Offset], "?")) {
+		if (Offset + 1 >= TopInterpreter.Args.Length || IsParameterEqual("help", TopInterpreter.Args[Offset], "?")) {
 			HelpGenerators.PrintConfigurationContextHelp(_root, this, true);
 		}
 

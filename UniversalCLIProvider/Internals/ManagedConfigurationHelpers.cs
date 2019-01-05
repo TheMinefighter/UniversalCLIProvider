@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 
 namespace UniversalCLIProvider.Internals {
 public static class ManagedConfigurationHelpers {
+	//TODO implement Recursive read-only resolver
 	public static bool ResolvePathRecursive([NotNull] string path, [NotNull] TypeInfo typeInfoOfItem, ref object currentItem, out PropertyInfo prop,
 		out object[] requiredIndexers,
 		out PropertyInfo lastNonIndexer) {

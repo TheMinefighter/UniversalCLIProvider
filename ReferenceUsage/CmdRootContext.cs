@@ -46,6 +46,6 @@ public abstract class CmdRootContext {
 	}
 
 	[CmdConfigurationProvider("cfg")]
-	public ReferenceConfig Cfg { get; set; } = new ReferenceConfig();
+	public static ReferenceConfig Cfg { get; set; } = new ReferenceConfig();
 }
 }
