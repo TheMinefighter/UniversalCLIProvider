@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
+using PropertyOrFieldInfoPackage;
 using UniversalCLIProvider.Attributes;
 using UniversalCLIProvider.Internals;
 
@@ -87,7 +89,7 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 			}
 
 			if (_referenceToObject is IConfigurationRoot iCfgRoot) {
-				iCfgRoot.Save();
+				iCfgRoot.Save(Enumerable.Repeat(new PropertyOrFieldInfo(lastNonIndexer), 1));
 			}
 			return true;
 			//TODO Remove and Add missing
