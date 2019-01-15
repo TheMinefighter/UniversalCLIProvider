@@ -12,9 +12,13 @@
     ],
     "originalTargetFrameworks": [
       "net472",
+      "netcoreapp2.1",
       "netstandard2.0"
     ],
     "frameworks": {
+      "netcoreapp2.1": {
+        "projectReferences": {}
+      },
       "net472": {
         "projectReferences": {}
       },
@@ -29,6 +33,41 @@
     }
   },
   "frameworks": {
+    "netcoreapp2.1": {
+      "dependencies": {
+        "JetBrains.Annotations": {
+          "target": "Package",
+          "version": "[2018.2.1, )"
+        },
+        "Microsoft.NETCore.App": {
+          "suppressParent": "All",
+          "target": "Package",
+          "version": "[2.1.0, )",
+          "autoReferenced": true
+        },
+        "Newtonsoft.Json": {
+          "target": "Package",
+          "version": "[12.0.1, )"
+        },
+        "PropertyOrFieldInfo": {
+          "target": "Package",
+          "version": "[1.0.1, )"
+        },
+        "xunit.runner.console": {
+          "target": "Package",
+          "version": "[2.4.1, )"
+        },
+        "xunit.runner.visualstudio": {
+          "target": "Package",
+          "version": "[2.4.1, )"
+        }
+      },
+      "imports": [
+        "net461"
+      ],
+      "assetTargetFallback": true,
+      "warn": true
+    },
     "net472": {
       "dependencies": {
         "JetBrains.Annotations": {

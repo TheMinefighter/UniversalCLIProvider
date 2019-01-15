@@ -1,11 +1,10 @@
-
-\documentclass[a4paper,12pt,titlepage,ngerman]{article}
+\documentclass[a4paper,12pt,titlepage,ngerman,bibliography=totocnumbered]{article}
 \usepackage{babel}
 \usepackage[T1]{fontenc}
 \usepackage[utf8x]{inputenc}
 \usepackage[a4paper,margin=2.5cm]{geometry}
-
-
+\usepackage{csquotes}
+%\usepackage{cite}
 % Kopf- und Fußzeilen
 \usepackage{scrlayer-scrpage}
 \setkomafont{pageheadfoot}{\textrm}
@@ -21,7 +20,10 @@
 
 % Für Algorithmen
 \usepackage{algpseudocode}
-
+\usepackage[backend=biber,style=numeric]{biblatex}
+\bibliography{Biblio}
+\addbibresource{Biblio.bib}
+\usepackage[nottoc,numbib]{tocbibind}
 % Für Quelltext
 \usepackage{listings}
 \usepackage{color}
@@ -46,15 +48,15 @@ numbers=none,language={[Sharp]C},breaklines=true,frame=single,  literate={ö}{{�
 % Diese beiden Pakete müssen als letztes geladen werden
 %\usepackage{hyperref} % Anklickbare Links im Dokument
 \usepackage{cleveref}
+%\usepackage{biber}
 
 % Daten für die Titelseite
 \title{Entwicklung einer Bibliothek zum universellen bereitstellen von Kommandozeilenoberfächen}
 \author{Tobias Brohl}
-\subtitle{}
 \date{\today \linebreak \linebreak Facharbeit im Fach Informatik (If GK 1)}
 
 \parindent=0pt
-\newcommand{\inlinecode}[2]{\colorbox{lightgray}{\lstinline[language=#1]$#2$}}
+\newcommand{\inlinecode}[1]{{\lstinline[]$#1$}}
 \begin{document}
  \begin{sloppypar}
   \maketitle
@@ -62,28 +64,55 @@ numbers=none,language={[Sharp]C},breaklines=true,frame=single,  literate={ö}{{�
   \tableofcontents
   \pagebreak
   \section{Einleitung \& Motivation}\label{sec:Intro}
-  \subsection{Aktueller Stand der Technik}\label{subsec:CurrentState}
-  \section{Beispiele}\label{sec:Content}
+  \subsection{Vergangenheit \& Aktueller Stand der Technik}\label{subsec:CurrentState}
+  \subsubsection{NDesk.Options / Mono.Options Bibliothek}
+  Die NDesk.Options Bibliothek wurde zuerst im Januar 2008 angekündigt~\cite{NDeskAnnouncement}, 
+  und noch im gleichen Monat in erster Version veröffentlicht~\cite{NDesk1stRelease}.
+  Der Author hat diese als Nachfolger der Mono.GetOptions Bibliothek, 
+  welche im Dezember 2006 schon existiert~\cite{MonoGetOptions3rdBlogPost} haben muss und dessen Entwicklung spätestens Ende 2007 eingestellt wurde, 
+  über die jedoch wenige Informationen vorhanden sind.
+  
+  Aufgrund dieses frühen Erscheinens ist die Bibliothek auf C\#2.0 ausgelegt, weswegen von vielen Möglichkeiten neuerer C\# Versionen, 
+  die die Bedinung einer solchen Bibliothek deutlich einfacher machen würden  viele neue Bedienmöglichkeiten mit sich bringen.
+  
+  Die Bibliothek erlaubt das definieren von Optionen optional mit mehrere verwendbaren Namen.
+  Diese können entweder ein delegate bereitstellen, dass den folgenden Parameter als String verarbeitet, 
+  oder ein Typ angegeben in den der folgende Parameter durch einen \inlinecode{System.ComponentModel.TypeConverter} umgewandelt wird,
+  und dann ein delegate, dass das Parameter in dem vorher angegebenen Typ verarbeitet.
+  Des weiteren werden Boolean flags unterstützt die durch \inlinecode{-OptionsName+} aktiviert 
+  und durch \inlinecode{-OptiosName-} deaktiviert werden können~\cite{NDeskOptionSetDocumentation}.
+  
+  Der letzte eigene Release wurde im Oktober 2008 veröffentlicht~\cite{NDeskOptionsLastRelease},
+  dann ist die Bibliothek als Mono.Options als Teil des Mono Projekts neuveröffentlicht worden~\cite{MonoOptions1stCommit}, 
+  dass seit 2011 durch Xamarin~Inc. weiterentwickelt wird~\cite{MonoFutureInterview}, welche seit 2016 Teil von Microsoft ist~\cite{MicrosoftBlogAcquireXamarin}.
+  Seit dem ist die Popularität der Bibliothek sehr stark gestiegen, sodass es aktuell kanpp 600.000 Downloads auf nuget.org hat~\cite{MonoOptionsNuget}.
+  \subsubsection{Command Line Parser Bibliothek}
+  Die 2012 veröffentlichte Bibliothek Command Line Parser~\cite{FistCommandLineParserCommit}
+  \section{Implementation}\label{sec:Content}
   \subsection{Aufbau der Implementation}\label{subsec:Architecture}
-  \subsection{Demonstration der Funktionen anhand der Referenzverwendung}\label{subsec:demonstration-der-bibliothek-durch-die-referenzverwendung}
+  \subsection{Erläuterung der Implementation der Klasse ContextInterpreter}\label{subsec:ConextInterpreter}
+  \subsection{Demonstration der Funktionen anhand der Referenzverwendung}\label{subsec:demonstration}
   \subsection{Vergleich meiner Lösung mit bisherigen Lösungen}\label{subsec:Comparison}
   \section{Ausblick}\label{sec:Future}
   \subsection{Ausbau des Funktionsumfangs}\label{subsec:MoreFunctions}
+  \subsection{Übertragbarkeit auf andere Programmiersprachen}\label{subsec:PortabilityToOtherLangs}
   \subsection{Geschwindigkeitsverbesserungen durch Speicherung von Reflections}\label{subsec:StoringReflections}
+  \subsection{Implementation einer eigenen Auto-Vervollständigung für Linux}\label{subsec:Autocomplete}
   \subsection{Verbesserung der Unit test Abdeckung}\label{subsec:MoreUnitTests}
   \section{Anmerkungen}\label{sec:AdditionalNotes}
   \subsection{Umgebungsvorraussetzuungen zum nutzen der Bibliothek}\label{subsec:SystemRequirements}
-  \subsection{Verwendung von Bibliotheken}\label{subsec:UsageOfLibraries}
+  \subsection{Verwendung von weiteren Bibliotheken}\label{subsec:UsageOfLibraries}
   \section{Fazit}\label{sec:Conclusion}
   \section{Anhang}\label{sec:anhang}
   \section{Literaturverzeichnis}\label{sec:Literature}
+  \printbibliography[heading=none]
   \section{Selbstständigkeitserklärung}\label{sec:IDidThisMyself}
-  Hiermit erkläre ich, dass ich die vorliegende Facharbeit selbstständig und ohne fremde Hilfe angefertigt und nur die im Literaturverzeichnis 
+  Hiermit erkläre ich, dass ich die vorliegende Facharbeit selbstständig und ohne fremde Hilfe angefertigt und nur die im Literaturverzeichnis
   aufgeführten Hilfen und Quellen benutzt habe.
   Insbesondere versichere ich, dass ich alle wörtlichen
   und sinngemä\ss en Übernahmen aus anderen Werken als solche kenntlich gemacht habe.
-  \\
-  \linebreak
+  \medskip
   Lemgo, den \today
+  \medskip
  \end{sloppypar}
 \end{document}

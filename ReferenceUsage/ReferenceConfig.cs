@@ -7,7 +7,7 @@ using UniversalCLIProvider.Attributes;
 namespace ReferenceUsage {
 [CmdConfigurationNamespace("InvisibleName","Description")]
 public class ReferenceConfig : IConfigurationRoot {
-	[CmdConfigurationValue("IntA")]
+	[CmdConfigurationField("IntA")]
 	public int IntA { get; set; }=0;
 	public string StringB = "A String";
 	public void Save(IEnumerable<PropertyOrFieldInfo> c) {

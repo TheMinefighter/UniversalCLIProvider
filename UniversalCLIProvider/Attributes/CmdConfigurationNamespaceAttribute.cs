@@ -7,7 +7,7 @@ using PropertyOrFieldInfoPackage;
 namespace UniversalCLIProvider.Attributes {
 [AttributeUsage(AttributeTargets.Class), UsedImplicitly]
 public class CmdConfigurationNamespaceAttribute : Attribute {
-	private CmdConfigurationValueAttribute[] _configurationValues;
+	internal CmdConfigurationFieldAttribute[] ConfigurationFields;
 	private bool _loaded;
 	private TypeInfo _underlyingType;
 	public string Description;
@@ -25,15 +25,15 @@ public class CmdConfigurationNamespaceAttribute : Attribute {
 	public void Load(TypeInfo underlyingType) {
 		if (!_loaded) {
 			_underlyingType = underlyingType;
-			List<CmdConfigurationValueAttribute> newValues = new List<CmdConfigurationValueAttribute>();
+			List<CmdConfigurationFieldAttribute> newValues = new List<CmdConfigurationFieldAttribute>();
 			foreach (PropertyOrFieldInfo propertyOrFieldInfo in _underlyingType.DeclaredPropertiesAndFields()) {
-				var attribute = propertyOrFieldInfo.GetCustomAttribute<CmdConfigurationValueAttribute>();
+				var attribute = propertyOrFieldInfo.GetCustomAttribute<CmdConfigurationFieldAttribute>();
 				if (attribute is null) continue;
 				attribute.UnderlyingPropertyOrFieldInfo = propertyOrFieldInfo;
 				newValues.Add(attribute);
 			}
 
-			_configurationValues = newValues.ToArray();
+			ConfigurationFields = newValues.ToArray();
 			_loaded = true;
 		}
 	}

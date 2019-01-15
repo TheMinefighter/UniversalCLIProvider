@@ -26,7 +26,7 @@ public class CmdActionAttribute : Attribute {
 		}
 
 		if (name.IndexOfAny(IllegalCharactersInName) != -1) {
-			throw new InvalidCLIConfigurationException("The name contains at least one illegal character ",
+			throw new InvalidCLIConfigurationException("The name contains at least one illegal character",
 				new ArgumentException("Illegal name", nameof(name)));
 		}
 #endif

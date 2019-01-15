@@ -37,8 +37,8 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 		if (IsParameterEqual("Help", Operator, allowPrefixFree: true)) {
 			var contextAttribute = lastNonIndexer.PropertyType.GetCustomAttribute<CmdConfigurationNamespaceAttribute>();
 			if (contextAttribute is null) {
-				var valueAttribute = lastNonIndexer.GetCustomAttribute<CmdConfigurationValueAttribute>();
-				HelpGenerators.PrintConfigurationValueHelp(valueAttribute, this);
+				var valueAttribute = lastNonIndexer.GetCustomAttribute<CmdConfigurationFieldAttribute>();
+				HelpGenerators.PrintConfigurationFieldHelp(valueAttribute, this);
 				return true;
 			}
 			else {
@@ -61,7 +61,7 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 			return true;
 		}
 		if (IsParameterEqual("Set", Operator, allowPrefixFree: true)) {
-			var valueAttribute = prop.GetCustomAttribute<CmdConfigurationValueAttribute>();
+			var valueAttribute = prop.GetCustomAttribute<CmdConfigurationFieldAttribute>();
 			if ((!(valueAttribute is null)&& valueAttribute.IsReadonly)||!prop.CanWrite) {
 				Console.WriteLine("The given value is not writable");//Err
 			}
@@ -92,9 +92,10 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 				iCfgRoot.Save(Enumerable.Repeat(new PropertyOrFieldInfo(lastNonIndexer), 1));
 			}
 			return true;
-			//TODO Remove and Add missing
+			
 		}
-		
+		Console.WriteLine("Could not resolve the operator provided");
+		//TODO Remove and Add missing
 		//_root.Interpret(printErrors);
 		throw new NotImplementedException();
 		return true;
@@ -103,11 +104,11 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 }
 /* Rethought the way managed configurations will work here my current Proposal:
 Program --config --path PathOfValue --Get
-Wil output the value
+Wil output the value of the field
 Program --config --path PathOfValueOrCtx --Help
-Wil output the value
+Wil output help fo the the field
 Program --config --path PathOfValue --Set NewValue
-Sets the value
+Sets the field to the given value
 Program --config --path PathOfValue --Add AdditionalValue
 Adds a value to an ICollection
 Program --config --path PathOfValue --RemoveAt Index
