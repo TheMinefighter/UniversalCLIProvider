@@ -4,12 +4,12 @@ using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using UniversalCLIProvider.Attributes;
 
 namespace UniversalCLIProvider.Internals {
-public static class ManagedConfigurationHelpers {
-	//TODO implement Recursive read-only resolver
+public static class ConfigurationHelpers {
 	public static bool ResolvePathRecursive([NotNull] string path, [NotNull] TypeInfo typeInfoOfItem, ref object currentItem, out PropertyInfo prop,
-		out object[] requiredIndexers,
+		out object[] requiredIndexers, ref bool ro,
 		out PropertyInfo lastNonIndexer) {
 		prop = null;
 		requiredIndexers = null;
@@ -37,13 +37,26 @@ public static class ManagedConfigurationHelpers {
 			}
 
 			string currentPath = endOfCurrentBlock != -1 ? path.Substring(0, endOfCurrentBlock) : path;
-			prop = typeInfoOfItem.GetUnderlyingTypes().SelectMany(x => x.DeclaredProperties)
-				.FirstOrDefault(x => x.Name.Equals(currentPath, StringComparison.OrdinalIgnoreCase));
+			prop = null;
+			foreach (PropertyInfo property in typeInfoOfItem.GetUnderlyingTypes().SelectMany(x => x.DeclaredProperties)) {
+				if (property.Name.Equals(currentPath, StringComparison.OrdinalIgnoreCase)) {
+					var configurationFieldAttribute = property.GetCustomAttribute<CmdConfigurationFieldAttribute>();
+					if (configurationFieldAttribute is null) {
+						continue;
+					}
+
+					if (configurationFieldAttribute.IsReadonly) {
+						ro = true;
+					}
+					prop = property;
+					lastNonIndexer = prop;
+					break;
+				}
+			}
+
 			if (prop is null) {
 				return false;
 			}
-
-			lastNonIndexer = prop;
 		}
 
 		if (!string.IsNullOrEmpty(remainingPath)) { //Initiating the next recursive step
@@ -56,7 +69,7 @@ public static class ManagedConfigurationHelpers {
 				return false;
 			}
 
-			if (!ResolvePathRecursive(remainingPath, typeInfoOfItem, ref currentItem, out prop, out requiredIndexers,
+			if (!ResolvePathRecursive(remainingPath, typeInfoOfItem, ref currentItem, out prop, out requiredIndexers, ref ro,
 				out PropertyInfo possibleLastNonIndexer)) {
 				return false;
 			}

@@ -25,10 +25,11 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 			HelpGenerators.PrintConfigurationContextHelp(_root, this, true);
 		}
 
+		bool ro = true;
 		IncreaseOffset();
 		object requiredObject= _referenceToObject;
-		if (!ManagedConfigurationHelpers.ResolvePathRecursive(TopInterpreter.Args[Offset], _typeInfoOfConfiguration, ref requiredObject, out PropertyInfo prop,
-			out object[] indexers, out PropertyInfo lastNonIndexer)) {
+		if (!ConfigurationHelpers.ResolvePathRecursive(TopInterpreter.Args[Offset], _typeInfoOfConfiguration, ref requiredObject, out PropertyInfo prop,
+			out object[] indexers, ref ro, out PropertyInfo lastNonIndexer)) {
 			return false;
 		}
 
@@ -62,7 +63,7 @@ public class ManagedConfigurationInterpreter : BaseInterpreter {
 		}
 		if (IsParameterEqual("Set", Operator, allowPrefixFree: true)) {
 			var valueAttribute = prop.GetCustomAttribute<CmdConfigurationFieldAttribute>();
-			if ((!(valueAttribute is null)&& valueAttribute.IsReadonly)||!prop.CanWrite) {
+			if (ro||!prop.CanWrite) {
 				Console.WriteLine("The given value is not writable");//Err
 			}
 

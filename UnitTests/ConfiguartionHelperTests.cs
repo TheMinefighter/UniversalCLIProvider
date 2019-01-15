@@ -21,7 +21,7 @@ public class ConfigurationHelperTests {
 	[Theory, MemberData(nameof(Data))]
 	public static void ResolveIndexerParametersTest(string[] parameters, Type indexerOwner, bool expectedSuccess,
 		object[] expectedIndexerParameters, PropertyInfo expectedIndexer) {
-		bool success = ManagedConfigurationHelpers.ResolveIndexerParameters(parameters, indexerOwner.GetTypeInfo(), out object[] indexParameters,
+		bool success = ConfigurationHelpers.ResolveIndexerParameters(parameters, indexerOwner.GetTypeInfo(), out object[] indexParameters,
 			out PropertyInfo indexer);
 		Assert.Equal(expectedSuccess, success);
 		if (success) {
