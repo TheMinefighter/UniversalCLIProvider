@@ -16,11 +16,20 @@
     <Import Project="$(NuGetPackageRoot)xunit.runner.visualstudio\2.4.1\build\net20\xunit.runner.visualstudio.props" Condition="Exists('$(NuGetPackageRoot)xunit.runner.visualstudio\2.4.1\build\net20\xunit.runner.visualstudio.props')" />
     <Import Project="$(NuGetPackageRoot)xunit.runner.console\2.4.1\build\xunit.runner.console.props" Condition="Exists('$(NuGetPackageRoot)xunit.runner.console\2.4.1\build\xunit.runner.console.props')" />
   </ImportGroup>
+  <ImportGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' AND '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)microsoft.net.test.sdk\15.0.0\build\netcoreapp1.0\Microsoft.Net.Test.Sdk.props" Condition="Exists('$(NuGetPackageRoot)microsoft.net.test.sdk\15.0.0\build\netcoreapp1.0\Microsoft.Net.Test.Sdk.props')" />
+    <Import Project="$(NuGetPackageRoot)xunit.runner.visualstudio\2.4.1\build\netcoreapp1.0\xunit.runner.visualstudio.props" Condition="Exists('$(NuGetPackageRoot)xunit.runner.visualstudio\2.4.1\build\netcoreapp1.0\xunit.runner.visualstudio.props')" />
+    <Import Project="$(NuGetPackageRoot)xunit.runner.console\2.4.1\build\xunit.runner.console.props" Condition="Exists('$(NuGetPackageRoot)xunit.runner.console\2.4.1\build\xunit.runner.console.props')" />
+    <Import Project="C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.netcore.app\2.1.0\build\netcoreapp2.1\Microsoft.NETCore.App.props" Condition="Exists('C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.netcore.app\2.1.0\build\netcoreapp2.1\Microsoft.NETCore.App.props')" />
+  </ImportGroup>
   <ImportGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' AND '$(ExcludeRestorePackageImports)' != 'true' ">
     <Import Project="$(NuGetPackageRoot)xunit.runner.visualstudio\2.4.1\build\net20\xunit.runner.visualstudio.props" Condition="Exists('$(NuGetPackageRoot)xunit.runner.visualstudio\2.4.1\build\net20\xunit.runner.visualstudio.props')" />
     <Import Project="$(NuGetPackageRoot)xunit.runner.console\2.4.1\build\xunit.runner.console.props" Condition="Exists('$(NuGetPackageRoot)xunit.runner.console\2.4.1\build\xunit.runner.console.props')" />
   </ImportGroup>
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' AND '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Pkgxunit_runner_console Condition=" '$(Pkgxunit_runner_console)' == '' ">C:\Users\TobiasAcc\.nuget\packages\xunit.runner.console\2.4.1</Pkgxunit_runner_console>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' AND '$(ExcludeRestorePackageImports)' != 'true' ">
     <Pkgxunit_runner_console Condition=" '$(Pkgxunit_runner_console)' == '' ">C:\Users\TobiasAcc\.nuget\packages\xunit.runner.console\2.4.1</Pkgxunit_runner_console>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' AND '$(ExcludeRestorePackageImports)' != 'true' ">

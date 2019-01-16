@@ -130,7 +130,7 @@ public class ContextInterpreter : BaseInterpreter {
 
 		foreach (CmdConfigurationProviderAttribute provider in UnderlyingContextAttribute.CfgProviders) {
 			if (IsParameterEqual(provider.Name,search, provider.ShortForm,true)) {
-				var cfgInterpreter= new ManagedConfigurationInterpreter(TopInterpreter,provider.Root,provider.UnderlyingPropertyOrField.GetValue(null),provider.UnderlyingPropertyOrField.ValueType.GetTypeInfo());
+				var cfgInterpreter= new ConfigurationInterpreter(TopInterpreter,provider.Root,provider.UnderlyingPropertyOrField.GetValue(null),provider.UnderlyingPropertyOrField.ValueType.GetTypeInfo());
 				return cfgInterpreter.Interpret();
 			}
 		}

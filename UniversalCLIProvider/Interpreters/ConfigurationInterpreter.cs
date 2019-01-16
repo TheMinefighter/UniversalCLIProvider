@@ -7,12 +7,12 @@ using UniversalCLIProvider.Attributes;
 using UniversalCLIProvider.Internals;
 
 namespace UniversalCLIProvider.Interpreters {
-public class ManagedConfigurationInterpreter : BaseInterpreter {
+public class ConfigurationInterpreter : BaseInterpreter {
 	private readonly CmdConfigurationNamespaceAttribute _root;
 	private readonly object _referenceToObject;
 	private readonly TypeInfo _typeInfoOfConfiguration;
 
-	public ManagedConfigurationInterpreter(CommandlineOptionInterpreter top, CmdConfigurationNamespaceAttribute root, object referenceToObject,
+	public ConfigurationInterpreter(CommandlineOptionInterpreter top, CmdConfigurationNamespaceAttribute root, object referenceToObject,
 		TypeInfo typeInfoOfConfiguration, int offset = 0) : base(top,
 		offset) {
 		_root = root;
