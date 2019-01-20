@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace UniversalCLIProvider.Internals {
 /// <summary>
@@ -43,6 +44,8 @@ public static class CommandlineMethods {
 	/// <returns>Whether parsing was successful</returns>
 	public static bool GetValueFromString([NotNull] string source, [NotNull] Type expectedType, out object value,
 		[CanBeNull] JsonSerializerSettings serializerSettings = null, bool enableCustomCompatSupport = true) {
+		serializerSettings = serializerSettings ?? new JsonSerializerSettings();
+		serializerSettings.Converters.Add(new StringEnumConverter());
 		value = null;
 		if (enableCustomCompatSupport) {
 			if (expectedType.IsEnum ||

@@ -14,6 +14,9 @@ public abstract class BaseInterpreter {
 
 	public CommandlineOptionInterpreter TopInterpreter { get; }
 	public BaseInterpreter DirectParent { get; }
+	/// <summary>
+	/// A List off all DirectParents to the Top
+	/// </summary>
 	public List<BaseInterpreter> ParentInterpreters { get; }
 
 	public List<string> Path {

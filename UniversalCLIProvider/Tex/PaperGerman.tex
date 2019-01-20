@@ -1,4 +1,4 @@
-\documentclass[a4paper,12pt,titlepage,ngerman,bibliography=totocnumbered]{article}
+\documentclass[a4paper,12pt,titlepage,ngerman]{article}
 \usepackage{babel}
 \usepackage[T1]{fontenc}
 \usepackage[utf8x]{inputenc}
@@ -17,6 +17,7 @@
 
 % Für Bilder
 \usepackage{graphicx}
+\usepackage{float}
 
 % Für Algorithmen
 \usepackage{algpseudocode}
@@ -39,7 +40,7 @@ captionpos=b, % sets the caption-position to bottom
 keepspaces=true, % keeps spaces in text
 numbers=left, numbersep=5pt,showstringspaces=true,
 showtabs=false, stepnumber=2, tabsize=2, title=\lstname,
-numbers=none,language={[Sharp]C},breaklines=true,frame=single,  literate={ö}{{ö}}1
+numbers=none,language={[Sharp]C},breaklines=true,frame=single, literate={ö}{{ö}}1
 {ä}{{ä}}1
 {ü}{{ü}}1
 {ß}{{\ss}}1
@@ -61,35 +62,21 @@ numbers=none,language={[Sharp]C},breaklines=true,frame=single,  literate={ö}{{�
  \begin{sloppypar}
   \maketitle
   \setcounter{tocdepth}{5}
+  \thispagestyle{empty}
   \tableofcontents
   \pagebreak
   \section{Einleitung \& Motivation}\label{sec:Intro}
-  \subsection{Vergangenheit \& Aktueller Stand der Technik}\label{subsec:CurrentState}
-  \subsubsection{NDesk.Options / Mono.Options Bibliothek}
-  Die NDesk.Options Bibliothek wurde zuerst im Januar 2008 angekündigt~\cite{NDeskAnnouncement}, 
-  und noch im gleichen Monat in erster Version veröffentlicht~\cite{NDesk1stRelease}.
-  Der Author hat diese als Nachfolger der Mono.GetOptions Bibliothek, 
-  welche im Dezember 2006 schon existiert~\cite{MonoGetOptions3rdBlogPost} haben muss und dessen Entwicklung spätestens Ende 2007 eingestellt wurde, 
-  über die jedoch wenige Informationen vorhanden sind.
-  
-  Aufgrund dieses frühen Erscheinens ist die Bibliothek auf C\#2.0 ausgelegt, weswegen von vielen Möglichkeiten neuerer C\# Versionen, 
-  die die Bedinung einer solchen Bibliothek deutlich einfacher machen würden  viele neue Bedienmöglichkeiten mit sich bringen.
-  
-  Die Bibliothek erlaubt das definieren von Optionen optional mit mehrere verwendbaren Namen.
-  Diese können entweder ein delegate bereitstellen, dass den folgenden Parameter als String verarbeitet, 
-  oder ein Typ angegeben in den der folgende Parameter durch einen \inlinecode{System.ComponentModel.TypeConverter} umgewandelt wird,
-  und dann ein delegate, dass das Parameter in dem vorher angegebenen Typ verarbeitet.
-  Des weiteren werden Boolean flags unterstützt die durch \inlinecode{-OptionsName+} aktiviert 
-  und durch \inlinecode{-OptiosName-} deaktiviert werden können~\cite{NDeskOptionSetDocumentation}.
-  
-  Der letzte eigene Release wurde im Oktober 2008 veröffentlicht~\cite{NDeskOptionsLastRelease},
-  dann ist die Bibliothek als Mono.Options als Teil des Mono Projekts neuveröffentlicht worden~\cite{MonoOptions1stCommit}, 
-  dass seit 2011 durch Xamarin~Inc. weiterentwickelt wird~\cite{MonoFutureInterview}, welche seit 2016 Teil von Microsoft ist~\cite{MicrosoftBlogAcquireXamarin}.
-  Seit dem ist die Popularität der Bibliothek sehr stark gestiegen, sodass es aktuell kanpp 600.000 Downloads auf nuget.org hat~\cite{MonoOptionsNuget}.
-  \subsubsection{Command Line Parser Bibliothek}
-  Die 2012 veröffentlichte Bibliothek Command Line Parser~\cite{FistCommandLineParserCommit}
+  \input{einleitung}
+
+  \section{Bisher ungelöste Probleme}\label{sec:CurrentProblems}
+  \subsection{Sonderzeichen-Unterstützung}
+  \subsection{Interaktive Konsolen}
+  \subsection{Konfigurationsdateimanagement}
   \section{Implementation}\label{sec:Content}
   \subsection{Aufbau der Implementation}\label{subsec:Architecture}
+  \subsubsection{UniversalCLIProvider.Attributes}
+  \subsubsection{UniversalCLIProvider.Interpreters}
+  \subsubsection{UniversalCLIProvider.Internals}
   \subsection{Erläuterung der Implementation der Klasse ContextInterpreter}\label{subsec:ConextInterpreter}
   \subsection{Demonstration der Funktionen anhand der Referenzverwendung}\label{subsec:demonstration}
   \subsection{Vergleich meiner Lösung mit bisherigen Lösungen}\label{subsec:Comparison}
@@ -104,6 +91,7 @@ numbers=none,language={[Sharp]C},breaklines=true,frame=single,  literate={ö}{{�
   \subsection{Verwendung von weiteren Bibliotheken}\label{subsec:UsageOfLibraries}
   \section{Fazit}\label{sec:Conclusion}
   \section{Anhang}\label{sec:anhang}
+  Alle Anhänge werden in digitaler Form auf CD bereitgestellt.
   \section{Literaturverzeichnis}\label{sec:Literature}
   \printbibliography[heading=none]
   \section{Selbstständigkeitserklärung}\label{sec:IDidThisMyself}
