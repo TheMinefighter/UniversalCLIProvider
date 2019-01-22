@@ -1,10 +1,13 @@
  \subsection{Differenzierung verschiedener Typen Kommandozeilenoberflächen}\label{subsec:DifferentCLITypes}
  \subsubsection{Windows typische Kommandozeilenoberflächen}
+ Typisch für Windows Kommandozeilenoberflächen ist es ein \inlinecode{/} vor Paramternamen, manchmal auch vor Subkommmando-Namen, verwendet wird, wobei oft auch die Verwendung von \inlinecode{-} korrekt erkannt wird.
+ Au\ss erdem werden im Windows Bereich oft sehr viele Funktionen, die z.T. nicht viel miteinander zu tun haben, in ein Befehl gelegt, welches dann viele Subkommandos besitzt.
  \subsubsection{*nix typische Kommandozeilenoberflächen}
  *nix\footnote{*nix wird als Sammelbegriff für Unix und Unix basierte Systeme, wie Linux, MacOS oder OpenBSD, verwendet} typische Kommandozeilenoberflächen
- zeichenen sich dadurch aus das sie statt des \inlinecode{/} vor Parametern \inlinecode{--} verwenden.
- Haüfig benötigte Parameter haben haben meist ein Kurzformen Form eines einzelnen Buchstaben / Zeichen, welcher hinter einem \inlinecode{-} angegeben wird.
- Viele Kommandozeilenoberflächen erlauben auch die aneinander Reihung solcher Kurzformen: Wenn z.B. \inlinecode{-a} und \inlinecode{-m} Parameter Kurzformen sind, kann \inlinecode{-am} als Kurzform für beide Optionen verwendet werden.
+ zeichenen sich dadurch aus das sie statt des \inlinecode{/}, welches zu mehrdeutigkeiten führen könnte, da in *nix systemen Pfade mit Schrägstrichen beginnen, vor Parametern \inlinecode{--} verwenden.
+ Häufig benötigte Parameter haben haben meist ein Kurzformen Form eines einzelnen Buchstaben / Zeichen, welcher hinter einem \inlinecode{-} angegeben wird.
+ Viele Kommandozeilenoberflächen erlauben auch die aneinander Reihung solcher Kurzformen:
+ Wenn z.B. \inlinecode{-a} und \inlinecode{-m} Parameter Kurzformen sind, kann \inlinecode{-am} als Kurzform für beide Optionen verwendet werden.
  Dabei muss \inlinecode{-a} ein Flag\footnote{Als Flag werden Parameter bezeichnet, die keinen weiteren Wert benötigen sondern ein boolean aktivieren} sein,
  \inlinecode{-m} kann auch ein Wertparamter sein dessen Wert dann dahinter stehen müsste.
  
