@@ -100,14 +100,7 @@ public class ActionInterpreter : BaseInterpreter {
 			}
 		}
 
-		InterpretationResult result;
 		object returned = UnderlyingAction.UnderlyingMethod.Invoke(null, invokers);
-		if (returned is bool invokationSuccess) {
-			result = invokationSuccess ? InterpretationResult.Success : InterpretationResult.RunError;
-		}
-		else if (returned is InterpretationResult invokationResult) {
-			result = invokationResult;
-		}
 
 		return true;
 		//throw new NotImplementedException();
