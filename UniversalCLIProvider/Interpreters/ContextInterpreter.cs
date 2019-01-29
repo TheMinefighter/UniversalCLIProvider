@@ -68,11 +68,11 @@ public class ContextInterpreter : BaseInterpreter {
 	internal bool Interpret(out ContextInterpreter newCtx, bool interactive = false) {
 		if (interactive) {
 			if (TopInterpreter.Args[Offset] == "..") {
-				if (DirectParent == null) {
+				if (Parent == null) {
 					Environment.Exit(0);
 				}
 				else {
-					var parentInterpreter = DirectParent as ContextInterpreter;
+					var parentInterpreter = Parent as ContextInterpreter;
 					parentInterpreter.Reset();
 					newCtx = parentInterpreter;
 					return true;

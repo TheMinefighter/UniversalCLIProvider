@@ -149,53 +149,8 @@ numbers=none,language={[Sharp]C},breaklines=true,frame=single, literate={ö}{{ö
   \subsubsection{Interaktive Konsolen}
   \subsubsection{Konfigurationsdateimanagement}
   \section{Implementation}\label{sec:Content}
-  Die Implementation ist in C\#7.3 entwickelt worden.
-  Sie ist fast vollständig mit XML Kommentaren\footnote{Siehe https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/xmldoc/xml-documentation-comments} dokumentiert.
-  \subsection{Aufbau der Implementation}\label{subsec:Architecture}
-  Die Implementation ist in 3 namespaces, sowie den root-namespace geteilt.
-  In diesem liegt die Klasse \inlinecode{InvalidCLIConfigurationException}, eine Au\ss nahme, die ausgelöst wird, wenn die Bibliothek eine falsche Verwendung von Funktionen von seiten des Programmierers festgestellt hat.
-  Allein durch das eingeben von inkorrekten Befehlen in die bereitgestellte Kommandozeilenoberfläche kann diese nicht ausgelöst werden. Au\
-  ss erdem liegt in diesem namespace die \inlinecode{InterpretingOptions}-Klasse, die einige an vielen Stellen verwendete Optionen definiert.
-  \subsubsection{UniversalCLIProvider.Attributes}
-  Im \inlinecode{UniversalCLIProvider.Attributes} sind alle Attribute, die zur Definition von Kommandozeilenfunktionen verwendet werden können zusammengefasst, wie etwa das \inlinecode{CmdContextAttribute}.
-  Alle diese Attribute speichern eine Referenz zu dem Programmelement auf das das Attribut angwendet wurde, sowie z.T. weitere Informationen die sich aus diesem ergeben.
-  Folgende Klassen sind in diesem namespace vorhanden:
-  \begin{itemize}
-	\item Das \inlinecode{CmdActionAttribute} wird verwendet um eine als Kommandozeilen-Aktion ausführbare Methode zu Kennzeichnen.
-	\item Das \inlinecode{CmdParameterAttribute} wird verwendet um ein Parameter einer Kommandozeilen-Aktion von der Kommandozeilenoberfläche modifizierbar machen.
-	\item Das \inlinecode{CmdParameterAliasAttribute} wird verwendet um einem Parameter einer Kommandozeilen-Aktion eine Kurzform zu geben, welche dem Parametr ein vordefinierten Wert zuweist.
-	\item Das \inlinecode{CmdContextAttribute} wird verwendet um eine Klasse als Kontext zu definieren, der u.a. Aktionen grupiert.
-	\item Das \inlinecode{CmdDefaultActionAttribute} wird verwendet um innerhalb eines Kontextes eine Aktion zu definieren die ausgeführt wird, wenn keine andere Aktion ausgewählt wurde.
-	\item Das Enum\footnote{Ein Enum ist ein Datentyp der nur die in ihm definierten Zustände annehmen kann.} \inlinecode{ContextDefaultActionPreset}
-	stellt verschieden Voreinstellung bereit, die alternativ zum \inlinecode{CmdContextAttribute} verwendet werden k\"onnen.
-	\item Das \inlinecode{CmdConfigurationProviderAttribute} markiert eine Eigenschaft die eine Refernz zu einem Konfigurations Objekt(siehe~\ref{ConfigurationManagement}) bereitstellt.
-	\item Das \inlinecode{CmdConfigurationNamespaceAttribute} markiert dass eine Klasse Teil einer durch die bereitgestelte Kommandozeilenoberfläche verwaltbaren Konfiguration ist
-	\item Das Interface \inlinecode{IConfigurationRoot} kann von einer Klasse implementiert werden, die den Ursprung einer Kommandozeilen-verwalteten Konfiguration ist.
-	\item Das \inlinecode{CmdConfigurationFieldAttribute}markiert dass ein Feld oder eine Eigenschaft Teil einer durch die bereitgesttelte Kommandozeilenoberfläche verwaltbaren Konfiguration ist
-	\item Das Flag-Enum\footnote{Ein Flag-Enum ist ein Datentyp der mehrer mögliche Zustände aufzählt, die miteinander, auf Basis von Binär-Logik durch ||(Oder) Operatoren kombinierbar sind.}
-	\inlinecode{CmdParameterUsage} definiert in welchen Formen ein Parameter angegeben werden kann.
-  \end{itemize}
-  \subsubsection{UniversalCLIProvider.Internals}
-  Im \inlinecode{UniversalCLIProvider.Internals} sind viel Funktionen und Datentypen beherbergt, die nur intern (innerhalb der Bibliothek) verwendet werden,
-  und die Basis f\"ur viele weitere Funktionen stellen, die darrauf Aufbauen.
-  Folgende Klassen sind in diesem namespace vorhanden:
-  \begin{itemize}
-   \item Die \inlinecode{CommandlineMethods} Klasse enthält die essentiellsten Funktionen f\"ur Kommandozeilen-Oberfl\"achen, wie z.B. die Funktion zum parsen von Werten.
-   \item Die \inlinecode{HexArgumentEncoding} Klasse enthält Funktionen, die f\ur die Hexade f\"ur Kommandozeilen-Oberfl\"achen, wie z.B. die Funktion zum parsen von Werten.
+  \input{implementation}
 
-  \end{itemize}
-  \subsubsection{UniversalCLIProvider.Interpreters}
-
-  \subsection{Erläuterung der Implementation der Klasse ContextInterpreter}\label{subsec:ConextInterpreter}
-  \subsubsection{Einfache Aktionsausführungen}
-
-  \subsection{Demonstration der Funktionen anhand der Referenzverwendung}\label{subsec:demonstration}
-  \subsubsection{Verwendung von Kontexten}
-  \subsubsection{Hexadezimalkodierung}\label{}
-  \subsubsection{Hilfe Funktion}
-  \subsubsection{Konfigurationdatei-Management}\label{ConfigurationManagement}
-  \subsubsection{Interaktive Kommandozeilenoberfäche}
-  \subsection{Vergleich meiner Lösung mit bisherigen Lösungen}\label{subsec:Comparison}
   \section{Ausblick}\label{sec:Future}
   \subsection{Ausbau des Funktionsumfangs}\label{subsec:MoreFunctions}
   \subsection{Übertragbarkeit auf andere Programmiersprachen}\label{subsec:PortabilityToOtherLangs}

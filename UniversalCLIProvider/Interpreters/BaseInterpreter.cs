@@ -13,7 +13,7 @@ public abstract class BaseInterpreter {
 	public int Offset { get; internal set; }
 
 	public CommandlineOptionInterpreter TopInterpreter { get; }
-	public BaseInterpreter DirectParent { get; }
+	public BaseInterpreter Parent { get; }
 	/// <summary>
 	/// A List off all DirectParents to the Top
 	/// </summary>
@@ -25,7 +25,7 @@ public abstract class BaseInterpreter {
 				return new List<string> {TopInterpreter.TopContext.Name};
 			}
 
-			List<string> tmpList = DirectParent.Path;
+			List<string> tmpList = Parent.Path;
 			tmpList.Add(Name);
 			return tmpList;
 		}
@@ -37,12 +37,12 @@ public abstract class BaseInterpreter {
 		Offset = offset;
 		ParentInterpreters = new List<BaseInterpreter> {this};
 		TopInterpreter = top;
-		DirectParent = null;
+		Parent = null;
 	}
 
 	protected BaseInterpreter(BaseInterpreter parent, string name, int offset = 0) {
 		TopInterpreter = parent.TopInterpreter;
-		DirectParent = parent;
+		Parent = parent;
 		List<BaseInterpreter> parentInterpreters = parent.ParentInterpreters.ToList();
 		parentInterpreters.Add(parent);
 		ParentInterpreters = parentInterpreters;

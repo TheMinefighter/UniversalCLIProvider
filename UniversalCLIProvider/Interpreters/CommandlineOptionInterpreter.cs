@@ -7,10 +7,7 @@ using UniversalCLIProvider.Internals;
 namespace UniversalCLIProvider.Interpreters {
 public class CommandlineOptionInterpreter {
 	public string[] Args;
-
-	//    internal int ArgsLengthMinus1; 
 	public InterpretingOptions Options;
-
 	public CmdContextAttribute TopContext;
 
 	public CommandlineOptionInterpreter(string[] args, InterpretingOptions options = null) {
