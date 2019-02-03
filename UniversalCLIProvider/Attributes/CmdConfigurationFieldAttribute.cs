@@ -3,11 +3,11 @@ using JetBrains.Annotations;
 using PropertyOrFieldInfoPackage;
 
 namespace UniversalCLIProvider.Attributes {
-[AttributeUsage(AttributeTargets.Property|AttributeTargets.Field), UsedImplicitly]
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field), UsedImplicitly]
 public class CmdConfigurationFieldAttribute : Attribute {
-	public string[] LongDescription;
 	public string Description;
 	public bool IsReadonly;
+	public string[] LongDescription;
 	public string Name;
 	internal PropertyOrFieldInfo UnderlyingPropertyOrFieldInfo;
 

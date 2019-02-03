@@ -8,7 +8,7 @@ namespace UniversalCLIProvider.Interpreters {
 public class CommandlineOptionInterpreter {
 	public string[] Args;
 	public InterpretingOptions Options;
-	public CmdContextAttribute TopContext;
+	public CmdContextAttribute TopContextAttribute;
 
 	public CommandlineOptionInterpreter(string[] args, InterpretingOptions options = null) {
 		Args = args;
@@ -30,17 +30,14 @@ public class CommandlineOptionInterpreter {
 	}
 
 	public void Interpret(Type baseContext) {
-		TopContext = baseContext.GetCustomAttribute(typeof(CmdContextAttribute)) as CmdContextAttribute;
-		if (TopContext is null) {
+		TopContextAttribute = baseContext.GetCustomAttribute(typeof(CmdContextAttribute)) as CmdContextAttribute;
+		if (TopContextAttribute is null) {
 			throw new InvalidCLIConfigurationException("The Type provided has no CmdContextAttribute");
 		}
 
-		var contextInterpreter = new ContextInterpreter(this) {
-			UnderlyingContextAttribute = TopContext,
-			Offset = 0
-		};
+		var contextInterpreter =
+			new ContextInterpreter(this, TopContextAttribute) {UnderlyingContextAttribute = {UnderlyingType = baseContext.GetTypeInfo()}};
 
-		contextInterpreter.UnderlyingContextAttribute.UnderlyingType = baseContext.GetTypeInfo();
 		contextInterpreter.UnderlyingContextAttribute.LoadIfNot();
 		if (Args.Length > 0) {
 			if (contextInterpreter.IsParameterEqual(Options.HexOption, Args[0])) {

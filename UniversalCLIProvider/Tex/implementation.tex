@@ -39,22 +39,55 @@ stellt verschieden Voreinstellung bereit, die alternativ zum \inlinecode{CmdCont
  \end{itemize}
  \subsubsection{UniversalCLIProvider.Interpreters}
  Aufbauend auf den vorherigen beiden namespaces wird im \inlinecode{UniversalCLIProvider.Interpreters} die Hauptaufgabe der Bibliothek geleistet: 
- Dass eigentliche interpretieren von Kommandozeilenbefehlen.
+ Das eigentliche interpretieren von Kommandozeilenbefehlen.
  Folgende Klassen sind in diesem namespace vorhanden:
  \begin{itemize}
-  \item Die \inlinecode{BaseInterpreter} Klasse ist die Basis Klasse, von der alle folgenden Klassen erben.
+  \item Die \inlinecode{CommandlineOptionInterpreter} Klasse ist die Basis f\"ur jede Interpretation, und erfüllt Aufgaben, die nur auf oberster Ebene durchgeführt werden müssen, wie z.B. die Speicherung der Argumente.
+  \item Die \inlinecode{BaseInterpreter} Klasse ist die abstrakte Basis Klasse, von der alle folgenden Klassen erben.
   Sie definiert u.a. dass jeder Interpreter einen \inlinecode{Parent} hat, der auch ein \inlinecode{BaseInterpreter} ist, au\ss er es handelt sich um die Spitze eines solches Stapels,
-  der per Definition ein \inlinecode{CommandlineOptionInterpreter} ist, dann ist die \inlinecode{Parent}-Eigenschaft n\"amlich \inlinecode{null}.
-  \item Die \inlinecode{CommandlineOptionInterpreter} Klasse ist das oberste Element jedes Interpretationsstacks, und erf\"ullt Aufgaben, die nur auf oberster Ebene durchgef\"uhrt werden m\"ussen.
-  Au\ss erdem enth\"alt sie die \inlinecode{Interpret} Methode, welche die Interpretation auf Basis eines gegebenen Ursprungs-Kontext startet, die wichtigste Methode zur Verwendung der Bibliothek.
+  dann ist die \inlinecode{Parent}-Eigenschaft nämlich \inlinecode{null}.
+  Au\ss erdem enthält sie die \inlinecode{Interpret} Methode, welche die Interpretation auf Basis eines gegebenen Ursprungs-Kontext startet, die wichtigste Methode zur Verwendung der Bibliothek.
   \item Die \inlinecode{ContextInterpreter} Klasse interpretiert einen gegeben Kommandozeilenkontext und wird von der CommandlineOptionInterpreter aufgerufen.
-  Sie l\"adt dazu n\"otige Metadaten \"uber inhalte des Kontext, sofern dies noch nicht geschehen ist.
+  Sie lädt dazu nötige Metadaten über inhalte des Kontext, sofern dies noch nicht geschehen ist.
   \item Die \inlinecode{ActionInterpreter} Klasse interpretiert eine gegebene Kommandozeilenaktion zusammen mit ihren Parametern.
   \item Die \inlinecode{ConfigurationInterpreter} Klasse interpretiert Befehle zum Konfigurations-Management.
  \end{itemize}
- \subsection{Erläuterung der Implementation der Klasse ContextInterpreter}\label{subsec:ConextInterpreter}
- \subsubsection{Einfache Aktionsausführungen}
+ \subsection{Erläuterung der Implementation der Klasse ContextInterpreter}\label{subsec:ContextInterpreter}
+ Die Klasse \inlinecode{ContextInterpreter} erfüllt Schl\"usselfunktionen in dieser Bibliothek.
+ Sie erbt von der abstrakten \inlinecode{BaseInterpreter} Klasse folgende Inhalte:
+ \begin{itemize}
+  \item Die \inlinecode{Name} Eigenschaft, die jedem Interpreter einen Namen gibt.
+  \item Die \inlinecode{Offset} Eigenschaft vom Datentyp \inlinecode{int} gibt den Index des aktuell interpretierten Arguments an.
+  \item Die \inlinecode{TopInterpreter} Eigenschaft referenziert einen \inlinecode{CommandlineOptionInterpreter}
+  \item Die \inlinecode{Parent} Eigens chaft gibt das nächst höhere Element des Interpretations-Stack
+   \footnote{Der Begriff Interpretations-Stack wird im folgenden verwendet um den Aufbau der Implementation des Interpretations-Vorgang zu beschreiben, da Interpretations-Aufgaben u.U. die Erfüllung kleinerer Interpretations-Aufgaben vorraussetzten, diese liegen im Interpretations-Stack darunter.}
+   an.%TODO DEfine
+  \item Die \inlinecode{PathBottomUp} Eigenschaft gibt ein \inlinecode{IEnumerable<BaseInterpreter>} der alle Elemente des Interpretations-Stack von unten nach oben aufz\"ahlt, basierend auf den \inlinecode{Parent} der einzelnen Elemente.
+  \item Die \inlinecode{Path} Eigenschaft gibt den Interpretations-Stack von oben nach zur\"uck, indem \inlinecode{PathBottomUp} r\"uckw\"arts verwendet wird.
+  \item Die Überschreibung der \inlinecode{ToString}, die nun die \inlinecode{Path} Eigenschaft formattiert zur\"uckgibt.
+  \item Die \inlinecode{IncreaseOffset} Methode, die die \inlinecode{Offset} um 1 erh\"oht dann zur\"uckgibt ob weitere Parameter bereitstehen.
+  \item Die abstrakte \inlinecode{Interpret} Methode, die den gegebenen Kontext interpretiert und zur\"uckgibt ob die Interpretation war.
+  \item Die \inlinecode{IsParameterEqual} Methode,die pr\"uft ob ein gegebener Parameter einem erwarteten Parameter entspricht.
+  \item Die \inlinecode{Reset} Methode setzt den \inlinecode{Offset} wieder auf 0 (f\"ur interaktiven Modus n\"otig).
+  \item Zwei Konstruktoren, einen um einen \inlinecode{BaseInterpreter} als oberstes Element eines Interpretations-Stack auf Basis eines \inlinecode{CommandlineOptionInterpreter} zu erzeugen, und einen um einen bestehenden Interpretationsstack um eine Ebene nach unten zu erweitern.
+ \end{itemize}
+ Die \inlinecode{ContextInterpreter} Klasse selbst hat zudem das \inlinecode{UnderlyingContextAttribute}, dass das \inlinecode{CmdContextAttribute} referenziert, das den zu interpretierenden Kontext repr\"asentiert.
+ Die beiden Konstruktoren werden um Werte f\"ur dieses Feld erweitert:
+ \begin{lstlisting}[language={[Sharp]C}, title=Konstruktoren der ContextInterpreter Klasse]
+internal ContextInterpreter([NotNull] CommandlineOptionInterpreter top,
+ [NotNull] CmdContextAttribute underlyingContextAttribute, int offset = 0) :
+ base(top, offset) =>
+ UnderlyingContextAttribute = underlyingContextAttribute;
+
+internal ContextInterpreter([NotNull] BaseInterpreter parent,
+  [NotNull] CmdContextAttribute attribute, int offset = 0) :
+  base(parent, attribute.Name, offset) =>
+  UnderlyingContextAttribute = attribute; \end{lstlisting}
+ Zuletzte \"uberschreibt sie die abstrakte Interpret Methode:
+ \begin{lstlisting}[title=\"Uberschreibung der Interpret Methode]
+  internal override bool Interpret() => Interpret(out ContextInterpreter _);\end{lstlisting}
  \subsection{Demonstration der Funktionen anhand der Referenzverwendung}\label{subsec:demonstration}
+ \subsubsection{Einfache Aktionsausführungen}
  \subsubsection{Verwendung von Kontexten}
  \subsubsection{Hexadezimalkodierung}\label{Hexadecimalencoding}
  \subsubsection{Hilfe Funktion}

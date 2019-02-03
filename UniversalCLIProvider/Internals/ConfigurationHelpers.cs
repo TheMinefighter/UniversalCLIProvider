@@ -48,6 +48,7 @@ public static class ConfigurationHelpers {
 					if (configurationFieldAttribute.IsReadonly) {
 						ro = true;
 					}
+
 					prop = property;
 					lastNonIndexer = prop;
 					break;

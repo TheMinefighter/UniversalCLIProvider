@@ -11,11 +11,10 @@ namespace UniversalCLIProvider.Attributes {
 public class CmdParameterAttribute : Attribute {
 	private bool _loaded;
 	public string Description;
-	public bool IsParameter;
 	[NotNull] public string Name;
 	public IEnumerable<CmdParameterAliasAttribute> ParameterAliases;
 	public string ShortForm;
-	public ICustomAttributeProvider UnderlyingParameter;
+	public ParameterInfo UnderlyingParameter;
 	public CmdParameterUsage Usage;
 
 
@@ -27,7 +26,7 @@ public class CmdParameterAttribute : Attribute {
 	public void LoadAlias() {
 		if (!_loaded) {
 			ParameterAliases = UnderlyingParameter.GetCustomAttributes(typeof(CmdParameterAliasAttribute), false)
-				.Cast<CmdParameterAliasAttribute>();
+				.Cast<CmdParameterAliasAttribute>().ToArray();
 			if (Usage == CmdParameterUsage.Default) {
 				Usage = ParameterAliases.Any() ? CmdParameterUsage.SupportDirectAlias : CmdParameterUsage.SupportDeclaredRaw;
 			}

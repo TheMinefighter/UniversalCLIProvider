@@ -60,7 +60,7 @@ numbers=none,language={[Sharp]C},breaklines=true,frame=single, literate={ö}{{ö
 \date{\today \linebreak \linebreak Facharbeit im Fach Informatik (If GK 1)}
 
 \parindent=0pt
-\newcommand{\inlinecode}[1]{{\lstinline[]$#1$}}
+\newcommand{\inlinecode}[1]{{\lstinline[language=]$#1$}}
 \begin{document}
  \begin{sloppypar}
   \maketitle
@@ -69,6 +69,7 @@ numbers=none,language={[Sharp]C},breaklines=true,frame=single, literate={ö}{{ö
   \thispagestyle{empty}
   \tableofcontents
   \pagebreak
+  %\section{Grundlagen\& Vorgehen} Verwandte Arbeiten;Validierung;Limitierungen
   \section{Einleitung \& Motivation}\label{sec:Intro}
   In dieser Arbeit geht es um die Entwicklung einer Bibliothek, welche Unabhängig von der konkreten Verwendung Kommandozeilenoberflächen bereitstellen kann, für C\#.
   Die Motivation für dieses Projekt ist die Erfahrung bei einem anderen das es keine meinen speziellen Anforderungen entsprechende Bibliothek gab, so dass ich die Idee hatte selbst eine alternative zu entwickeln.
@@ -141,8 +142,7 @@ numbers=none,language={[Sharp]C},breaklines=true,frame=single, literate={ö}{{ö
   Sie wird seit der Veröffentlichung aktiv weiteretwickelt, nutzt die möglichkeiten aktueller C\# Versionen.
   Die Bibliothek stellt eine vollständige Hilfefunktion, baumartige Organistaion von Subkommandos, Parameter, Umfangreiche Typkonvertierungen, sowie Kurzformen bereit~\cite{CommandLineParserWiki}.
   Au\ss erdem stellt die Bibliothek dedizierten F\# Support bereit, der jedoch in dieser Arbeit nicht weiter behandelt werden soll.
-  Die Bibliothek ist die am weitesten verbreitetste Lösung im C\# Umfeld mit 6.1 Millionen Downloads auf nuget.org~\cite{CommandLineParserNuget}.
-
+  Die Bibliothek ist die am weitesten verbreitetste Lösung im C\# Umfeld mit 6.1 Millionen Downloads auf nuget.org~\cite{CommandLineParserNuget}. 
   \subsection{Bisher ungelöste Probleme}\label{subsec:currentproblems}
   df
   \subsubsection{Sonderzeichen-Unterstützung}

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using UniversalCLIProvider.Attributes;
 using UniversalCLIProvider.Interpreters;
 
@@ -21,7 +22,7 @@ public static partial class HelpGenerators {
 	}
 
 	/// <summary>
-	/// Prints help for a configurationNamespace
+	///  Prints help for a configurationNamespace
 	/// </summary>
 	/// <param name="namespaceAttribute">The configurationNamespace to print help for</param>
 	/// <param name="width">The width of the console</param>
@@ -65,7 +66,7 @@ public static partial class HelpGenerators {
 	}
 
 	/// <summary>
-	/// Prints help about a certain configuration field
+	///  Prints help about a certain configuration field
 	/// </summary>
 	/// <param name="fieldAttribute">The field attribute to print help for</param>
 	/// <param name="width">The width of the console</param>
@@ -91,7 +92,7 @@ public static partial class HelpGenerators {
 	}
 
 	/// <summary>
-	/// Prints generic help about the configuration
+	///  Prints generic help about the configuration
 	/// </summary>
 	/// <param name="interpreter">The current interpreter</param>
 	/// <param name="width">The width of the console</param>
@@ -101,11 +102,12 @@ public static partial class HelpGenerators {
 		tw = tw ?? Console.Out;
 		string indentString = new string(' ', indent);
 		tw.Write(CommandlineMethods.PadCentered($"Usage of {interpreter.Name}", width));
-		tw.WriteLine($"{interpreter.Path} NameOfValue help");
+		string interpreterStringPath = string.Join(" --", interpreter.Path.Select(x => x.Name)); //TODO Clean up this hacky line
+		tw.WriteLine($"{interpreterStringPath} NameOfValue help");
 		tw.WriteLine(indentString + "Prints help for the field");
-		tw.WriteLine($"{interpreter.Path} NameOfValue get");
+		tw.WriteLine($"{interpreterStringPath} NameOfValue get");
 		tw.WriteLine(indentString + "Reads the field");
-		tw.WriteLine($"{interpreter.Path} NameOfValue set NewValue");
+		tw.WriteLine($"{interpreterStringPath} NameOfValue set NewValue");
 		tw.WriteLine(indentString + "Sets the field to the value provided");
 		//TODO Add add&remove when implemented
 	}

@@ -10,8 +10,6 @@ using UniversalCLIProvider.Interpreters;
 namespace UniversalCLIProvider.Attributes {
 [AttributeUsage(AttributeTargets.Class), UsedImplicitly]
 public class CmdContextAttribute : Attribute {
-
-
 	/// <summary>
 	///  The characters forbidden
 	/// </summary>
@@ -45,19 +43,14 @@ public class CmdContextAttribute : Attribute {
 	private bool _loaded;
 
 	/// <summary>
+	///  All configuration providers of this context, initialized by the <see cref="Load" /> function
+	/// </summary>
+	internal IList<CmdConfigurationProviderAttribute> CfgProviders;
+
+	/// <summary>
 	///  All context parameters of this context, initialized by the <see cref="Load" /> function
 	/// </summary>
 	internal IList<CmdActionAttribute> CtxActions;
-
-	/// <summary>
-	///  All actions of this context, initialized by the <see cref="Load" /> function
-	/// </summary>
-	internal IList<CmdParameterAttribute> CtxParameters;
-
-	/// <summary>
-	/// All configuration providers of this context, initialized by the <see cref="Load" /> function
-	/// </summary>
-	internal IList<CmdConfigurationProviderAttribute> CfgProviders;
 
 	/// <summary>
 	///  The action to be run when no further Arguments are supplied, can easily be set with the defaultActionPreset constructor parameter
@@ -145,7 +138,7 @@ public class CmdContextAttribute : Attribute {
 		SubCtx = new List<CmdContextAttribute>();
 		CtxActions = new List<CmdActionAttribute>();
 		CfgProviders = new List<CmdConfigurationProviderAttribute>();
-		CtxParameters = new List<CmdParameterAttribute>();
+		//CtxParameters = new List<CmdParameterAttribute>();
 		foreach (TypeInfo nestedSubcontext in UnderlyingType.DeclaredNestedTypes) {
 			var contextAttribute = nestedSubcontext.GetCustomAttribute<CmdContextAttribute>();
 			if (contextAttribute != null) {
@@ -156,11 +149,11 @@ public class CmdContextAttribute : Attribute {
 		}
 
 		foreach (PropertyOrFieldInfo propertyOrField in UnderlyingType.DeclaredPropertiesAndFields()) {
-			var parameterAttribute = propertyOrField.MemberInfo.GetCustomAttribute<CmdParameterAttribute>();
+			/*var parameterAttribute = propertyOrField.MemberInfo.GetCustomAttribute<CmdParameterAttribute>();
 			if (parameterAttribute != null) {
 				parameterAttribute.UnderlyingParameter = propertyOrField;
 				CtxParameters.Add(parameterAttribute);
-			}
+			}*/
 
 			var configurationProviderAttribute = propertyOrField.MemberInfo.GetCustomAttribute<CmdConfigurationProviderAttribute>();
 			if (!(configurationProviderAttribute is null)) {
@@ -169,7 +162,8 @@ public class CmdContextAttribute : Attribute {
 					configurationProviderAttribute.UnderlyingPropertyOrField.ValueType.GetCustomAttribute<CmdConfigurationNamespaceAttribute>();
 #if DEBUG
 				if (configurationProviderAttribute.Root is null) {
-					throw new InvalidCLIConfigurationException($"The type of the property/field \"{propertyOrField.Name}\", which is marked with a CmdConfigurationProviderAttribute, ({configurationProviderAttribute.UnderlyingPropertyOrField.ValueType}) has no CmdConfigurationNamespaceAttribute as required.");
+					throw new InvalidCLIConfigurationException(
+						$"The type of the property/field \"{propertyOrField.Name}\", which is marked with a CmdConfigurationProviderAttribute, ({configurationProviderAttribute.UnderlyingPropertyOrField.ValueType}) has no CmdConfigurationNamespaceAttribute as required.");
 				}
 #endif
 				CfgProviders.Add(configurationProviderAttribute);

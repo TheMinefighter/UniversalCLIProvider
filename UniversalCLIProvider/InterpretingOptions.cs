@@ -25,5 +25,7 @@ public class InterpretingOptions {
 	///  The option for entering the interactive shell, use null to disable this
 	/// </summary>
 	[CanBeNull] public string InteractiveOption = "Master:Interactive";
+
+	public string InteractiveSubPathSeparator = " ";
 }
 }

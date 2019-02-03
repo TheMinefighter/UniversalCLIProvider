@@ -3,18 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using JetBrains.Annotations;
 using UniversalCLIProvider.Attributes;
 using UniversalCLIProvider.Internals;
 
 namespace UniversalCLIProvider.Interpreters {
 public class ContextInterpreter : BaseInterpreter {
-	public CmdContextAttribute UnderlyingContextAttribute;
+	[NotNull] internal CmdContextAttribute UnderlyingContextAttribute;
 
-	internal ContextInterpreter(CommandlineOptionInterpreter top, int offset = 0) : base(top, offset) { }
+	internal ContextInterpreter([NotNull] CommandlineOptionInterpreter top,
+		[NotNull] CmdContextAttribute underlyingContextAttribute, int offset = 0) :
+		base(top, offset) =>
+		UnderlyingContextAttribute = underlyingContextAttribute;
 
-	internal ContextInterpreter(BaseInterpreter parent, CmdContextAttribute attribute, int offset = 0) : base(parent, attribute.Name, offset) =>
+	internal ContextInterpreter([NotNull] BaseInterpreter parent,
+		[NotNull] CmdContextAttribute attribute, int offset = 0) :
+		base(parent, attribute.Name, offset) =>
 		UnderlyingContextAttribute = attribute;
 
+	/// <summary>
+	/// Starts the interactive interpretation of this context
+	/// </summary>
+	/// <param name="interpretOn">whether there are further arguments that need to be interpreted as a command in the interactive shell</param>
 	internal void InteractiveInterpreter(bool interpretOn = false) {
 		ContextInterpreter currentContextInterpreter = this;
 		while (true) {
@@ -25,11 +35,15 @@ public class ContextInterpreter : BaseInterpreter {
 				TopInterpreter.Args = args.ToArray();
 			}
 			else {
-				Console.Write(string.Join(" ", currentContextInterpreter.Path) + ">");
+				Console.Write(string.Join(TopInterpreter.Options.InteractiveSubPathSeparator, currentContextInterpreter.Path.Select(x => x.Name)) + ">");
+				string readLine = Console.ReadLine();
+				if (readLine is null) {
+					continue;
+				}
 				List<string> arguments = new List<string>();
 				var lastStringBuilder = new StringBuilder();
 				bool quoting = false;
-				foreach (char c in Console.ReadLine()) { //TODO Might want to add support for backslashed quotes
+				foreach (char c in readLine) { //TODO Might want to add support for backslashed quotes
 					switch (c) {
 						case '"':
 							quoting ^= true;
@@ -58,7 +72,6 @@ public class ContextInterpreter : BaseInterpreter {
 			}
 
 			currentContextInterpreter.Reset();
-			currentContextInterpreter.UnderlyingContextAttribute.LoadIfNot();
 			if (currentContextInterpreter.Interpret(out ContextInterpreter tmpContextInterpreter, true)) {
 				currentContextInterpreter = tmpContextInterpreter;
 			}
@@ -80,6 +93,7 @@ public class ContextInterpreter : BaseInterpreter {
 			}
 		}
 
+		UnderlyingContextAttribute.LoadIfNot();
 		newCtx = null;
 		if (TopInterpreter.Args.Length == 0) {
 			UnderlyingContextAttribute.DefaultAction.Interpret(this);
@@ -88,7 +102,7 @@ public class ContextInterpreter : BaseInterpreter {
 
 		string search = TopInterpreter.Args[Offset];
 		foreach (CmdContextAttribute cmdContextAttribute in UnderlyingContextAttribute.SubCtx) {
-			if (IsParameterEqual(cmdContextAttribute.Name, search, interactive)) {
+			if (CommandlineMethods.IsParameterEqual(cmdContextAttribute.Name, search, interactive)) {
 				if (IncreaseOffset()) {
 					if (interactive) {
 						Reset();
@@ -129,20 +143,20 @@ public class ContextInterpreter : BaseInterpreter {
 		}
 
 		foreach (CmdConfigurationProviderAttribute provider in UnderlyingContextAttribute.CfgProviders) {
-			if (IsParameterEqual(provider.Name,search, provider.ShortForm,true)) {
-				var cfgInterpreter= new ConfigurationInterpreter(TopInterpreter,provider.Root,provider.UnderlyingPropertyOrField.GetValue(null),provider.UnderlyingPropertyOrField.ValueType.GetTypeInfo());
+			if (IsParameterEqual(provider.Name, search, provider.ShortForm, true)) {
+				var cfgInterpreter = new ConfigurationInterpreter(TopInterpreter, provider.Root, provider.UnderlyingPropertyOrField.GetValue(null),
+					provider.UnderlyingPropertyOrField.ValueType.GetTypeInfo());
 				return cfgInterpreter.Interpret();
 			}
 		}
-		foreach (CmdParameterAttribute cmdParameterAttribute in UnderlyingContextAttribute.CtxParameters) {
+		/*foreach (CmdParameterAttribute cmdParameterAttribute in UnderlyingContextAttribute.CtxParameters) {
 			//TODO Implement this
-		}
+		}*/
 
-//TODO if null
 		UnderlyingContextAttribute.DefaultAction.Interpret(this);
 		return false;
 	}
 
-	internal override bool Interpret(bool printErrors = true) => Interpret(out ContextInterpreter _);
+	internal override bool Interpret() => Interpret(out ContextInterpreter _);
 }
 }

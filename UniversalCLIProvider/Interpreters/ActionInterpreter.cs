@@ -11,38 +11,12 @@ public class ActionInterpreter : BaseInterpreter {
 	private bool _cached;
 	public CmdActionAttribute UnderlyingAction;
 
-	public ActionInterpreter(CommandlineOptionInterpreter top, int i) : base(top) {
-		i++;
-	}
-
 	public ActionInterpreter(CmdActionAttribute myActionAttribute, BaseInterpreter parent, int offset = 0) : base(parent,
 		myActionAttribute.Name, offset) => UnderlyingAction = myActionAttribute;
 
-	internal void LoadParameters() {
-		if (!_cached) {
-			UnderlyingAction.LoadParametersAndAlias();
-			_cached = true;
-		}
-	}
 
-	private void LoadParametersWithoutCache() {
-		UnderlyingAction.Parameters = new List<CmdParameterAttribute>();
-		foreach (ParameterInfo parameterInfo in UnderlyingAction.UnderlyingMethod.GetParameters()) {
-			var cmdParameterAttribute = parameterInfo.GetCustomAttribute(typeof(CmdParameterAttribute)) as CmdParameterAttribute;
-			if (cmdParameterAttribute is null) {
-				continue;
-			}
-
-			cmdParameterAttribute.UnderlyingParameter = parameterInfo;
-			cmdParameterAttribute.ParameterAliases =
-				parameterInfo.GetCustomAttributes<CmdParameterAliasAttribute>();
-			cmdParameterAttribute.LoadAlias();
-			UnderlyingAction.Parameters.Add(cmdParameterAttribute);
-		}
-	}
-
-	internal override bool Interpret(bool printErrors = true) {
-		LoadParameters();
+	internal override bool Interpret() {
+		UnderlyingAction.LoadParametersAndAlias();
 		if (TopInterpreter.Args.Skip(Offset - 1).Any(x => IsParameterEqual("help", x, "?"))) {
 			if (TopInterpreter.Args.Length - 1 == Offset) {
 				HelpGenerators.PrintActionHelp(UnderlyingAction, this);
@@ -82,7 +56,7 @@ public class ActionInterpreter : BaseInterpreter {
 		object[] invokers = new object[allParameterInfos.Length];
 		bool[] invokersDeclared = new bool[allParameterInfos.Length];
 		foreach (KeyValuePair<CmdParameterAttribute, object> invocationArgument in invocationArguments) {
-			int position = ((ParameterInfo) invocationArgument.Key.UnderlyingParameter).Position;
+			int position = invocationArgument.Key.UnderlyingParameter.Position;
 			invokers[position] = invocationArgument.Value;
 			invokersDeclared[position] = true;
 		}
@@ -122,7 +96,7 @@ public class ActionInterpreter : BaseInterpreter {
 					return false;
 				}
 
-				Type parameterType = (found.UnderlyingParameter as ParameterInfo).ParameterType;
+				Type parameterType = found.UnderlyingParameter.ParameterType;
 				if (IsAlias(found, out object aliasValue)) {
 					invokationArguments.Add(found, aliasValue);
 				}
@@ -216,14 +190,24 @@ public class ActionInterpreter : BaseInterpreter {
 		}
 	}
 
-	internal bool IsParameterDeclaration(out CmdParameterAttribute found, string search = null, bool allowPrefixFree = false) =>
-		IsParameterDeclaration(out found, UnderlyingAction.Parameters, search ?? TopInterpreter.Args[Offset], allowPrefixFree);
+	private bool IsParameterDeclaration(out CmdParameterAttribute found, string search = null, bool allowPrefixFree = false) {
+		search = search ?? TopInterpreter.Args[Offset];
+		foreach (CmdParameterAttribute cmdParameterAttribute in (IEnumerable<CmdParameterAttribute>) UnderlyingAction.Parameters) {
+			if (IsParameterEqual(cmdParameterAttribute.Name, search, cmdParameterAttribute.ShortForm, allowPrefixFree)) {
+				found = cmdParameterAttribute;
+				return true;
+			}
+		}
+
+		found = null;
+		return false;
+	}
 
 //      internal bool IsAlias(CmdParameterAttribute expectedAliasType, out object value, string source = null) {
 //         return base.IsAlias(expectedAliasType, out value, source ?? TopInterpreter.Args[Offset]);
 //      }
 
-	internal bool IsAlias(out CmdParameterAttribute aliasType, out object value, string source = null) {
+	private bool IsAlias(out CmdParameterAttribute aliasType, out object value, string source = null) {
 		foreach (CmdParameterAttribute cmdParameterAttribute in UnderlyingAction.Parameters) {
 			if (IsAlias(cmdParameterAttribute, out value, source ?? TopInterpreter.Args[Offset])) {
 				aliasType = cmdParameterAttribute;
@@ -232,6 +216,19 @@ public class ActionInterpreter : BaseInterpreter {
 		}
 
 		aliasType = null;
+		value = null;
+		return false;
+	}
+
+	//TODO inline this method
+	private bool IsAlias(CmdParameterAttribute expectedAliasType, out object value, string search = null) {
+		foreach (CmdParameterAliasAttribute cmdParameterAlias in expectedAliasType.ParameterAliases) {
+			if (IsParameterEqual(cmdParameterAlias.Name, search ?? TopInterpreter.Args[Offset], cmdParameterAlias.ShortForm)) {
+				value = cmdParameterAlias.Value;
+				return true;
+			}
+		}
+
 		value = null;
 		return false;
 	}

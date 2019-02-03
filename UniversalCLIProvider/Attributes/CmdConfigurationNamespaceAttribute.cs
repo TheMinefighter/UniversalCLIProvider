@@ -7,15 +7,15 @@ using PropertyOrFieldInfoPackage;
 namespace UniversalCLIProvider.Attributes {
 [AttributeUsage(AttributeTargets.Class), UsedImplicitly]
 public class CmdConfigurationNamespaceAttribute : Attribute {
-	internal CmdConfigurationFieldAttribute[] ConfigurationFields;
 	private bool _loaded;
 	private TypeInfo _underlyingType;
+	internal CmdConfigurationFieldAttribute[] ConfigurationFields;
 	public string Description;
 	public bool IsReadonly;
 	public string[] LongDescription;
 	public string Name;
 
-	public CmdConfigurationNamespaceAttribute(string name, string description, string[] longDescription=null, bool isReadonly=false) {
+	public CmdConfigurationNamespaceAttribute(string name, string description, string[] longDescription = null, bool isReadonly = false) {
 		IsReadonly = isReadonly;
 		Name = name;
 		Description = description;

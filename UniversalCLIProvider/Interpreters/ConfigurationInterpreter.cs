@@ -8,8 +8,8 @@ using UniversalCLIProvider.Internals;
 
 namespace UniversalCLIProvider.Interpreters {
 public class ConfigurationInterpreter : BaseInterpreter {
-	private readonly CmdConfigurationNamespaceAttribute _root;
 	private readonly object _referenceToObject;
+	private readonly CmdConfigurationNamespaceAttribute _root;
 	private readonly TypeInfo _typeInfoOfConfiguration;
 
 	public ConfigurationInterpreter(CommandlineOptionInterpreter top, CmdConfigurationNamespaceAttribute root, object referenceToObject,
@@ -20,14 +20,14 @@ public class ConfigurationInterpreter : BaseInterpreter {
 		_typeInfoOfConfiguration = typeInfoOfConfiguration;
 	}
 
-	internal override bool Interpret(bool printErrors = true) {
+	internal override bool Interpret() {
 		if (Offset + 1 >= TopInterpreter.Args.Length || IsParameterEqual("help", TopInterpreter.Args[Offset], "?")) {
 			HelpGenerators.PrintConfigurationContextHelp(_root, this, true);
 		}
 
 		bool ro = true;
 		IncreaseOffset();
-		object requiredObject= _referenceToObject;
+		object requiredObject = _referenceToObject;
 		if (!ConfigurationHelpers.ResolvePathRecursive(TopInterpreter.Args[Offset], _typeInfoOfConfiguration, ref requiredObject, out PropertyInfo prop,
 			out object[] indexers, ref ro, out PropertyInfo lastNonIndexer)) {
 			return false;
@@ -61,23 +61,25 @@ public class ConfigurationInterpreter : BaseInterpreter {
 			Console.WriteLine(JsonConvert.SerializeObject(currentValue));
 			return true;
 		}
+
 		if (IsParameterEqual("Set", Operator, allowPrefixFree: true)) {
 			var valueAttribute = prop.GetCustomAttribute<CmdConfigurationFieldAttribute>();
-			if (ro||!prop.CanWrite) {
-				Console.WriteLine("The given value is not writable");//Err
+			if (ro || !prop.CanWrite) {
+				Console.WriteLine("The given value is not writable"); //Err
 			}
 
 			if (IncreaseOffset()) {
-				Console.WriteLine("Please supply a value to set the given value to!");//Err
+				Console.WriteLine("Please supply a value to set the given value to!"); //Err
 			}
 
-			if (!CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset],prop.PropertyType, out object newValue)) {
-				Console.WriteLine($"The given string couldn't be parsed to {prop.PropertyType}!");//Err
+			if (!CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], prop.PropertyType, out object newValue)) {
+				Console.WriteLine($"The given string couldn't be parsed to {prop.PropertyType}!"); //Err
 				return false;
 			}
+
 			try {
 				if (indexers is null) {
-					prop.SetValue(requiredObject,newValue);
+					prop.SetValue(requiredObject, newValue);
 				}
 				else {
 					prop.SetValue(requiredObject, newValue, indexers);
@@ -92,9 +94,10 @@ public class ConfigurationInterpreter : BaseInterpreter {
 			if (_referenceToObject is IConfigurationRoot iCfgRoot) {
 				iCfgRoot.Save(Enumerable.Repeat(new PropertyOrFieldInfo(lastNonIndexer), 1));
 			}
+
 			return true;
-			
 		}
+
 		Console.WriteLine("Could not resolve the operator provided");
 		//TODO Remove and Add missing
 		//_root.Interpret(printErrors);

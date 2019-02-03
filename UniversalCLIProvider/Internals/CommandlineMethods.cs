@@ -168,5 +168,23 @@ public static class CommandlineMethods {
 		Console.WriteLine(toWrite);
 		(Console.BackgroundColor, Console.ForegroundColor) = backup;
 	}
+
+	internal static bool IsParameterEqual([CanBeNull] string expected, [NotNull] string given, bool ignoreCase, string expectedShortForm = null,
+		bool allowPrefixFree = false) {
+		if (expected is null) {
+			return false;
+		}
+
+		if (ignoreCase) {
+			given = given.ToLower();
+			expected = expected.ToLower();
+		}
+
+		if (!(expectedShortForm is null) && ('/' + expectedShortForm == given || '-' + expectedShortForm == given)) {
+			return false;
+		}
+
+		return '/' + expected == given || "--" + expected == given || allowPrefixFree && expected == given;
+	}
 }
 }
