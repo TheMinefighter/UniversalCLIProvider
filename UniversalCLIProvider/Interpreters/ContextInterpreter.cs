@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using JetBrains.Annotations;
 using UniversalCLIProvider.Attributes;
 using UniversalCLIProvider.Internals;
@@ -13,7 +11,7 @@ public class ContextInterpreter : BaseInterpreter {
 
 	internal ContextInterpreter([NotNull] CommandlineOptionInterpreter top,
 		[NotNull] CmdContextAttribute underlyingContextAttribute, int offset = 0) :
-		base(top, offset) =>
+		base(top,underlyingContextAttribute.Name, offset) =>
 		UnderlyingContextAttribute = underlyingContextAttribute;
 
 	internal ContextInterpreter([NotNull] BaseInterpreter parent,
@@ -30,9 +28,7 @@ public class ContextInterpreter : BaseInterpreter {
 		while (true) {
 			if (interpretOn) {
 				interpretOn = false;
-				List<string> args = TopInterpreter.Args.ToList();
-				args.RemoveRange(0, Offset);
-				TopInterpreter.Args = args.ToArray();
+				TopInterpreter.Args = TopInterpreter.Args.Skip(Offset).ToArray();
 			}
 			else {
 				Console.Write(string.Join(TopInterpreter.Options.InteractiveSubPathSeparator, currentContextInterpreter.Path.Select(x => x.Name)) + ">");
@@ -40,35 +36,8 @@ public class ContextInterpreter : BaseInterpreter {
 				if (readLine is null) {
 					continue;
 				}
-				List<string> arguments = new List<string>();
-				var lastStringBuilder = new StringBuilder();
-				bool quoting = false;
-				foreach (char c in readLine) { //TODO Might want to add support for backslashed quotes
-					switch (c) {
-						case '"':
-							quoting ^= true;
-							break;
-						case ' ' when !quoting: {
-							string tmpString = lastStringBuilder.ToString();
-							if (tmpString != string.Empty) {
-								arguments.Add(tmpString);
-								lastStringBuilder = new StringBuilder();
-							}
 
-							break;
-						}
-						default:
-							lastStringBuilder.Append(c);
-							break;
-					}
-				}
-
-				string lastString = lastStringBuilder.ToString();
-				if (lastString != string.Empty) {
-					arguments.Add(lastString);
-				}
-
-				TopInterpreter.Args = arguments.ToArray();
+				TopInterpreter.Args = CommandlineMethods.ArgumentsFromString(readLine).ToArray();
 			}
 
 			currentContextInterpreter.Reset();
@@ -78,48 +47,43 @@ public class ContextInterpreter : BaseInterpreter {
 		}
 	}
 
+	/// <summary>
+	/// Makes this Interpreter do it's work
+	/// </summary>
+	/// <param name="newCtx">The new context for interactive interpretation</param>
+	/// <param name="interactive">Whether the interpretation comes from an interactive interpreter</param>
+	/// <returns>Whether the interpretation was successful</returns>
 	internal bool Interpret(out ContextInterpreter newCtx, bool interactive = false) {
-		if (interactive) {
-			if (TopInterpreter.Args[Offset] == "..") {
-				if (Parent == null) {
-					Environment.Exit(0);
-				}
-				else {
-					var parentInterpreter = Parent as ContextInterpreter;
-					parentInterpreter.Reset();
-					newCtx = parentInterpreter;
-					return true;
-				}
+		if (interactive && TopInterpreter.Args[Offset] == "..") {
+			if (Parent == null) {
+				Environment.Exit(0);
+			}
+			else {
+				var parentInterpreter = (ContextInterpreter) Parent;
+				parentInterpreter.Reset();
+				newCtx = parentInterpreter;
+				return true;
 			}
 		}
 
-		UnderlyingContextAttribute.LoadIfNot();
+		UnderlyingContextAttribute.Load();
 		newCtx = null;
-		if (TopInterpreter.Args.Length == 0) {
+		if (Offset >= TopInterpreter.Args.Length) {
 			UnderlyingContextAttribute.DefaultAction.Interpret(this);
 			return true;
 		}
 
 		string search = TopInterpreter.Args[Offset];
 		foreach (CmdContextAttribute cmdContextAttribute in UnderlyingContextAttribute.SubCtx) {
-			if (CommandlineMethods.IsParameterEqual(cmdContextAttribute.Name, search, interactive)) {
-				if (IncreaseOffset()) {
-					if (interactive) {
-						Reset();
-						newCtx = new ContextInterpreter(this, cmdContextAttribute);
-						return true;
-					}
-					else {
-						//throw
-						return false;
-					}
+			if (IsParameterEqual(cmdContextAttribute.Name, search,cmdContextAttribute.ShortForm, interactive)) {
+				if (IncreaseOffset() && interactive) {
+					newCtx = new ContextInterpreter(this, cmdContextAttribute);
+					return true;
 				}
 
 				var subInterpreter = new ContextInterpreter(this, cmdContextAttribute, Offset);
-				cmdContextAttribute.LoadIfNot();
 				if (interactive) {
-					subInterpreter.Interpret(out newCtx, interactive);
-					return newCtx != null;
+					return subInterpreter.Interpret(out newCtx, true);
 				}
 				else {
 					subInterpreter.Interpret();
@@ -130,7 +94,7 @@ public class ContextInterpreter : BaseInterpreter {
 		}
 
 		foreach (CmdActionAttribute cmdActionAttribute in UnderlyingContextAttribute.CtxActions) {
-			if (IsParameterEqual(cmdActionAttribute.Name, search, allowPrefixFree: true)) {
+			if (IsParameterEqual(cmdActionAttribute.Name, search, cmdActionAttribute.ShortForm, true)) {
 				IncreaseOffset();
 				var actionInterpreter = new ActionInterpreter(cmdActionAttribute, this, Offset);
 				if (!actionInterpreter.Interpret()) {
@@ -149,11 +113,9 @@ public class ContextInterpreter : BaseInterpreter {
 				return cfgInterpreter.Interpret();
 			}
 		}
-		/*foreach (CmdParameterAttribute cmdParameterAttribute in UnderlyingContextAttribute.CtxParameters) {
-			//TODO Implement this
-		}*/
 
-		UnderlyingContextAttribute.DefaultAction.Interpret(this);
+		Console.WriteLine($"Failed to Parse Argument Nr{Offset + 1}: \"{search}\"");
+		HelpGenerators.PrintContextHelp(UnderlyingContextAttribute, this);
 		return false;
 	}
 

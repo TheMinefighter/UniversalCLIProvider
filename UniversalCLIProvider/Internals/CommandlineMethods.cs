@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -14,13 +16,13 @@ public static class CommandlineMethods {
 	///  The nullable types for which <see cref="GetValueFromString" /> overrides quote and null behaviour
 	/// </summary>
 	private static readonly Type[] NullableOverridenTypes =
-		{typeof(DateTime?), typeof(DateTimeOffset?), typeof(TimeSpan?), typeof(Guid?)};
+		{typeof(DateTime?), typeof(DateTimeOffset?), typeof(TimeSpan?), typeof(string), typeof(Guid?)};
 
 	/// <summary>
 	///  The non nullable types for which <see cref="GetValueFromString" /> overrides quote behaviour
 	/// </summary>
 	private static readonly Type[] OverridenTypes =
-		{typeof(DateTime), typeof(DateTimeOffset), typeof(TimeSpan), typeof(string), typeof(Guid), typeof(Uri)};
+		{typeof(DateTime), typeof(DateTimeOffset), typeof(TimeSpan), typeof(Guid), typeof(Uri)};
 
 	/// <summary>
 	///  Parses a string while taking the special requirements for CLIs into account
@@ -181,10 +183,55 @@ public static class CommandlineMethods {
 		}
 
 		if (!(expectedShortForm is null) && ('/' + expectedShortForm == given || '-' + expectedShortForm == given)) {
-			return false;
+			return true;
 		}
 
 		return '/' + expected == given || "--" + expected == given || allowPrefixFree && expected == given;
+	}
+
+	public static IEnumerable<string> ArgumentsFromString(string readLine) {
+		var lastStringBuilder = new StringBuilder();
+		bool quoting = false;
+		bool backslashActive = false;
+		foreach (char c in readLine) { //TODO Might want to add support for backslashed quotes
+			switch (c) {
+				case '\"' when backslashActive:
+					lastStringBuilder.Append("\"");
+					break;
+				case '"' when !backslashActive:
+					quoting ^= true;
+					break;
+				case ' ' when !quoting: {
+					string tmpString = lastStringBuilder.ToString();
+					if (tmpString != String.Empty) {
+						yield return tmpString;
+						lastStringBuilder = new StringBuilder();
+					}
+
+					break;
+				}
+				case '\\' when !backslashActive:
+					backslashActive = true;
+					break;
+				case '\\' when backslashActive:
+					lastStringBuilder.Append('\\');
+					backslashActive = false;
+					break;
+				default:
+					if (backslashActive) {
+						lastStringBuilder.Append('\\');
+					}
+
+					backslashActive = false;
+					lastStringBuilder.Append(c);
+					break;
+			}
+		}
+
+		string lastString = lastStringBuilder.ToString();
+		if (lastString != String.Empty) {
+			yield return lastString;
+		}
 	}
 }
 }

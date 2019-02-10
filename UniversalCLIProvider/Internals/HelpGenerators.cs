@@ -91,8 +91,19 @@ public static partial class HelpGenerators {
 	/// <param name="tw">The textwriter to output to (defaults to <see cref="Console.Out" /></param>
 	private static void ContextHelp([NotNull] CmdContextAttribute context, int width, int indent = 3, TextWriter tw = null) {
 		tw = tw ?? Console.Out;
-		context.LoadIfNot();
+		context.Load();
 		tw.WriteLine(CommandlineMethods.PadCentered(context.Name, width));
+		if (context.LongDescription is null) {
+			if (!(context.Description is null)) {
+				CommandlineMethods.PrintWithPotentialIndent(context.Description, width, indent, tw);
+			}
+		}
+		else {
+			foreach (string s in context.LongDescription) {
+				CommandlineMethods.PrintWithPotentialIndent(s, width, 3, tw);
+			}
+		}
+
 		if (context.SubCtx.Count != 0) {
 			if (!(context.LongDescription is null)) {
 				foreach (string s in context.LongDescription) {
@@ -104,13 +115,9 @@ public static partial class HelpGenerators {
 		}
 
 		foreach (CmdContextAttribute subCtx in context.SubCtx) {
-			if (subCtx.Description is null) {
-				tw.WriteLine(subCtx.Name);
-			}
-			else {
-				CommandlineMethods.PrintWithPotentialIndent(
-					$"{(subCtx.ShortForm is null ? "" : "-" + subCtx.ShortForm + " | ")}--{subCtx.Name}: {subCtx.Description}", width, indent, tw);
-			}
+			CommandlineMethods.PrintWithPotentialIndent(
+				$"{(subCtx.ShortForm is null ? "" : "-" + subCtx.ShortForm + " | ")}--{subCtx.Name}{(subCtx.Description is null ? "" : $": {subCtx.Description}")}",
+				width, indent, tw);
 		}
 
 		if (context.CtxActions.Count != 0) {
@@ -118,12 +125,9 @@ public static partial class HelpGenerators {
 		}
 
 		foreach (CmdActionAttribute action in context.CtxActions) {
-			if (action.LongDescription is null) {
-				tw.WriteLine(action.Name);
-			}
-			else {
-				CommandlineMethods.PrintWithPotentialIndent($"{action.Name}: {action.Description}", width, indent, tw);
-			}
+			CommandlineMethods.PrintWithPotentialIndent(
+				$"{(action.ShortForm is null ? "" : $"-{action.ShortForm} | ")}--{action.Name}{(action.Description is null ? "" : $": {action.Description}")}",
+				width, indent, tw);
 		}
 	}
 

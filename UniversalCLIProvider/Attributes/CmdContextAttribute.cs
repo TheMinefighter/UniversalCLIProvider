@@ -122,84 +122,76 @@ public class CmdContextAttribute : Attribute {
 	/// <summary>
 	///  Loads the context if not loaded yet
 	/// </summary>
-	public void LoadIfNot() {
+	public void Load() {
 		if (!_loaded) {
-			Load();
-
-			_loaded = true;
-		}
-	}
-
-	/// <summary>
-	///  Loads the context internally, bypassing caching
-	/// </summary>
-	/// <exception cref="InvalidCLIConfigurationException">When the CLI is not configured correctly</exception>
-	private void Load() {
-		SubCtx = new List<CmdContextAttribute>();
-		CtxActions = new List<CmdActionAttribute>();
-		CfgProviders = new List<CmdConfigurationProviderAttribute>();
-		//CtxParameters = new List<CmdParameterAttribute>();
-		foreach (TypeInfo nestedSubcontext in UnderlyingType.DeclaredNestedTypes) {
-			var contextAttribute = nestedSubcontext.GetCustomAttribute<CmdContextAttribute>();
-			if (contextAttribute != null) {
-				contextAttribute.UnderlyingType = nestedSubcontext;
-				contextAttribute.DefaultAction = DefaultAction;
-				SubCtx.Add(contextAttribute);
+			SubCtx = new List<CmdContextAttribute>();
+			CtxActions = new List<CmdActionAttribute>();
+			CfgProviders = new List<CmdConfigurationProviderAttribute>();
+			//CtxParameters = new List<CmdParameterAttribute>();
+			foreach (TypeInfo nestedSubcontext in UnderlyingType.DeclaredNestedTypes) {
+				var contextAttribute = nestedSubcontext.GetCustomAttribute<CmdContextAttribute>();
+				if (contextAttribute != null) {
+					contextAttribute.UnderlyingType = nestedSubcontext;
+					contextAttribute.DefaultAction = DefaultAction;
+					SubCtx.Add(contextAttribute);
+				}
 			}
-		}
 
-		foreach (PropertyOrFieldInfo propertyOrField in UnderlyingType.DeclaredPropertiesAndFields()) {
-			/*var parameterAttribute = propertyOrField.MemberInfo.GetCustomAttribute<CmdParameterAttribute>();
+			foreach (PropertyOrFieldInfo propertyOrField in UnderlyingType.DeclaredPropertiesAndFields()) {
+				/*var parameterAttribute = propertyOrField.MemberInfo.GetCustomAttribute<CmdParameterAttribute>();
 			if (parameterAttribute != null) {
 				parameterAttribute.UnderlyingParameter = propertyOrField;
 				CtxParameters.Add(parameterAttribute);
 			}*/
 
-			var configurationProviderAttribute = propertyOrField.MemberInfo.GetCustomAttribute<CmdConfigurationProviderAttribute>();
-			if (!(configurationProviderAttribute is null)) {
-				configurationProviderAttribute.UnderlyingPropertyOrField = propertyOrField;
-				configurationProviderAttribute.Root =
-					configurationProviderAttribute.UnderlyingPropertyOrField.ValueType.GetCustomAttribute<CmdConfigurationNamespaceAttribute>();
+				var configurationProviderAttribute = propertyOrField.MemberInfo.GetCustomAttribute<CmdConfigurationProviderAttribute>();
+				if (!(configurationProviderAttribute is null)) {
+					configurationProviderAttribute.UnderlyingPropertyOrField = propertyOrField;
+					configurationProviderAttribute.Root =
+						configurationProviderAttribute.UnderlyingPropertyOrField.ValueType.GetCustomAttribute<CmdConfigurationNamespaceAttribute>();
 #if DEBUG
-				if (configurationProviderAttribute.Root is null) {
-					throw new InvalidCLIConfigurationException(
-						$"The type of the property/field \"{propertyOrField.Name}\", which is marked with a CmdConfigurationProviderAttribute, ({configurationProviderAttribute.UnderlyingPropertyOrField.ValueType}) has no CmdConfigurationNamespaceAttribute as required.");
-				}
-#endif
-				CfgProviders.Add(configurationProviderAttribute);
-			}
-		}
-
-		foreach (MethodInfo methodInfo in UnderlyingType.DeclaredMethods) {
-			var actionAttribute = methodInfo.GetCustomAttribute<CmdActionAttribute>();
-			if (actionAttribute != null) {
-				actionAttribute.UnderlyingMethod = methodInfo;
-				CtxActions.Add(actionAttribute);
-			}
-
-			var defaultActionAttribute = methodInfo.GetCustomAttribute<CmdDefaultActionAttribute>();
-			if (defaultActionAttribute != null) {
-				if (methodInfo.GetParameters().Length == defaultActionAttribute.Parameters.Length) {
-					DefaultAction = new ContextDefaultAction(() => methodInfo.Invoke(null, defaultActionAttribute.Parameters));
-				}
-				else if (methodInfo.GetParameters().Length == defaultActionAttribute.Parameters.Length + 1) {
-#if DEBUG
-					if (!methodInfo.GetParameters().Last().ParameterType.IsAssignableFrom(typeof(ContextInterpreter))) {
-						throw new InvalidCLIConfigurationException($"In the type {UnderlyingType.FullName} you have set the method {methodInfo.Name}" +
-							" to be the context's default action, but if the method takes one more parameter than provided by the attribute," +
-							" the type of the last method parameter must be Assignable from typeof(ContextInterpreter)");
+					if (configurationProviderAttribute.Root is null) {
+						throw new InvalidCLIConfigurationException(
+							$"The type of the property/field \"{propertyOrField.Name}\", which is marked with a CmdConfigurationProviderAttribute, ({configurationProviderAttribute.UnderlyingPropertyOrField.ValueType}) has no CmdConfigurationNamespaceAttribute as required.");
 					}
-
 #endif
-					DefaultAction =
-						new ContextDefaultAction(interpreter: x => methodInfo.Invoke(null, defaultActionAttribute.Parameters.Append(x).ToArray()));
-				}
-				else {
-					throw new InvalidCLIConfigurationException($"In the type {UnderlyingType.FullName} you have set the method {methodInfo.Name}" +
-						$" to be the context's default action, in the defining attribute you have supplied {defaultActionAttribute.Parameters.Length} parameters" +
-						" but that count must be the count of parameters accepted by the method or on less. Neither was the case.");
+					CfgProviders.Add(configurationProviderAttribute);
 				}
 			}
+
+			foreach (MethodInfo methodInfo in UnderlyingType.DeclaredMethods) {
+				var actionAttribute = methodInfo.GetCustomAttribute<CmdActionAttribute>();
+				if (actionAttribute != null) {
+					actionAttribute.UnderlyingMethod = methodInfo;
+					CtxActions.Add(actionAttribute);
+				}
+
+				var defaultActionAttribute = methodInfo.GetCustomAttribute<CmdDefaultActionAttribute>();
+				if (defaultActionAttribute != null) {
+					if (methodInfo.GetParameters().Length == defaultActionAttribute.Parameters.Length) {
+						DefaultAction = new ContextDefaultAction(() => methodInfo.Invoke(null, defaultActionAttribute.Parameters));
+					}
+					else if (methodInfo.GetParameters().Length == defaultActionAttribute.Parameters.Length + 1) {
+#if DEBUG
+						if (!methodInfo.GetParameters().Last().ParameterType.IsAssignableFrom(typeof(ContextInterpreter))) {
+							throw new InvalidCLIConfigurationException($"In the type {UnderlyingType.FullName} you have set the method {methodInfo.Name}" +
+								" to be the context's default action, but if the method takes one more parameter than provided by the attribute," +
+								" the type of the last method parameter must be Assignable from typeof(ContextInterpreter)");
+						}
+
+#endif
+						DefaultAction =
+							new ContextDefaultAction(interpreter: x => methodInfo.Invoke(null, defaultActionAttribute.Parameters.Append(x).ToArray()));
+					}
+					else {
+						throw new InvalidCLIConfigurationException($"In the type {UnderlyingType.FullName} you have set the method {methodInfo.Name}" +
+							$" to be the context's default action, in the defining attribute you have supplied {defaultActionAttribute.Parameters.Length} parameters" +
+							" but that count must be the count of parameters accepted by the method or on less. Neither was the case.");
+					}
+				}
+			}
+
+			_loaded = true;
 		}
 	}
 }

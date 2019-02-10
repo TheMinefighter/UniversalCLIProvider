@@ -13,7 +13,7 @@ public class ConfigurationInterpreter : BaseInterpreter {
 	private readonly TypeInfo _typeInfoOfConfiguration;
 
 	public ConfigurationInterpreter(CommandlineOptionInterpreter top, CmdConfigurationNamespaceAttribute root, object referenceToObject,
-		TypeInfo typeInfoOfConfiguration, int offset = 0) : base(top,
+		TypeInfo typeInfoOfConfiguration, int offset = 0) : base(top,root.Name,
 		offset) {
 		_root = root;
 		_referenceToObject = referenceToObject;

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using UniversalCLIProvider.Internals;
 
 namespace UniversalCLIProvider.Interpreters {
@@ -24,7 +26,7 @@ public abstract class BaseInterpreter {
 			do {
 				yield return current;
 				current = current.Parent;
-			} while (current.Parent != null);
+			} while (current != null);
 		}
 	}
 
@@ -34,17 +36,19 @@ public abstract class BaseInterpreter {
 	public IEnumerable<BaseInterpreter> Path => PathBottomUp.Reverse();
 
 
-	protected BaseInterpreter(CommandlineOptionInterpreter top, int offset = 0) {
+	protected BaseInterpreter([NotNull] CommandlineOptionInterpreter top, [NotNull] string name, int offset = 0) {
 		Offset = offset;
-		TopInterpreter = top;
+		TopInterpreter = top ?? throw new ArgumentNullException(nameof(top));
 		Parent = null;
+		Name = name ?? throw new ArgumentNullException(nameof(name));
 	}
 
-	protected BaseInterpreter(BaseInterpreter parent, string name, int offset = 0) {
+	protected BaseInterpreter([NotNull] BaseInterpreter parent, [NotNull] string name, int offset = 0) {
+		if (parent == null) throw new ArgumentNullException(nameof(parent));
 		TopInterpreter = parent.TopInterpreter;
 		Parent = parent;
 		Offset = offset;
-		Name = name;
+		Name = name ?? throw new ArgumentNullException(nameof(name));
 	}
 
 	public override string ToString() => string.Join(" ", Path.Select(x => x.Name));

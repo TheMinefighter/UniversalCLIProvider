@@ -38,7 +38,7 @@ public class CommandlineOptionInterpreter {
 		var contextInterpreter =
 			new ContextInterpreter(this, TopContextAttribute) {UnderlyingContextAttribute = {UnderlyingType = baseContext.GetTypeInfo()}};
 
-		contextInterpreter.UnderlyingContextAttribute.LoadIfNot();
+		contextInterpreter.UnderlyingContextAttribute.Load();
 		if (Args.Length > 0) {
 			if (contextInterpreter.IsParameterEqual(Options.HexOption, Args[0])) {
 				if (HexadecimalPreprocessor()) {

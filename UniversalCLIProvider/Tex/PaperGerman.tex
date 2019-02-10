@@ -4,7 +4,7 @@
 \usepackage[utf8x]{inputenc}
 \usepackage[a4paper,margin=2.5cm]{geometry}
 \usepackage{csquotes}
-
+\usepackage{outlines}
 \usepackage[perpage]{footmisc}
 %\usepackage{cite}
 % Kopf- und Fußzeilen
@@ -41,7 +41,7 @@ basicstyle=\footnotesize\ttfamily,numberstyle=\tiny\color{mygray},
 captionpos=b, % sets the caption-position to bottom
 keepspaces=true, % keeps spaces in text
 numbers=left, numbersep=5pt,showstringspaces=true,
-showtabs=false, stepnumber=2, tabsize=2, title=\lstname,
+showtabs=false, stepnumber=2, tabsize=2,
 numbers=none,language={[Sharp]C},breaklines=true,frame=single, literate={ö}{{ö}}1
 {ä}{{ä}}1
 {ü}{{ü}}1
@@ -136,8 +136,7 @@ numbers=none,language={[Sharp]C},breaklines=true,frame=single, literate={ö}{{ö
   dass seit 2011 durch Xamarin~Inc. weiterentwickelt wird~\cite{MonoFutureInterview}, welche seit 2016 Teil von Microsoft ist~\cite{MicrosoftBlogAcquireXamarin}.
   Seit dem ist die Popularität der Bibliothek sehr stark gestiegen, sodass es aktuell kanpp 600.000 Downloads auf nuget.org hat~\cite{MonoOptionsNuget}.
   \subsubsection{Command Line Parser Bibliothek}
-  Die 2012 veröffentlichte Bibliothek Command Line Parser~\cite{FirstCommandLineParserCommit}
-  \footnote{Der Autor selbst schreibt in der readme des Projekts 2005, jedoch habe ich keine Informationen finden können die dies decken, auf eine Anfrage hat der Autor nicht geantwortet}
+  Die 2012\footnote{Der Autor selbst schreibt in der readme des Projekts 2005, jedoch habe ich keine Informationen finden können die dies decken, auf eine Anfrage hat der Autor nicht geantwortet} veröffentlichte Bibliothek Command Line Parser~\cite{FirstCommandLineParserCommit}  
   hat als erstes das Konzept von Attribut-definierten Kommandozeilenoberflächen im C\#Bereich.
   Sie wird seit der Veröffentlichung aktiv weiteretwickelt, nutzt die möglichkeiten aktueller C\# Versionen.
   Die Bibliothek stellt eine vollständige Hilfefunktion, baumartige Organistaion von Subkommandos, Parameter, Umfangreiche Typkonvertierungen, sowie Kurzformen bereit~\cite{CommandLineParserWiki}.
@@ -161,12 +160,13 @@ numbers=none,language={[Sharp]C},breaklines=true,frame=single, literate={ö}{{ö
   \subsection{Umgebungsvorraussetzuungen zum nutzen der Bibliothek}\label{subsec:SystemRequirements}
   \subsection{Verwendung von weiteren Bibliotheken}\label{subsec:UsageOfLibraries}
   \section{Fazit}\label{sec:Conclusion}
-  \section{Anhang}\label{sec:anhang}
+  \section{Anhang}\label{sec:Attachments}
   Alle Anhänge werden in digitaler Form auf CD bereitgestellt.
   \section{Literaturverzeichnis}\label{sec:Literature}
   \printbibliography[heading=none]
+  \newpage
   \begin{samepage}
-	\section{Selbstständigkeitserklärung}\label{sec:IDidThisMyself}
+	\thispagestyle{empty}
 	Hiermit erkläre ich, dass ich die vorliegende Facharbeit selbstständig und ohne fremde Hilfe angefertigt und nur die im Literaturverzeichnis
 	aufgeführten Hilfen und Quellen benutzt habe.
 	Insbesondere versichere ich, dass ich alle wörtlichen
