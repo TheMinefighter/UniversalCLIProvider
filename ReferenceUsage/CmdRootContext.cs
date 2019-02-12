@@ -18,7 +18,7 @@ public abstract class CmdRootContext {
 	}
 
 	[CmdAction("TestC", shortForm:"c")]
-	public static void C([CmdParameter("TestArg",usage:CmdParameterUsage.SupportDeclaredRaw),CmdParameterAlias("HelloW",new []{"Hello","World"},shortForm:"h")]  string[] args) {
+	public static void C([CmdParameter("TestArg",usage:CmdParameterUsage.All),CmdParameterAlias("HelloW",new []{"Hello","World"},shortForm:"h")]  string[] args) {
 		Console.WriteLine($"TestArg has the following elements: {string.Join(", ", args)}");
 	}
 [CmdContext("XZY", defaultActionPreset: ContextDefaultActionPreset.Exit)]

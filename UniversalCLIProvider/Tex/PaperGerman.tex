@@ -23,7 +23,7 @@
 
 % Für Algorithmen
 \usepackage{algpseudocode}
-\usepackage[backend=biber,style=numeric]{biblatex}
+\usepackage[backend=biber,style=numeric,sorting=none]{biblatex}
 \bibliography{Biblio}
 \addbibresource{Biblio.bib}
 \usepackage[nottoc,numbib]{tocbibind}
@@ -151,16 +151,63 @@ numbers=none,language={[Sharp]C},breaklines=true,frame=single, literate={ö}{{ö
   \input{implementation}
 
   \section{Ausblick}\label{sec:Future}
-  \subsection{Ausbau des Funktionsumfangs}\label{subsec:MoreFunctions}
+  Das Projekt ist, wie oben beschrieben schon jetzt sehr umfangreich, es gibt aber noch grö\ss eres Verbesserungspotential, welches ich in diesem Kapitel erl\"autern m\"ochte.
+  \subsection{Ausbau der Kernfunktionen}\label{subsec:MoreFunctions}
   \subsection{Übertragbarkeit auf andere Programmiersprachen}\label{subsec:PortabilityToOtherLangs}
+  Das Projekt ist in gro\ss en fast Vollständig in C\# ähnliche Sprache, wie Java, übertragbar, da fast alle Sprachen ein Konzept aud Annotationen oder Attributen implementieren 
   \subsection{Geschwindigkeitsverbesserungen durch Speicherung von Reflections}\label{subsec:StoringReflections}
-  \subsection{Implementation einer eigenen Auto-Vervollständigung für Linux}\label{subsec:Autocomplete}
+  \subsection{Implementation einer eigenen Auto-Vervollständigung}\label{subsec:Autocomplete}
+  Die Implementation einer Auto-Vervollständigung würde der Bibliothek ein weiteres Schlüsselmerkmal gegenüber anderen C\# Bibliotheken geben.
+  Wenn dieses Feature aber auch in der Praxis praktisch sein soll, wäre es wichtig weitere Informationen über übergebenen Daten haben.
+  So wäre zum Beispiel ein Attribut für Parameter sinnvoll, das es ermöglicht zu definieren, das der Parameter ein Pfad eines Ordners, 
+  der existiert, ist, so dass die Auto-Vervollständigung entsprechende Werte vorschlagen kann.
+  Nur mit solchen Informationen kann eine Autovervollständigung im Alltäglichen arbeiten mit der Software einen Vorteil schaffen.
+  Im folgenden möchte ich auf verschieden Umgebungen für automatische Vervollständigungen eingehen.
+  \subsubsection{Auto-Vervollständigung für die Interaktive Kommandozeilenoberfläche}
+  Eie Funktion zur automatischen Verfollständigung von Befehlen in der Interaktive Kommandozeilenoberfläche, würde die Verwendung dieser Potentiell deutlich attraktiver machen, 
+  da in einer interaktiven Kommandozeilenoberfäche es möglich ist, eine sehr umfangreiche Verfollständigung zu bieten.
+  Dabei gibt es viele unterchiedliche Ausführungen, wie z.B. die der o.g. Python-Nubia Bibliothek, alle mit ihren Vor- und Nachteile.
+  Eine umfangreiche Evaluation dieser wird der Implementation mindestens einer vorrausgehen. 
+  \subsubsection{Auto-Vervollständigung für Linux Kommandozeilen}
+  In vielen Linux Umgebungen ist es möglich das Verhalten zur Auto-Vervollständigung in der Systemeigenen Shell anzupassen.
+  Dafür muss eine Bash Datei mit vorgegebenen Funktionen vorhanden sein~\cite{BashAutoComplete}.
+  In der Zukunft wäre es denkbar, in diese Bibliothek eine Funktion zu implementieren, die es ermöglicht diese Dateien auf Basis der definierten Aktion,
+  Kontexte und anderer Eigenschaften vollautomatisch zu generieren.
+  \subsubsection{Auto-Vervollständigung für die Windows Powershell}
+  Die Windows Powershell hat eine Auto-Vervollständigungs Funktion, aber nur für Powershell Cmdlets.
+  Cmdlets bieten selber eine eigene einfache Kommandozeilenoberfläche, diese wird dann automatisch verfollständigt und dessen Eingaben werden automatisch in Objekte verarbeitet~\cite{CustomCmdlet}.
+  Daher wäre es dann nötig eine Funktion zu entwickeln, die für ein C\# Programm einen Powerdhell Cmdlet generiert, dass die gleichen möglichen Befehle hat, 
+  das dann in der Powershell automatisch Verfollständigt werden kann.
+    Ich gehe davon aus das dieser Prozess sehr komplex wäre, und bin mir nicht sicher ob es möglich ist in dieser Umgebung, zum Beispiel für Konfigurationspfade, eine Verfollständigung bereitzustellen.
   \subsection{Verbesserung der Unit test Abdeckung}\label{subsec:MoreUnitTests}
   \section{Anmerkungen}\label{sec:AdditionalNotes}
-  \subsection{Umgebungsvorraussetzuungen zum nutzen der Bibliothek}\label{subsec:SystemRequirements}
+  \subsection{Umgebungsvorraussetzungen zum nutzen der Bibliothek}\label{subsec:SystemRequirements}
+   Die Bibliothek kann unter Windows (ab 7 SP1), Linux (Support hängt von der Distribution ab) und Mac OS X (ab 10.12) verwendet werden
+  \footnote{genauere Informationen sind unter https://github.com/dotnet/core/blob/master/release-notes/2.1/2.1-supported-os.md verfügbar}, 
+  da Das Projekt .Net Core 2.1 untertsützt.
+  Für Windows ist die Verwendung des .NET Framework, ab Version 4.7.2, empfehlenswert, da dann die exe Dateien ohne Probleme verwendet werden können.
+  Des weiteren untertützt das Projekt .Net Standard 2.0 und .NET Core 2.0.
   \subsection{Verwendung von weiteren Bibliotheken}\label{subsec:UsageOfLibraries}
+  Ich habe folgende Bibliotheken für dieses Projekt verwendet:
+  \begin{outline}
+   \1 Die \inlinecode{PropertyOrFieldInfo} Bibliothek, die ich selbst vollständig entwickelt und programmiert habe,
+   und 2018 unter MIT License veröffentlicht habe~\cite{PropOrFieldSite}, in der Version 1.0.1.
+   \1 Die \inlinecode{xunit} Bibliothek habe ich für Unit Tests verwendet, sie wird nicht mit der Bibliothek kompiliert wird.
+   Ich habe die Version 2.4.1 verwendet, die 2018 unter MIT License veröffentlicht wurde~\cite{XunitReleaseNotes}.
+   \1 Die \inlinecode{Newtonsoft.Json} Bibliothek von James Newton-King, um JSON Inhalte zu verarbeiten, in der Version 12.0.1,
+   die 2018 unter MIT License veröffentlicht wurde~\cite{JsonNetSite}.
+   \1 Die \inlinecode{Jetbrains.Annotations} Bibliothek, die nicht mit dem Programm kompiliert wird,
+   sondern ausschlie\ss lich während der Entwicklung des Programmes aktiv ist, und Funktionen wie Nullf\"ahigkeitsprüfungen bereitstellt.
+   Die Version 2018.3.0, die ich verwende, wurde 2019 unter MIT License veröffentlicht~\cite{AnnotationsNuget}.
+  \end{outline}
   \section{Fazit}\label{sec:Conclusion}
   \section{Anhang}\label{sec:Attachments}
+  Der Anhang entählt folgende Inhalte:
+  \begin{outline}
+   \1 Der vollständige Quellcode
+   \1 Die kompilierte Bibliothek
+   \1 Die kompilierte Referenzverwendung
+  \end{outline}
   Alle Anhänge werden in digitaler Form auf CD bereitgestellt.
   \section{Literaturverzeichnis}\label{sec:Literature}
   \printbibliography[heading=none]

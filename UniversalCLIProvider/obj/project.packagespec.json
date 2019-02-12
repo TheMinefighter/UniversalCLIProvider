@@ -41,7 +41,7 @@
       "dependencies": {
         "JetBrains.Annotations": {
           "target": "Package",
-          "version": "[2018.2.1, )"
+          "version": "[2018.3.0, )"
         },
         "Microsoft.NETCore.App": {
           "suppressParent": "All",
@@ -76,7 +76,7 @@
       "dependencies": {
         "JetBrains.Annotations": {
           "target": "Package",
-          "version": "[2018.2.1, )"
+          "version": "[2018.3.0, )"
         },
         "Microsoft.NETCore.App": {
           "suppressParent": "All",
@@ -111,7 +111,7 @@
       "dependencies": {
         "JetBrains.Annotations": {
           "target": "Package",
-          "version": "[2018.2.1, )"
+          "version": "[2018.3.0, )"
         },
         "Newtonsoft.Json": {
           "target": "Package",
@@ -135,7 +135,7 @@
       "dependencies": {
         "JetBrains.Annotations": {
           "target": "Package",
-          "version": "[2018.2.1, )"
+          "version": "[2018.3.0, )"
         },
         "NETStandard.Library": {
           "suppressParent": "All",

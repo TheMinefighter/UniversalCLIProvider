@@ -9,68 +9,68 @@ Allein durch das eingeben von inkorrekten Befehlen in die bereitgestellte Komman
 Im \inlinecode{UniversalCLIProvider.Attributes} sind alle Attribute, die zur Definition von Kommandozeilenfunktionen verwendet werden können zusammengefasst, wie etwa das \inlinecode{CmdContextAttribute}.
 Alle diese Attribute speichern eine Referenz zu dem Programmelement auf das das Attribut angwendet wurde, sowie z.T. weitere Informationen die sich aus diesem ergeben.
 Folgende Klassen sind in diesem namespace vorhanden:
-\begin{itemize}
- \item Das \inlinecode{CmdActionAttribute} wird verwendet um eine als Kommandozeilen-Aktion ausführbare Methode zu Kennzeichnen.
- \item Das \inlinecode{CmdParameterAttribute} wird verwendet um ein Parameter einer Kommandozeilen-Aktion von der Kommandozeilenoberfläche modifizierbar machen.
- \item Das \inlinecode{CmdParameterAliasAttribute} wird verwendet um einem Parameter einer Kommandozeilen-Aktion eine Kurzform zu geben, welche dem Parametr ein vordefinierten Wert zuweist.
- \item Das \inlinecode{CmdContextAttribute} wird verwendet um eine Klasse als Kontext zu definieren, der u.a. Aktionen grupiert.
- \item Das \inlinecode{CmdDefaultActionAttribute} wird verwendet um innerhalb eines Kontextes eine Aktion zu definieren die ausgeführt wird, wenn keine andere Aktion ausgewählt wurde.
- \item Das Enum\footnote{Ein Enum ist ein Datentyp der nur die in ihm definierten Zustände annehmen kann.} \inlinecode{ContextDefaultActionPreset}
+\begin{outline}
+ \1 Das \inlinecode{CmdActionAttribute} wird verwendet um eine als Kommandozeilen-Aktion ausführbare Methode zu Kennzeichnen.
+ \1 Das \inlinecode{CmdParameterAttribute} wird verwendet um ein Parameter einer Kommandozeilen-Aktion von der Kommandozeilenoberfläche modifizierbar machen.
+ \1 Das \inlinecode{CmdParameterAliasAttribute} wird verwendet um einem Parameter einer Kommandozeilen-Aktion eine Kurzform zu geben, welche dem Parametr ein vordefinierten Wert zuweist.
+ \1 Das \inlinecode{CmdContextAttribute} wird verwendet um eine Klasse als Kontext zu definieren, der u.a. Aktionen grupiert.
+ \1 Das \inlinecode{CmdDefaultActionAttribute} wird verwendet um innerhalb eines Kontextes eine Aktion zu definieren die ausgeführt wird, wenn keine andere Aktion ausgewählt wurde.
+ \1 Das Enum\footnote{Ein Enum ist ein Datentyp der nur die in ihm definierten Zustände annehmen kann.} \inlinecode{ContextDefaultActionPreset}
  stellt verschieden Voreinstellung bereit, die alternativ zum \inlinecode{CmdContextAttribute} verwendet werden können.
- \item Das \inlinecode{CmdConfigurationProviderAttribute} markiert eine Eigenschaft die eine Refernz zu einem Konfigurations Objekt(siehe~\ref{ConfigurationManagement}) bereitstellt.
- \item Das \inlinecode{CmdConfigurationNamespaceAttribute} markiert dass eine Klasse Teil einer durch die bereitgestelte Kommandozeilenoberfläche verwaltbaren Konfiguration ist
- \item Das Interface \inlinecode{IConfigurationRoot} kann von einer Klasse implementiert werden, die den Ursprung einer Kommandozeilen-verwalteten Konfiguration ist.
- \item Das \inlinecode{CmdConfigurationFieldAttribute}markiert dass ein Feld oder eine Eigenschaft Teil einer durch die bereitgesttelte Kommandozeilenoberfläche verwaltbaren Konfiguration ist
- \item Das Flag-Enum\footnote{Ein Flag-Enum ist ein Datentyp der mehrer mögliche Zustände aufzählt, die miteinander, auf Basis von Binär-Logik durch ||(Oder) Operatoren kombinierbar sind.}
+ \1 Das \inlinecode{CmdConfigurationProviderAttribute} markiert eine Eigenschaft die eine Refernz zu einem Konfigurations Objekt(siehe~\ref{ConfigurationManagement}) bereitstellt.
+ \1 Das \inlinecode{CmdConfigurationNamespaceAttribute} markiert dass eine Klasse Teil einer durch die bereitgestelte Kommandozeilenoberfläche verwaltbaren Konfiguration ist
+ \1 Das Interface \inlinecode{IConfigurationRoot} kann von einer Klasse implementiert werden, die den Ursprung einer Kommandozeilen-verwalteten Konfiguration ist.
+ \1 Das \inlinecode{CmdConfigurationFieldAttribute}markiert dass ein Feld oder eine Eigenschaft Teil einer durch die bereitgesttelte Kommandozeilenoberfläche verwaltbaren Konfiguration ist
+ \1 Das Flag-Enum\footnote{Ein Flag-Enum ist ein Datentyp der mehrer mögliche Zustände aufzählt, die miteinander, auf Basis von Binär-Logik durch ||(Oder) Operatoren kombinierbar sind.}
  \inlinecode{CmdParameterUsage} definiert in welchen Formen ein Parameter angegeben werden kann.
-\end{itemize}
+\end{outline}
 \subsubsection{UniversalCLIProvider.Internals}
 Im \inlinecode{UniversalCLIProvider.Internals} sind viel Funktionen und Datentypen beherbergt, die nur intern (innerhalb der Bibliothek) verwendet werden,
 und die Basis für viele weitere Funktionen stellen, die darrauf Aufbauen.
 Folgende Klassen sind in diesem namespace vorhanden:
-\begin{itemize}
- \item Die \inlinecode{CommandlineMethods} Klasse enthält die essentiellsten Funktionen für Kommandozeilen-Oberflächen, wie z.B. die Funktion zum parsen von Werten.
- \item Die \inlinecode{HexArgumentEncoding} Klasse enthält Funktionen, die für die Hexadezimalkodierung (siehe~\ref{Hexadecimalencoding}) benötigt werden.
- \item Die \inlinecode{ContextDefaultAction} Klasse stellt ein einheitliches, internes Interface für die Funktionen des \inlinecode{ContextDefaultActionPreset} Enums und des \inlinecode{CmdDefaultActionAttribute}.
- \item Die \inlinecode{ConfigurationHelpers} Klasse stellt Funktionen, die für das Konfigurations-Management (\ref{ConfigurationManagement}) nötig sind, bereit.
- \item Die \inlinecode{HelpGenerators} Klasse besteht aus Methoden die Hilfe, z.B. bei falschen Eingaben, generiert.
+\begin{outline}
+ \1 Die \inlinecode{CommandlineMethods} Klasse enthält die essentiellsten Funktionen für Kommandozeilen-Oberflächen, wie z.B. die Funktion zum parsen von Werten.
+ \1 Die \inlinecode{HexArgumentEncoding} Klasse enthält Funktionen, die für die Hexadezimalkodierung (siehe~\ref{Hexadecimalencoding}) benötigt werden.
+ \1 Die \inlinecode{ContextDefaultAction} Klasse stellt ein einheitliches, internes Interface für die Funktionen des \inlinecode{ContextDefaultActionPreset} Enums und des \inlinecode{CmdDefaultActionAttribute}.
+ \1 Die \inlinecode{ConfigurationHelpers} Klasse stellt Funktionen, die für das Konfigurations-Management (\ref{ConfigurationManagement}) nötig sind, bereit.
+ \1 Die \inlinecode{HelpGenerators} Klasse besteht aus Methoden die Hilfe, z.B. bei falschen Eingaben, generiert.
  Im zweiten Teil\footnote{In C\# können Klassen auf mehrere Dateien aufgeteilt werden; dies wird dann durch das \inlinecode{partial} Schlüsselwort in der Klassendeklaration angezeigt.}
  (\inlinecode{HelpGenerators.Configuration}) sind Hilfe Funktionen für das Konfigurations-Managemententhalten.
-\end{itemize}
+\end{outline}
 \subsubsection{UniversalCLIProvider.Interpreters}
 Aufbauend auf den vorherigen beiden namespaces wird im \inlinecode{UniversalCLIProvider.Interpreters} die Hauptaufgabe der Bibliothek geleistet:
 Das eigentliche interpretieren von Kommandozeilenbefehlen.
 Folgende Klassen sind in diesem namespace vorhanden:
-\begin{itemize}
- \item Die \inlinecode{CommandlineOptionInterpreter} Klasse ist die Basis für jede Interpretation, und erfüllt Aufgaben, die nur auf oberster Ebene durchgeführt werden müssen, wie z.B. die Speicherung der Argumente.
- \item Die \inlinecode{BaseInterpreter} Klasse ist die abstrakte Basis Klasse, von der alle folgenden Klassen erben.
+\begin{outline}
+ \1 Die \inlinecode{CommandlineOptionInterpreter} Klasse ist die Basis für jede Interpretation, und erfüllt Aufgaben, die nur auf oberster Ebene durchgeführt werden müssen, wie z.B. die Speicherung der Argumente.
+ \1 Die \inlinecode{BaseInterpreter} Klasse ist die abstrakte Basis Klasse, von der alle folgenden Klassen erben.
  Sie definiert u.a. dass jeder Interpreter einen \inlinecode{Parent} hat, der auch ein \inlinecode{BaseInterpreter} ist, au\ss er es handelt sich um die Spitze eines solches Stapels,
  dann ist die \inlinecode{Parent}-Eigenschaft nämlich \inlinecode{null}.
  Au\ss erdem enthält sie die \inlinecode{Interpret} Methode, welche die Interpretation auf Basis eines gegebenen Ursprungs-Kontext startet, die wichtigste Methode zur Verwendung der Bibliothek.
- \item Die \inlinecode{ContextInterpreter} Klasse interpretiert einen gegeben Kommandozeilenkontext und wird von der CommandlineOptionInterpreter aufgerufen.
+ \1 Die \inlinecode{ContextInterpreter} Klasse interpretiert einen gegeben Kommandozeilenkontext und wird von der CommandlineOptionInterpreter aufgerufen.
  Sie lädt dazu nötige Metadaten über inhalte des Kontext, sofern dies noch nicht geschehen ist.
- \item Die \inlinecode{ActionInterpreter} Klasse interpretiert eine gegebene Kommandozeilenaktion zusammen mit ihren Parametern.
- \item Die \inlinecode{ConfigurationInterpreter} Klasse interpretiert Befehle zum Konfigurations-Management.
-\end{itemize}
+ \1 Die \inlinecode{ActionInterpreter} Klasse interpretiert eine gegebene Kommandozeilenaktion zusammen mit ihren Parametern.
+ \1 Die \inlinecode{ConfigurationInterpreter} Klasse interpretiert Befehle zum Konfigurations-Management.
+\end{outline}
 \subsection{Erläuterung der Implementation der Klasse ContextInterpreter}\label{subsec:ContextInterpreter}
 Die Klasse \inlinecode{ContextInterpreter} erfüllt Schlüsselfunktionen in dieser Bibliothek.
 Sie erbt von der abstrakten \inlinecode{BaseInterpreter} Klasse folgende Inhalte:
-\begin{itemize}
- \item Die \inlinecode{Name} Eigenschaft, die jedem Interpreter einen Namen gibt.
- \item Die \inlinecode{Offset} Eigenschaft vom Datentyp \inlinecode{int} gibt den Index des aktuell interpretierten Arguments an.
- \item Die \inlinecode{TopInterpreter} Eigenschaft referenziert einen \inlinecode{CommandlineOptionInterpreter}
- \item Die \inlinecode{Parent} Eigens chaft gibt das nächst höhere Element des Interpretations-Stack
+\begin{outline}
+ \1 Die \inlinecode{Name} Eigenschaft, die jedem Interpreter einen Namen gibt.
+ \1 Die \inlinecode{Offset} Eigenschaft vom Datentyp \inlinecode{int} gibt den Index des aktuell interpretierten Arguments an.
+ \1 Die \inlinecode{TopInterpreter} Eigenschaft referenziert einen \inlinecode{CommandlineOptionInterpreter}
+ \1 Die \inlinecode{Parent} Eigens chaft gibt das nächst höhere Element des Interpretations-Stack
  \footnote{Der Begriff Interpretations-Stack wird im folgenden verwendet um den Aufbau der Implementation des Interpretations-Vorgang zu beschreiben, da Interpretations-Aufgaben u.U. die Erfüllung kleinerer Interpretations-Aufgaben vorraussetzten, diese liegen im Interpretations-Stack darunter.}
  an.%TODO DEfine
- \item Die \inlinecode{PathBottomUp} Eigenschaft gibt ein \inlinecode{IEnumerable<BaseInterpreter>} der alle Elemente des Interpretations-Stack von unten nach oben aufzählt, basierend auf den \inlinecode{Parent} der einzelnen Elemente.
- \item Die \inlinecode{Path} Eigenschaft gibt den Interpretations-Stack von oben nach zurück, indem \inlinecode{PathBottomUp} rückwärts verwendet wird.
- \item Die Überschreibung der \inlinecode{ToString}, die nun die \inlinecode{Path} Eigenschaft formattiert zurückgibt.
- \item Die \inlinecode{IncreaseOffset} Methode, die die \inlinecode{Offset} um 1 erhöht dann zurückgibt ob weitere Parameter bereitstehen.
- \item Die abstrakte \inlinecode{Interpret} Methode, die den gegebenen Kontext interpretiert und zurückgibt ob die Interpretation war.
- \item Die \inlinecode{IsParameterEqual} Methode,die prüft ob ein gegebener Parameter einem erwarteten Parameter entspricht.
- \item Die \inlinecode{Reset} Methode setzt den \inlinecode{Offset} wieder auf 0 (für interaktiven Modus nötig).
- \item Zwei Konstruktoren, einen um einen \inlinecode{BaseInterpreter} als oberstes Element eines Interpretations-Stack auf Basis eines \inlinecode{CommandlineOptionInterpreter} zu erzeugen, und einen um einen bestehenden Interpretationsstack um eine Ebene nach unten zu erweitern.
-\end{itemize}
+ \1 Die \inlinecode{PathBottomUp} Eigenschaft gibt ein \inlinecode{IEnumerable<BaseInterpreter>} der alle Elemente des Interpretations-Stack von unten nach oben aufzählt, basierend auf den \inlinecode{Parent} der einzelnen Elemente.
+ \1 Die \inlinecode{Path} Eigenschaft gibt den Interpretations-Stack von oben nach zurück, indem \inlinecode{PathBottomUp} rückwärts verwendet wird.
+ \1 Die Überschreibung der \inlinecode{ToString}, die nun die \inlinecode{Path} Eigenschaft formattiert zurückgibt.
+ \1 Die \inlinecode{IncreaseOffset} Methode, die die \inlinecode{Offset} um 1 erhöht dann zurückgibt ob weitere Parameter bereitstehen.
+ \1 Die abstrakte \inlinecode{Interpret} Methode, die den gegebenen Kontext interpretiert und zurückgibt ob die Interpretation war.
+ \1 Die \inlinecode{IsParameterEqual} Methode,die prüft ob ein gegebener Parameter einem erwarteten Parameter entspricht.
+ \1 Die \inlinecode{Reset} Methode setzt den \inlinecode{Offset} wieder auf 0 (für interaktiven Modus nötig).
+ \1 Zwei Konstruktoren, einen um einen \inlinecode{BaseInterpreter} als oberstes Element eines Interpretations-Stack auf Basis eines \inlinecode{CommandlineOptionInterpreter} zu erzeugen, und einen um einen bestehenden Interpretationsstack um eine Ebene nach unten zu erweitern.
+\end{outline}
 Die \inlinecode{ContextInterpreter} Klasse selbst hat zudem das \inlinecode{UnderlyingContextAttribute}, dass das \inlinecode{CmdContextAttribute} referenziert, das den zu interpretierenden Kontext repräsentiert.
 Die beiden Konstruktoren werden um Werte für dieses Feld erweitert:
 \begin{lstlisting}[language={[Sharp]C}, title=Konstruktoren der ContextInterpreter Klasse]
@@ -236,15 +236,16 @@ Wenn das Argument weggelassen wird (\inlinecode{ReferenceUsage --TestB}), wird d
 Die Verwendung von Arrays wird durch \inlinecode{TestC} gezeigt.
 Die Aktion hat den Parameter \inlinecode{--TestArg}, der vom Typ \inlinecode{string[]} ist.
 Solche Parameter können auf zwei Wegen bereitgestellt werden:
-\begin{itemize}
- \item Einfache Auflistung von Werten, z.B. \inlinecode{ReferenceUsage --TestC --TestArg Hallo Welt}, was in der Ausgabe \inlinecode{TestArg has the following elements: Hallo, Welt} resultiert.
+\begin{outline}
+ \1 Einfache Auflistung von Werten, z.B. \inlinecode{ReferenceUsage --TestC --TestArg Hallo Welt}, was in der Ausgabe \inlinecode{TestArg has the following elements: Hallo, Welt} resultiert.
  Wenn bei dieser Methode ein Element dem auch eine Parameter- oder Aliasdeklaration sein kan wird damit der Array beendet.
- \item Alternativ kann ein JSON-Array verwendet werden: \inlinecode{ReferenceUsage --TestC --TestArg "[\\"Hallo\\",\\"Welt\\"]"}.
+ \1 Alternativ kann ein JSON-Array verwendet werden: \inlinecode{ReferenceUsage --TestC --TestArg "[\\"Hallo\\",\\"Welt\\"]"}.
  Die Verwendng von Backslashes ist der Windows \inlinecode{cmd.exe} geschuldet, die keine Anführungszeichen ohne Backslash erlaubt,
  und auch mit Backslash nur wenn das Argument selbst in Anführungszeichen steht.
  Im Gegensatz zur vorherigen Methode ist es hier Möglich eien leeren Array (\inlinecode{[]}) zu übergeben.
  Au\ss erdem können bei dieser Methode auch ohne Probleme Elemente, die den Namen von weiteren Parametern entsprechen, verwenden.
-\end{itemize}
+ JSON Objekte können auch für das übergeben von Daten anderer Typen(au\ss nahme \inlinecode{string}) verwendet werden.
+\end{outline} 
 
 Des weiteren können vor Parametern Aliasse deklariert werden.
 Diese haben eine Namen mit dem sie aufgerufen werden können, sowie einen Wert, den sie repräsentieren.
@@ -255,11 +256,11 @@ Diese könen auch Kurzformen (\inlinecode{-h}, sowie Beschreibungen für die Hil
 Um die Verwendung all dieser Möglichkeiten zu definieren gibt es die \inlinecode{usage} Eigenschaft vom Typen \inlinecode{CmdParameterUsage}.
 Sie ist standartmä\ss ig auf \inlinecode{CmdParameterUsage.Default} gesetzt, was darin resultiert, dass die Bibliothek entscheidet, welche Option sinnvoll ist.
 Wen man diese Einstellung selber bestimmen möchte kann ma jede möglich Kombintaion aus den foolgenden drei Punken angeben:
-\begin{itemize}
- \item Unterstützung von Roh-Werten: \inlinecode{ReferenceUsage --TestC --TestArg "[\\"Hello\\",\\"World\\"]"}
- \item Unterstützung von Aliassen mit vorheriger Parameter Deklaration: \inlinecode{ReferenceUsage --TestC --TestArg --HelloW}
- \item Unterstützung von Aliassen ohne vorheriger Parameter Deklaration: \inlinecode{ReferenceUsage --TestC --HelloW}
-\end{itemize}
+\begin{outline}
+ \1 Unterstützung von Roh-Werten: \inlinecode{ReferenceUsage --TestC --TestArg "[\\"Hello\\",\\"World\\"]"}
+ \1 Unterstützung von Aliassen mit vorheriger Parameter Deklaration: \inlinecode{ReferenceUsage --TestC --TestArg --HelloW}
+ \1 Unterstützung von Aliassen ohne vorheriger Parameter Deklaration: \inlinecode{ReferenceUsage --TestC --HelloW}
+\end{outline}
 
 Parameter besitzen des weiteren auch eine normale und eine lange Beschreibung.
 \subsubsection{Verwendung von Kontexten}
@@ -278,15 +279,15 @@ aufzurufen muss man \inlinecode{ReferenceUsage --XZY --ABC --TestZ} nutzen.
 
 Kontexte können eine \inlinecode{ContextDefaultAction} definieren, die ausgeführt wird, wenn der Kontext angegeben wird, aber keine weiteren Argumente angegeben werden.
 Diese kann auf zwei wegen definiert werden:
-\begin{itemize}
- \item Im \inlinecode{CmdContextAttribute} kann ein \inlinecode{ContextDefaultActionPreset} angegeben werden, um eine der Vorlagen zu verwenden, 
+\begin{outline}
+ \1 Im \inlinecode{CmdContextAttribute} kann ein \inlinecode{ContextDefaultActionPreset} angegeben werden, um eine der Vorlagen zu verwenden, 
  so ist zum Beispiel für den \inlinecode{XYZ} Kontext die \inlinecode{Exit} Vorlage aktiv,
  sodass sich die Kommandozeilenoberfläche bei der Eingabe von \inlinecode{ReferenceUsage --XZY} beendet.
  Es gibt folgende Vorlagen:
- \subitem \inlinecode{Exit} beendet die Kommandozeilenoberfläche
- \subitem \inlinecode{Help} zeigt die Hilfe an.
- \subitem \inlinecode{Interactive} startet eine Interaktive Kommandozeilenoberfläche in dem Kontext 
- \item Die Deklaration einer Methode im Kontext, die mit dem \inlinecode{CmdDefaultActionAttribute} gekennzeichnet ist,
+ \2 \inlinecode{Exit} beendet die Kommandozeilenoberfläche
+ \2 \inlinecode{Help} zeigt die Hilfe an.
+ \2 \inlinecode{Interactive} startet eine Interaktive Kommandozeilenoberfläche in dem Kontext 
+ \1 Die Deklaration einer Methode im Kontext, die mit dem \inlinecode{CmdDefaultActionAttribute} gekennzeichnet ist,
  welches zusätzlich Parameter für die Methode enthalten kann.
  Wenn die Methode ein Parameter mehr erwartet als bereitgestellt wurde, wird als letzter Parameter der aktuelle \inlinecode{CmdContextInterpreter} übergeben.
  
@@ -294,7 +295,7 @@ Diese kann auf zwei wegen definiert werden:
  Diese ist mit einem \inlinecode{CmdDefaultAction} Attribut gekennzeichnet, das mit der Zahl 7 parametriert ist.
  Wenn nun der Befehl \inlinecode{ReferenceUsage --CustomizedDefaultAction} ausgeführt wird, wird die \inlinecode{TheDefaultAction} Methode ausgeführt, die die Zahl, sowie den Pfad des Interpreters ausgibt:
  \inlinecode{The CmdDefaultActionAttribute supplied the number 7, the interpreter is currently located in the following path: ReferenceUsage>CustomizedDefaultAction}
-\end{itemize}
+\end{outline}
  Wenn beide Methoden verwendet werden, wird die Aktion des \inlinecode{CustomizedDefaultAction} ausgeführt, wenn keine spezifiziert wurde wird die Hilfe für den Kontext ausgegeben.
 
 \subsubsection{Konfigurations-Management}\label{ConfigurationManagement}
@@ -306,14 +307,30 @@ Eine Referenz
 \subsubsection{Hexadezimalkodierung}\label{Hexadecimalencoding}
 Au\ss erdem stell sie Bibliothek die Funktion bereit, alle Programm-Argumente in ihrer Hexadezimalrepräsentation zu übergeben.
 Die Hexadezimal repräsentation basiert dabei auf einer beliebigen Zeichenkodierung, jedoch wird im standardmä\ss ig UTF-8(gemä\ss ISO/IEC 10646:2017) verwendet.
-Di Kodierung besteht aus folgenden Teilen:
-\begin{itemize}
- \item 
-\end{itemize}
 
+Die Kodierung besteht aus folgenden Teilen:
+\begin{outline}
+ \1 8 (Hexadezimal) Ziffern für die Zeichensatztabelle, die verwendet wurde um die Argumente zu kodieren
+ \1 Für jedes Argument:
+  \2 1 Ziffer die die Länge der Längenangabe angibt;
+  muss zwischen 1 und 8 liegen 
+  \2 1-8 Ziffern die die Länge des Arguments angeben
+  \2 Das kodierte Argument, wobei zwischen 2 und 8 Ziffern pro Buchstabe verwendet werden
+\end{outline}
+
+Vor der Angabe solcher kodierten Argumente muss ein Argument stehen, dass dies kennzeichent.
+Dieses ist in den Einstellungen zur Interpretation als \inlinecode{HexOption} definiert und hat standardmä\ss ig den Wert \inlinecode{Master:Hex}.
+So ist zum Beispiel der Befehl \inlinecode{ReferenceUsage --TestC --HelloW} äquivalent zum Befehl \inlinecode{ReferenceUsage --Master:Hex fde9172d2d5465737443182d2d48656c6c6f57}.
+
+Eine Implemtation einer Funktion die aus einem \inlinecode{string[]} eine solche Hexadezimal-Zeichenfolge generiert ist unter dem Namen \inlinecode{ToHexArgumentString} in der \inlinecode{HexArgumentEncoding} zu finden.
+Sie ist mit minimalen Modifikationen auch in vielen anderen Sprachen, wie Java, möglich.
+
+Dieses Feature erlaubt es auch Sonderzeichen, wie Emojis, problemfrei zu übertragen was in normalen Kommandozeilenoberfl\"achen, mit wenigen au\ss ahmen nicht m\"oglich ist.
+Au\ss erdem sin damit alle Probleme um das verwenden von Backslashes gelöst.
 Hier stellt sich natürlich die Frage weswegen ich nicht JSON hierfür verwendet habe.
-Die Problematik liegt darin das bestimmte Zeichenfolgen in JSON nicht kodiert werden können, wie auch in der Spezifikation bemerkt.\cite{JSONSpec}
-Da sowieso ein Kodierungsschritt nötig ist und die Funktion in jemandem Fall nur für automatisierte Szenarien zur Kommunikation zwischen Programmen sinnvoll ist,
-ist die Verwendung eines etwas komplizierten Kodierungsprozess gegenüber fehlender Zuverlässigkeit meiner Meinung nach gerechtfertigt. 
+Die Problematik liegt darin erstens immer Backslashes gesetzt werden müssen und, dass bestimmte Sonderzeichenfolgen in JSON nicht kodiert werden können, wie auch in der Spezifikation bemerkt\cite{JSONSpec}.
+Da sowieso ein Kodierungsschritt nötig ist und diese Funktion in jemandem Fall nur für automatisierte Szenarien zur Kommunikation zwischen Programmen sinnvoll ist,
+ist die Verwendung eines etwas komplizierteren, properiet\"arem Kodierungsprozess gegenüber fehlender Zuverlässigkeit und höherem Aufwand meiner Meinung nach gerechtfertigt.
 \subsubsection{Interaktive Kommandozeilenoberfäche}
+
 \subsection{Vergleich meiner Lösung mit bisherigen Lösungen}\label{subsec:Comparison}

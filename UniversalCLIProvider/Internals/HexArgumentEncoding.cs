@@ -22,9 +22,11 @@ public static class HexArgumentEncoding {
 		int typicalEncodingLength = encoding.GetByteCount("s");
 		var stringBuilder =
 			new StringBuilder(typicalEncodingLength * originalArguments.Sum(x => x.Length) + originalArguments.Length * 8 + 8);
-		stringBuilder.Append(encoding.CodePage.ToString("x8"));
+		stringBuilder.Append(encoding.CodePage.ToString("x4"));
 		foreach (string argument in originalArguments) {
-			stringBuilder.Append(encoding.GetByteCount(argument).ToString("x8"));
+			string count = encoding.GetByteCount(argument).ToString("X");
+			stringBuilder.Append(count.Length.ToString("X"));
+			stringBuilder.Append(count);
 			foreach (byte b in encoding.GetBytes(argument)) {
 				stringBuilder.Append(b.ToString("x2"));
 			}
@@ -42,13 +44,13 @@ public static class HexArgumentEncoding {
 	public static bool ArgumentsFromHex([NotNull] string arg, out List<string> newArgs) {
 		newArgs = null;
 		int currentOffset = 0;
-		if (arg.Length < 8 + currentOffset) {
+		if (arg.Length < 4 + currentOffset) {
 			Console.WriteLine("The hexadecimal data is not long enough for evaluating the encoding");
 			return false;
 		}
 
-		Encoding encoding = Encoding.GetEncoding(int.Parse(arg.Substring(currentOffset, 8), NumberStyles.HexNumber));
-		currentOffset += 8;
+		Encoding encoding = Encoding.GetEncoding(int.Parse(arg.Substring(currentOffset, 4), NumberStyles.HexNumber));
+		currentOffset += 4;
 		int count = 0;
 		newArgs = new List<string>(16);
 		while (true) {
@@ -56,21 +58,37 @@ public static class HexArgumentEncoding {
 				break;
 			}
 
-			if (arg.Length < currentOffset + 8) {
+			if (arg.Length < currentOffset + 1) {
+				Console.WriteLine($"The hexadecimal data is not long enough for evaluating the proposed length of argument {count}");
+				return false;
+			}
+
+			
+
+			int proposedLengthOfLength;
+			try {
+				proposedLengthOfLength = int.Parse(arg.Substring(currentOffset, 1), NumberStyles.HexNumber);
+			}
+			catch (Exception) {
+				Console.WriteLine($"Error while parsing string length of argument {count}");
+				return false;
+			}
+			currentOffset++;
+			if (arg.Length < currentOffset + proposedLengthOfLength) {
 				Console.WriteLine($"The hexadecimal data is not long enough for evaluating the proposed length of argument {count}");
 				return false;
 			}
 
 			int proposedLength;
 			try {
-				proposedLength = int.Parse(arg.Substring(currentOffset, 8), NumberStyles.HexNumber);
+				proposedLength = int.Parse(arg.Substring(currentOffset, proposedLengthOfLength), NumberStyles.HexNumber);
 			}
 			catch (Exception) {
 				Console.WriteLine($"Error while parsing string length of argument {count}");
 				return false;
 			}
 
-			currentOffset += 8;
+			currentOffset += proposedLengthOfLength;
 			if (arg.Length < currentOffset + proposedLength * 2) {
 				Console.WriteLine($"The hexadecimal data is not long enough for content of argument {count}");
 				return false;

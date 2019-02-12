@@ -28,6 +28,11 @@ public enum CmdParameterUsage : byte {
 	///  Indicates that normally supplied data is supported
 	/// </summary>
 	/// <remarks>e.g. <c>--intParameterName 6</c></remarks>
-	SupportDeclaredRaw = 1 << 2 //4
+	SupportDeclaredRaw = 1 << 2, //4
+
+	/// <summary>
+	/// Indicates the support for all three types mentioned beforehand
+	/// </summary>
+	All = SupportDeclaredRaw|SupportDirectAlias|SupportDeclaredAlias //7
 }
 }

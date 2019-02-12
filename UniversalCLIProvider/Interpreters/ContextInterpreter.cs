@@ -54,6 +54,17 @@ public class ContextInterpreter : BaseInterpreter {
 	/// <param name="interactive">Whether the interpretation comes from an interactive interpreter</param>
 	/// <returns>Whether the interpretation was successful</returns>
 	internal bool Interpret(out ContextInterpreter newCtx, bool interactive = false) {
+		newCtx = null;
+		if (Offset >= TopInterpreter.Args.Length) {
+			if (interactive) {
+				HelpGenerators.PrintContextHelp(UnderlyingContextAttribute,this);
+				return false;
+			}
+			UnderlyingContextAttribute.Load();
+			UnderlyingContextAttribute.DefaultAction.Interpret(this);
+			return true;
+		}
+
 		if (interactive && TopInterpreter.Args[Offset] == "..") {
 			if (Parent == null) {
 				Environment.Exit(0);
@@ -67,12 +78,6 @@ public class ContextInterpreter : BaseInterpreter {
 		}
 
 		UnderlyingContextAttribute.Load();
-		newCtx = null;
-		if (Offset >= TopInterpreter.Args.Length) {
-			UnderlyingContextAttribute.DefaultAction.Interpret(this);
-			return true;
-		}
-
 		string search = TopInterpreter.Args[Offset];
 		foreach (CmdContextAttribute cmdContextAttribute in UnderlyingContextAttribute.SubCtx) {
 			if (IsParameterEqual(cmdContextAttribute.Name, search,cmdContextAttribute.ShortForm, interactive)) {
@@ -114,7 +119,7 @@ public class ContextInterpreter : BaseInterpreter {
 			}
 		}
 
-		Console.WriteLine($"Failed to Parse Argument Nr{Offset + 1}: \"{search}\"");
+		Console.WriteLine($"Failed to Parse Argument Nr {Offset + 1}: \"{search}\"");
 		HelpGenerators.PrintContextHelp(UnderlyingContextAttribute, this);
 		return false;
 	}

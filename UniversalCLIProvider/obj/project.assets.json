@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     ".NETCoreApp,Version=v2.0": {
-      "JetBrains.Annotations/2018.2.1": {
+      "JetBrains.Annotations/2018.3.0": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/JetBrains.Annotations.dll": {}
@@ -1520,7 +1520,7 @@
       }
     },
     ".NETCoreApp,Version=v2.1": {
-      "JetBrains.Annotations/2018.2.1": {
+      "JetBrains.Annotations/2018.3.0": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/JetBrains.Annotations.dll": {}
@@ -3040,7 +3040,7 @@
       }
     },
     ".NETFramework,Version=v4.7.2": {
-      "JetBrains.Annotations/2018.2.1": {
+      "JetBrains.Annotations/2018.3.0": {
         "type": "package",
         "compile": {
           "lib/net20/JetBrains.Annotations.dll": {}
@@ -3081,7 +3081,7 @@
       }
     },
     ".NETStandard,Version=v2.0": {
-      "JetBrains.Annotations/2018.2.1": {
+      "JetBrains.Annotations/2018.3.0": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/JetBrains.Annotations.dll": {}
@@ -3147,13 +3147,14 @@
     }
   },
   "libraries": {
-    "JetBrains.Annotations/2018.2.1": {
-      "sha512": "/aPVHEW93EV1Httnbniz0Cty5+jrXobS27I8QBnIUMe0n51qgxLyQV2AQNko4yXkeOxEdWiZ7bg9+BuMxYbXcA==",
+    "JetBrains.Annotations/2018.3.0": {
+      "sha512": "6EyyfdCtckcJpMyPotkR7jyjx/eDSIF3k5Sar/oVOisxyoFZ8rf57sPazuhvWxqin4LrIzEZpWMoDkyC5s1Gug==",
       "type": "package",
-      "path": "jetbrains.annotations/2018.2.1",
+      "path": "jetbrains.annotations/2018.3.0",
       "files": [
         ".nupkg.metadata",
-        "jetbrains.annotations.2018.2.1.nupkg.sha512",
+        ".signature.p7s",
+        "jetbrains.annotations.2018.3.0.nupkg.sha512",
         "jetbrains.annotations.nuspec",
         "lib/net20/JetBrains.Annotations.dll",
         "lib/net20/JetBrains.Annotations.xml",
@@ -7370,7 +7371,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.0": [
-      "JetBrains.Annotations >= 2018.2.1",
+      "JetBrains.Annotations >= 2018.3.0",
       "Microsoft.NETCore.App >= 2.0.0",
       "Newtonsoft.Json >= 12.0.1",
       "PropertyOrFieldInfo >= 1.0.1",
@@ -7378,7 +7379,7 @@
       "xunit.runner.visualstudio >= 2.4.1"
     ],
     ".NETCoreApp,Version=v2.1": [
-      "JetBrains.Annotations >= 2018.2.1",
+      "JetBrains.Annotations >= 2018.3.0",
       "Microsoft.NETCore.App >= 2.1.0",
       "Newtonsoft.Json >= 12.0.1",
       "PropertyOrFieldInfo >= 1.0.1",
@@ -7386,14 +7387,14 @@
       "xunit.runner.visualstudio >= 2.4.1"
     ],
     ".NETFramework,Version=v4.7.2": [
-      "JetBrains.Annotations >= 2018.2.1",
+      "JetBrains.Annotations >= 2018.3.0",
       "Newtonsoft.Json >= 12.0.1",
       "PropertyOrFieldInfo >= 1.0.1",
       "xunit.runner.console >= 2.4.1",
       "xunit.runner.visualstudio >= 2.4.1"
     ],
     ".NETStandard,Version=v2.0": [
-      "JetBrains.Annotations >= 2018.2.1",
+      "JetBrains.Annotations >= 2018.3.0",
       "NETStandard.Library >= 2.0.3",
       "Newtonsoft.Json >= 12.0.1",
       "PropertyOrFieldInfo >= 1.0.1",
@@ -7457,7 +7458,7 @@
         "dependencies": {
           "JetBrains.Annotations": {
             "target": "Package",
-            "version": "[2018.2.1, )"
+            "version": "[2018.3.0, )"
           },
           "Microsoft.NETCore.App": {
             "suppressParent": "All",
@@ -7492,7 +7493,7 @@
         "dependencies": {
           "JetBrains.Annotations": {
             "target": "Package",
-            "version": "[2018.2.1, )"
+            "version": "[2018.3.0, )"
           },
           "Microsoft.NETCore.App": {
             "suppressParent": "All",
@@ -7527,7 +7528,7 @@
         "dependencies": {
           "JetBrains.Annotations": {
             "target": "Package",
-            "version": "[2018.2.1, )"
+            "version": "[2018.3.0, )"
           },
           "Newtonsoft.Json": {
             "target": "Package",
@@ -7551,7 +7552,7 @@
         "dependencies": {
           "JetBrains.Annotations": {
             "target": "Package",
-            "version": "[2018.2.1, )"
+            "version": "[2018.3.0, )"
           },
           "NETStandard.Library": {
             "suppressParent": "All",

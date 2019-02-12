@@ -176,7 +176,7 @@ public class ActionInterpreter : BaseInterpreter {
 					return false;
 				}
 			}
-			else if (IsAlias(out found, out object aliasValue) && (found.Usage & CmdParameterUsage.SupportDirectAlias) != 0) {
+			else if (IsAlias(out found, out object aliasValue) && found.Usage.HasFlag(CmdParameterUsage.SupportDirectAlias) ) {
 				invokationArguments.Add(found, aliasValue);
 			}
 			else {
