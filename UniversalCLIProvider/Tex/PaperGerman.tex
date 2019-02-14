@@ -143,8 +143,17 @@ numbers=none,language={[Sharp]C},breaklines=true,frame=single, literate={ö}{{ö
   Au\ss erdem stellt die Bibliothek dedizierten F\# Support bereit, der jedoch in dieser Arbeit nicht weiter behandelt werden soll.
   Die Bibliothek ist die am weitesten verbreitetste Lösung im C\# Umfeld mit 6.1 Millionen Downloads auf nuget.org~\cite{CommandLineParserNuget}. 
   \subsection{Bisher ungelöste Probleme}\label{subsec:currentproblems}
-  df
+  Im folgenden möchte ich auf Probleme eingehen, die aktuell häufig in Verbindung mit 
+Kommandozeilen auftreten.
   \subsubsection{Sonderzeichen-Unterstützung}
+Die Unterstützung von Sonderzeichen ist in Kommandozeilen schon immer ein Problem gewesen,
+ besonders unter Windows.
+Die normale Windows Kommandozeilenoberfläche (\inlinecode{cmd.exe})
+unterstützt alle Zeichen, die in der aktuellen Zeichensatztabelle enthalten sind. Unicode 
+Zeichensatztabellen werden bedoch nicht unterstützt, was darin resultiert, dass deutsche Umlaute 
+nicht gleichtzeitig mit kyrillischen Zeichen verwendet werden können, da es keine Windows 
+Zeichensatztabelle gibt, die Emojis unterstützt können diese garnicht in dieser Umgebung 
+verwendet werden.
   \subsubsection{Interaktive Konsolen}
   \subsubsection{Konfigurationsdateimanagement}
   \section{Implementation}\label{sec:Content}
