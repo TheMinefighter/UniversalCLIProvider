@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETStandard,Version=v2.0/",
-    "signature": "e91a779b1713c0a691f3c94bddc9da9483593a5b"
+    "signature": "629e7fe97bd916c6e86f8309892c44491aea9984"
   },
   "compilationOptions": {},
   "targets": {
@@ -9,7 +9,7 @@
     ".NETStandard,Version=v2.0/": {
       "UniversalCLIProvider/1.0.0": {
         "dependencies": {
-          "JetBrains.Annotations": "2018.2.1",
+          "JetBrains.Annotations": "2018.3.0",
           "NETStandard.Library": "2.0.3",
           "Newtonsoft.Json": "12.0.1",
           "PropertyOrFieldInfo": "1.0.1",
@@ -20,11 +20,11 @@
           "UniversalCLIProvider.dll": {}
         }
       },
-      "JetBrains.Annotations/2018.2.1": {
+      "JetBrains.Annotations/2018.3.0": {
         "runtime": {
           "lib/netstandard2.0/JetBrains.Annotations.dll": {
-            "assemblyVersion": "2018.2.1.0",
-            "fileVersion": "2018.2.1.0"
+            "assemblyVersion": "2018.3.0.0",
+            "fileVersion": "2018.3.0.0"
           }
         }
       },
@@ -60,12 +60,12 @@
       "serviceable": false,
       "sha512": ""
     },
-    "JetBrains.Annotations/2018.2.1": {
+    "JetBrains.Annotations/2018.3.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-/aPVHEW93EV1Httnbniz0Cty5+jrXobS27I8QBnIUMe0n51qgxLyQV2AQNko4yXkeOxEdWiZ7bg9+BuMxYbXcA==",
-      "path": "jetbrains.annotations/2018.2.1",
-      "hashPath": "jetbrains.annotations.2018.2.1.nupkg.sha512"
+      "sha512": "sha512-6EyyfdCtckcJpMyPotkR7jyjx/eDSIF3k5Sar/oVOisxyoFZ8rf57sPazuhvWxqin4LrIzEZpWMoDkyC5s1Gug==",
+      "path": "jetbrains.annotations/2018.3.0",
+      "hashPath": "jetbrains.annotations.2018.3.0.nupkg.sha512"
     },
     "Microsoft.NETCore.Platforms/1.1.0": {
       "type": "package",

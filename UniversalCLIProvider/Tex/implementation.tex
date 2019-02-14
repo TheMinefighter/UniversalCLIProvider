@@ -2,7 +2,7 @@ Die Implementation ist in C\#7.3 entwickelt worden.
 Sie ist fast vollständig mit XML Kommentaren\footnote{Siehe https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/xmldoc/xml-documentation-comments} dokumentiert.
 \subsection{Aufbau der Implementation}\label{subsec:Architecture}
 Die Implementation ist in 3 namespaces, sowie den root-namespace geteilt.
-In diesem liegt die Klasse \inlinecode{InvalidCLIConfigurationException}, eine Au\ss nahme, die ausgelöst wird, wenn die Bibliothek eine falsche Verwendung von Funktionen von seiten des Programmierers festgestellt hat.
+In diesem liegt die Klasse \inlinecode{InvalidCLIConfigurationException}, eine Ausnahme, die ausgelöst wird, wenn die Bibliothek eine falsche Verwendung von Funktionen von seiten des Programmierers festgestellt hat.
 Allein durch das eingeben von inkorrekten Befehlen in die bereitgestellte Kommandozeilenoberfläche kann diese nicht ausgelöst werden. Au\
  ss erdem liegt in diesem namespace die \inlinecode{InterpretingOptions}-Klasse, die einige an vielen Stellen verwendete Optionen definiert.
 \subsubsection{UniversalCLIProvider.Attributes}
@@ -11,16 +11,16 @@ Alle diese Attribute speichern eine Referenz zu dem Programmelement auf das das 
 Folgende Klassen sind in diesem namespace vorhanden:
 \begin{outline}
  \1 Das \inlinecode{CmdActionAttribute} wird verwendet um eine als Kommandozeilen-Aktion ausführbare Methode zu Kennzeichnen.
- \1 Das \inlinecode{CmdParameterAttribute} wird verwendet um ein Parameter einer Kommandozeilen-Aktion von der Kommandozeilenoberfläche modifizierbar machen.
+ \1 Das \inlinecode{CmdParameterAttribute} wird verwendet um einen Parameter einer Kommandozeilen-Aktion von der Kommandozeilenoberfläche modifizierbar machen.
  \1 Das \inlinecode{CmdParameterAliasAttribute} wird verwendet um einem Parameter einer Kommandozeilen-Aktion eine Kurzform zu geben, welche dem Parametr ein vordefinierten Wert zuweist.
  \1 Das \inlinecode{CmdContextAttribute} wird verwendet um eine Klasse als Kontext zu definieren, der u.a. Aktionen grupiert.
  \1 Das \inlinecode{CmdDefaultActionAttribute} wird verwendet um innerhalb eines Kontextes eine Aktion zu definieren die ausgeführt wird, wenn keine andere Aktion ausgewählt wurde.
  \1 Das Enum\footnote{Ein Enum ist ein Datentyp der nur die in ihm definierten Zustände annehmen kann.} \inlinecode{ContextDefaultActionPreset}
  stellt verschieden Voreinstellung bereit, die alternativ zum \inlinecode{CmdContextAttribute} verwendet werden können.
- \1 Das \inlinecode{CmdConfigurationProviderAttribute} markiert eine Eigenschaft die eine Refernz zu einem Konfigurations Objekt(siehe~\ref{ConfigurationManagement}) bereitstellt.
- \1 Das \inlinecode{CmdConfigurationNamespaceAttribute} markiert dass eine Klasse Teil einer durch die bereitgestelte Kommandozeilenoberfläche verwaltbaren Konfiguration ist
+ \1 Das \inlinecode{CmdConfigurationProviderAttribute} markiert eine Eigenschaft die eine Refernz zu einem Konfigurations-Objekt (siehe~\ref{ConfigurationManagement}) bereitstellt.
+ \1 Das \inlinecode{CmdConfigurationNamespaceAttribute} markiert, dass eine Klasse Teil einer durch die bereitgestelte Kommandozeilenoberfläche verwaltbaren Konfiguration ist
  \1 Das Interface \inlinecode{IConfigurationRoot} kann von einer Klasse implementiert werden, die den Ursprung einer Kommandozeilen-verwalteten Konfiguration ist.
- \1 Das \inlinecode{CmdConfigurationFieldAttribute}markiert dass ein Feld oder eine Eigenschaft Teil einer durch die bereitgesttelte Kommandozeilenoberfläche verwaltbaren Konfiguration ist
+ \1 Das \inlinecode{CmdConfigurationFieldAttribute}markiert, dass ein Feld oder eine Eigenschaft Teil einer durch die bereitgesttelte Kommandozeilenoberfläche verwaltbaren Konfiguration ist
  \1 Das Flag-Enum\footnote{Ein Flag-Enum ist ein Datentyp der mehrer mögliche Zustände aufzählt, die miteinander, auf Basis von Binär-Logik durch ||(Oder) Operatoren kombinierbar sind.}
  \inlinecode{CmdParameterUsage} definiert in welchen Formen ein Parameter angegeben werden kann.
 \end{outline}
@@ -65,7 +65,7 @@ Sie erbt von der abstrakten \inlinecode{BaseInterpreter} Klasse folgende Inhalte
  \1 Die \inlinecode{PathBottomUp} Eigenschaft gibt ein \inlinecode{IEnumerable<BaseInterpreter>} der alle Elemente des Interpretations-Stack von unten nach oben aufzählt, basierend auf den \inlinecode{Parent} der einzelnen Elemente.
  \1 Die \inlinecode{Path} Eigenschaft gibt den Interpretations-Stack von oben nach zurück, indem \inlinecode{PathBottomUp} rückwärts verwendet wird.
  \1 Die Überschreibung der \inlinecode{ToString}, die nun die \inlinecode{Path} Eigenschaft formattiert zurückgibt.
- \1 Die \inlinecode{IncreaseOffset} Methode, die die \inlinecode{Offset} um 1 erhöht dann zurückgibt ob weitere Parameter bereitstehen.
+ \1 Die \inlinecode{IncreaseOffset} Methode, die en \inlinecode{Offset} um 1 erhöht dann zurückgibt ob weitere Parameter bereitstehen.
  \1 Die abstrakte \inlinecode{Interpret} Methode, die den gegebenen Kontext interpretiert und zurückgibt ob die Interpretation war.
  \1 Die \inlinecode{IsParameterEqual} Methode,die prüft ob ein gegebener Parameter einem erwarteten Parameter entspricht.
  \1 Die \inlinecode{Reset} Methode setzt den \inlinecode{Offset} wieder auf 0 (für interaktiven Modus nötig).
@@ -125,7 +125,7 @@ Die \inlinecode{Interpret} Methode macht die eigentliche Interpretationsarbeit.
 Sie nimmt als Parameter einen Wahrheitswer, ob die Interpretation von einer ineraktiven Kommandozeilenoberfläche kommt.
 Zurückgegeben wird, ob die Interpretation erfolgreich war, und den neuen Interpretationskontext.
 Zuerst wird getestet, ob die Interpretation interaktiv ist und das erste Argument \inlinecode{..} ist.
-Wenn ja der nächst höhere Interpreter zurückgegeben, bzw. wenn der aktuelle schon der höchste ist das Programm verlassen:
+Wenn ja der wird nächst höhere Interpreter zurückgegeben, bzw. wenn der aktuelle schon der höchste ist das Programm verlassen:
 \begin{lstlisting}[title=""]
 if (interactive && TopInterpreter.Args[Offset] == "..") {
  if (Parent == null) {
@@ -242,37 +242,37 @@ Solche Parameter können auf zwei Wegen bereitgestellt werden:
  \1 Alternativ kann ein JSON-Array verwendet werden: \inlinecode{ReferenceUsage --TestC --TestArg "[\\"Hallo\\",\\"Welt\\"]"}.
  Die Verwendng von Backslashes ist der Windows \inlinecode{cmd.exe} geschuldet, die keine Anführungszeichen ohne Backslash erlaubt,
  und auch mit Backslash nur wenn das Argument selbst in Anführungszeichen steht.
- Im Gegensatz zur vorherigen Methode ist es hier Möglich eien leeren Array (\inlinecode{[]}) zu übergeben.
+ Im Gegensatz zur vorherigen Methode ist es hier Möglich einen leeren Array (\inlinecode{[]}) zu übergeben.
  Au\ss erdem können bei dieser Methode auch ohne Probleme Elemente, die den Namen von weiteren Parametern entsprechen, verwenden.
- JSON Objekte können auch für das übergeben von Daten anderer Typen(au\ss nahme \inlinecode{string}) verwendet werden.
+ JSON Objekte können auch für das übergeben von Daten anderer Typen (ausnahme \inlinecode{string}) verwendet werden.
 \end{outline} 
 
-Des weiteren können vor Parametern Aliasse deklariert werden.
-Diese haben eine Namen mit dem sie aufgerufen werden können, sowie einen Wert, den sie repräsentieren.
+Des Weiteren können vor Parametern Aliasse deklariert werden.
+Diese haben einen Namen mit dem sie aufgerufen werden können, sowie einen Wert, den sie repräsentieren.
 So ist wird im eben verwenden Beispiel \inlinecode{["Hello","World"]} durch \inlinecode{--HelloW} repräsentiert.
-Die Werte die durch ei Alias repräsentiert werden können ist beschränkt, da C\# Attribute nur bestimmte Typen von Werten unterstützen\footnote{Weitere Informationen sind unter https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/attributes\#attribute-parameter-types verfügbar.}.
-Diese könen auch Kurzformen (\inlinecode{-h}, sowie Beschreibungen für die Hilfe haben.
+Die Werte die durch einen Alias repräsentiert werden können sind beschränkt, da C\# Attribute nur bestimmte Typen von Werten unterstützen\footnote{Weitere Informationen sind unter https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/attributes\#attribute-parameter-types verfügbar.}.
+Diese können auch Kurzformen (\inlinecode{-h}, sowie Beschreibungen für die Hilfe haben.
 
 Um die Verwendung all dieser Möglichkeiten zu definieren gibt es die \inlinecode{usage} Eigenschaft vom Typen \inlinecode{CmdParameterUsage}.
 Sie ist standartmä\ss ig auf \inlinecode{CmdParameterUsage.Default} gesetzt, was darin resultiert, dass die Bibliothek entscheidet, welche Option sinnvoll ist.
-Wen man diese Einstellung selber bestimmen möchte kann ma jede möglich Kombintaion aus den foolgenden drei Punken angeben:
+Wen man diese Einstellung selber bestimmen möchte kann man jede mögliche Kombination aus den folgenden drei Punkten angeben:
 \begin{outline}
  \1 Unterstützung von Roh-Werten: \inlinecode{ReferenceUsage --TestC --TestArg "[\\"Hello\\",\\"World\\"]"}
  \1 Unterstützung von Aliassen mit vorheriger Parameter Deklaration: \inlinecode{ReferenceUsage --TestC --TestArg --HelloW}
  \1 Unterstützung von Aliassen ohne vorheriger Parameter Deklaration: \inlinecode{ReferenceUsage --TestC --HelloW}
 \end{outline}
 
-Parameter besitzen des weiteren auch eine normale und eine lange Beschreibung.
+Parameter besitzen des Weiteren auch eine normale und eine lange Beschreibung.
 \subsubsection{Verwendung von Kontexten}
-Kontexte biten die Möglichkiet Aktionen zu ordnen.
+Kontexte bieten die Möglichkiet Aktionen zu ordnen.
 Ein Kontext Attribut bezieht sich immer auf eine Klasse.
 Wenn dieser Kontext nicht der Ursprungskontext einer Kommandozeilenoberfläche ist, 
-muss die Klasse auf die sich das Attribut bezieht ein geschachtelter Typ in einer Klasse, die widerum auch ein \inlinecode{CmdContextAttribute} besitzt, sein.
+muss die Klasse auf die sich das Attribut bezieht ein geschachtelter Typ in einer Klasse, die wiederum  auch ein \inlinecode{CmdContextAttribute} besitzt, sein.
 Nur in einer diesen Bedingungen entsprechenden Klasse können Aktionen, Kommandozeilenverwaltete Konfiguratioen und Kontext Standard Aktionen deklariert werden.
 
-Wenn nun eine Aktion aufgerufen werden soll, die sich nicht im Ursprunskontext befindet,
-muss der gesamte Pfad bis zum gewünschen Kontext, durch die Angabe der Namen der Kontexte in der Kommandozeilenoberfl\"ache \"ubergeben werden.
-So befindet sich zum Besispiel die \inlinecode{TestZ} Aktion im \inlinecode{XZY} Kontext,
+Wenn nun eine Aktion aufgerufen werden soll, die sich nicht im Ursprungskontext befindet,
+muss der gesamte Pfad bis zum gewünschten Kontext, durch die Angabe der Namen der Kontexte in der Kommandozeilenoberfläche übergeben werden.
+So befindet sich zum Beispiel die \inlinecode{TestZ} Aktion im \inlinecode{XZY} Kontext,
 um die Aktion muss also der Befehl \inlinecode{ReferenceUsage --XZY --TestZ} verwendet werden;
 um die \inlinecode{TestY} Aktion im \inlinecode{ABC} Kontext, der sich im \inlinecode{XYZ} Kontext befindet,
 aufzurufen muss man \inlinecode{ReferenceUsage --XZY --ABC --TestZ} nutzen.
@@ -300,13 +300,13 @@ Diese kann auf zwei wegen definiert werden:
 
 \subsubsection{Konfigurations-Management}\label{ConfigurationManagement}
 Die Bibliothek bietet die Möglichkeit Konfigurationsdateien von der Kommandozeilenoberfläche aus zu verwalten.
-Die Konfiguration wird dabei durch ein Objekts zur Laufzeit des Programms gespeicheichert, das oft Referenzen zu anderen Konfigurationsteilen oder Mengen solcher enthält.
+Die Konfiguration wird dabei durch ein Objekt zur Laufzeit des Programms gespeichert, dass oft Referenzen zu anderen Konfigurationsteilen oder Mengen solcher enthält.
 Eine Referenz
 
 \subsubsection{Hilfs Funktion}
 \subsubsection{Hexadezimalkodierung}\label{Hexadecimalencoding}
 Au\ss erdem stell sie Bibliothek die Funktion bereit, alle Programm-Argumente in ihrer Hexadezimalrepräsentation zu übergeben.
-Die Hexadezimal repräsentation basiert dabei auf einer beliebigen Zeichenkodierung, jedoch wird im standardmä\ss ig UTF-8(gemä\ss ISO/IEC 10646:2017) verwendet.
+Die Hexadezimal Repräsentation  basiert dabei auf einer beliebigen Zeichenkodierung, jedoch wird im standardmä\ss ig UTF-8(gemä\ss  ISO/IEC 10646:2017) verwendet.
 
 Die Kodierung besteht aus folgenden Teilen:
 \begin{outline}
@@ -318,19 +318,19 @@ Die Kodierung besteht aus folgenden Teilen:
   \2 Das kodierte Argument, wobei zwischen 2 und 8 Ziffern pro Buchstabe verwendet werden
 \end{outline}
 
-Vor der Angabe solcher kodierten Argumente muss ein Argument stehen, dass dies kennzeichent.
+Vor der Angabe solcher kodierten Argumente muss ein Argument stehen, dass dies kennzeichnet.
 Dieses ist in den Einstellungen zur Interpretation als \inlinecode{HexOption} definiert und hat standardmä\ss ig den Wert \inlinecode{Master:Hex}.
 So ist zum Beispiel der Befehl \inlinecode{ReferenceUsage --TestC --HelloW} äquivalent zum Befehl \inlinecode{ReferenceUsage --Master:Hex fde9172d2d5465737443182d2d48656c6c6f57}.
 
 Eine Implemtation einer Funktion die aus einem \inlinecode{string[]} eine solche Hexadezimal-Zeichenfolge generiert ist unter dem Namen \inlinecode{ToHexArgumentString} in der \inlinecode{HexArgumentEncoding} zu finden.
 Sie ist mit minimalen Modifikationen auch in vielen anderen Sprachen, wie Java, möglich.
 
-Dieses Feature erlaubt es auch Sonderzeichen, wie Emojis, problemfrei zu übertragen was in normalen Kommandozeilenoberfl\"achen, mit wenigen au\ss ahmen nicht m\"oglich ist.
-Au\ss erdem sin damit alle Probleme um das verwenden von Backslashes gelöst.
+Dieses Feature erlaubt es auch Sonderzeichen, wie Emojis, problemfrei zu übertragen was in normalen Kommandozeilenoberflächen, mit wenigen au\ss ahmen nicht möglich ist.
+Au\ss erdem sin damit alle Probleme um das Verwenden von Backslashes gelöst.
 Hier stellt sich natürlich die Frage weswegen ich nicht JSON hierfür verwendet habe.
-Die Problematik liegt darin erstens immer Backslashes gesetzt werden müssen und, dass bestimmte Sonderzeichenfolgen in JSON nicht kodiert werden können, wie auch in der Spezifikation bemerkt\cite{JSONSpec}.
+Die Problematik liegt darin erstens immer Backslashes gesetzt werden müssen und, dass bestimmte Sonderzeichenfolgen in JSON nicht kodiert werden können, wie auch in der Spezifikation bemerkt~\cite{JSONSpec}.
 Da sowieso ein Kodierungsschritt nötig ist und diese Funktion in jemandem Fall nur für automatisierte Szenarien zur Kommunikation zwischen Programmen sinnvoll ist,
-ist die Verwendung eines etwas komplizierteren, properiet\"arem Kodierungsprozess gegenüber fehlender Zuverlässigkeit und höherem Aufwand meiner Meinung nach gerechtfertigt.
+ist die Verwendung eines etwas komplizierteren, proprietärem  Kodierungsprozess gegenüber fehlender Zuverlässigkeit und höherem Aufwand meiner Meinung nach gerechtfertigt.
 \subsubsection{Interaktive Kommandozeilenoberfäche}
 
 \subsection{Vergleich meiner Lösung mit bisherigen Lösungen}\label{subsec:Comparison}
