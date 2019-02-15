@@ -43,22 +43,7 @@ public abstract class CmdRootContext {
 			$"The CmdDefaultActionAttribute supplied the number {number}, the interpreter is currently located in the following path: {string.Join(">", interpreter.Path.Select(x => x.Name))}");
 	}
 
-	public enum ATestEnum {
-		State1,
-		State2,
-		State3
-	}
-
 	[CmdConfigurationProvider("cfg")]
 	public static ReferenceConfig Cfg { get; set; } = new ReferenceConfig();
-
-	[CmdAction("AliasTest")]
-	public static void AliasTest(
-		[CmdParameterAlias("StateX", ATestEnum.State1, "Results in State1", "X"),
-		 CmdParameterAlias("StateY", ATestEnum.State2, "Results in State2", "Y"),
-		 CmdParameterAlias("StateZ", ATestEnum.State3, "Results in State3", "Z"), CmdParameter("Type")]
-		ATestEnum alias = ATestEnum.State3) {
-		Console.WriteLine($"The alias you have entered resulted in {alias}");
-	}
 }
 }

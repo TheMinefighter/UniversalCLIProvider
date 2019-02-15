@@ -25,11 +25,12 @@ public class ConfigurationInterpreter : BaseInterpreter {
 			HelpGenerators.PrintConfigurationContextHelp(_root, this, true);
 		}
 
-		bool ro = true;
+		bool ro = false;
 		IncreaseOffset();
 		object requiredObject = _referenceToObject;
 		if (!ConfigurationHelpers.ResolvePathRecursive(TopInterpreter.Args[Offset], _typeInfoOfConfiguration, ref requiredObject, out PropertyInfo prop,
 			out object[] indexers, ref ro, out PropertyInfo lastNonIndexer)) {
+			Console.WriteLine("Could not resolve the path provided");
 			return false;
 		}
 
@@ -101,8 +102,8 @@ public class ConfigurationInterpreter : BaseInterpreter {
 		Console.WriteLine("Could not resolve the operator provided");
 		//TODO Remove and Add missing
 		//_root.Interpret(printErrors);
+		return false;
 		throw new NotImplementedException();
-		return true;
 	}
 }
 }

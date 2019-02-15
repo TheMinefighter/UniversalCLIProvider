@@ -32,7 +32,7 @@ public static class ConfigurationHelpers {
 				}
 				else {
 					endOfCurrentBlock = bracketIndex;
-					remainingPath = path.Substring(dotIndex + 1);
+					remainingPath = path.Substring(bracketIndex );
 				}
 			}
 
@@ -49,6 +49,7 @@ public static class ConfigurationHelpers {
 						ro = true;
 					}
 
+					typeInfoOfItem = property.PropertyType.GetTypeInfo();
 					prop = property;
 					lastNonIndexer = prop;
 					break;
@@ -100,7 +101,7 @@ public static class ConfigurationHelpers {
 			return false;
 		}
 
-		if (!SplitIndexerArguments(path.Substring(1, endOfIndexer - 2), out string[] indexerParameters)) {
+		if (!SplitIndexerArguments(path.Substring(1, endOfIndexer - 1), out string[] indexerParameters)) {
 			return false;
 		}
 
@@ -119,8 +120,8 @@ public static class ConfigurationHelpers {
 		out PropertyInfo indexer) {
 		indexParameters = new object[parameters.Length];
 		indexer = null;
-		foreach (PropertyInfo possibleIndexer in type.GetUnderlyingTypes().SelectMany(x => x.DeclaredProperties)
-			.Where(x => x.GetIndexParameters().Length == parameters.Length)) {
+		foreach (PropertyInfo possibleIndexer in type.GetUnderlyingTypes().Distinct().SelectMany(x => x.DeclaredProperties)
+			.Where(x => x.GetIndexParameters().Length == parameters.Length&&x.PropertyType!=typeof(object))) {
 			bool success = true;
 			ParameterInfo[] paras = possibleIndexer.GetIndexParameters();
 			for (int i = 0; i < parameters.Length; i++) {
@@ -129,6 +130,7 @@ public static class ConfigurationHelpers {
 				}
 				catch (JsonException) {
 					success = false;
+					break;
 				}
 			}
 
@@ -142,6 +144,8 @@ public static class ConfigurationHelpers {
 	}
 
 	public static bool SplitIndexerArguments([NotNull] string src, out string[] result) {
+		result = new[] {src};
+		return true;
 		if (!src.Contains(',')) {
 			result = new[] {src};
 			return true;

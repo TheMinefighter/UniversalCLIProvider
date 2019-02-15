@@ -1,0 +1,90 @@
+  \subsection{Differenzierung verschiedener Typen Kommandozeilenoberflächen}\label{subsec:DifferentCLITypes}
+  Im Folgenden möchte ich verschiedenen Formen von Kommandozeilenoberflächen erläutern und die Differenzen zwischen ihnen aufzeigen.
+  \subsubsection{Windows typische Kommandozeilenoberflächen}
+  Typisch für Windows Kommandozeilenoberflächen wird ein \inlinecode{/} vor Paramternamen, manchmal auch vor Subkommmando-Namen, verwendet wird, wobei oft auch die Verwendung von \inlinecode{-} korrekt erkannt wird.
+  Au\ss erdem werden im Windows Bereich oft sehr viele Funktionen, die z.T. nicht viel miteinander zu tun haben, in einen Befehl gelegt, welcher dann viele Subkommandos besitzt.
+  \subsubsection{*nix typische Kommandozeilenoberflächen}
+  *nix\footnote{*nix wird als Sammelbegriff für Unix und Unix basierte Systeme, wie Linux, MacOS oder OpenBSD, verwendet} typische Kommandozeilenoberflächen
+  zeichnen sich dadurch aus, dass sie statt des \inlinecode{/}, welches zu Mehrdeutigkeiten führen könnte, da in *nix Systemen Pfade mit Schrägstrichen beginnen, vor Parametern \inlinecode{--} verwenden.
+  Häufig benötigte Parameter haben meist eine Kurzform in Form eines einzelnen Buchstaben / Zeichen, welcher hinter einem \inlinecode{-} angegeben wird.
+  Viele Kommandozeilenoberflächen erlauben auch die aneinander Reihung solcher Kurzformen:
+  Wenn z.B. \inlinecode{-a} und \inlinecode{-m} Parameter Kurzformen sind, kann \inlinecode{-am} als Kurzform für beide Optionen verwendet werden.
+  Dabei muss \inlinecode{-a} ein Flag\footnote{Als Flag werden Parameter bezeichnet, die keinen weiteren Wert benötigen, sondern ein boolean Wert aktivieren.} sein,
+  \inlinecode{-m} kann auch ein Wertparamter sein dessen Wert dann dahinterstehen müsste.
+  Eine weitere Eigenschaft, die typisch für Kommandozeilenoberflächen im *nix Bereich ist, ist dass,
+  im Vergleich zu Windows Kommandozeilenoberflächen mehr getrennte Befehle mit weniger Subkommandos verwendet werden.
+  \subsubsection{Interaktive Kommandozeilenoberflächen}
+  Mit der Veröffentlichung von Windows XP Professional im Jahr 2000, wurde die Windows Management Instrumentation (WMI),
+  zusammen mit der dafür vorgesehenen Windows Management Instrumentation Command-line (WMIC) eingeführt~\cite{WMIProgrammingBlogPost}.
+  In dieser hat das Konzept einer interaktiven Shell zum Aufrufen von
+  Programmfunktionen~\footnote{Für SSH, TELNET und interaktive Compiler kamen interaktive Kommandozeilenoberflächen auch schon früher zum Einsatz} erstmals zum Einsatz.
+  Diese interaktive Kommandozeilenoberflächen kann mit dem \inlinecode{wmic} Befehl aufgerufen werden, dann kann man Einstellungen definieren wie
+  z.B. die Sprache mit \inlinecode{/LOCALE} definieren die bis zum Beenden der interaktiven Shell verwendet werden.
+  Ein weiterer wichtiger Meilenstein für interakive Shells ist die 2005 von Facebook Inc. veröffentlichte Bibliothek Nubia~\cite{NubiaReleaseBlogPost} für Python.
+  \begin{figure}[H]
+	\includegraphics[width=\linewidth]{PythonNubia.png}
+	\caption{Ausschnitt aus der offiziellen Demo der Bibliothek}
+	\label{fig:PythonNubia}
+  \end{figure}
+  Sie hat als erstes Syntax-highlighting in einer interaktiven Kommandozeile eingeführt, zusammen mit einem Autocomplete auf dem Niveau moderner IDEs.
+  \subsubsection{Graphische Kommandozeilenbenutzeroberfächen}
+  Graphische Kommandozeilenbenutzeroberfächen (GCLUI) werden oft verwendet, wenn die Bedienung durch einen Endnutzer passieren soll,
+  und nicht dazu genutzt werden soll um von anderen Programmen automatisch aufgerufen werden soll.
+  In vielen solchen Fällen würde man dann Grafische Benutzeroberflächen (GUI) nutzen, in Fällen wo die Bedienbarkeit aber auch über SSH u.ä. gewährleistet sein soll werden aber meist GCLUI genutzt.
+  Dass prominenteste Beispiel für einen solchen Fall ist der \inlinecode{raspi-config} Befehl der die System-Konfiguration von Raspberry Pi's erlaubt.
+  %TODO Plural Raspi
+  \begin{figure}[H]
+	\includegraphics[width=\linewidth]{raspi-config.png}
+	\caption{Die raspi-config Oberfläche}
+	\label{fig:raspi-config}
+  \end{figure}
+  Die Navigation ist dort mit den Pfeil- und Zahlentasten, sowie der Tabtaste, möglich und macht die Bedienung sehr einfach und intuitiv~\cite{RaspiConfigOfficialInfo}.
+  \subsection{Vergangenheit \& Aktueller Stand der Technik für C\#}\label{subsec:CurrentState}
+  \subsubsection{NDesk.Options / Mono.Options Bibliothek}
+  Die NDesk.Options Bibliothek wurde zuerst im Januar 2008 angekündigt~\cite{NDeskAnnouncement},
+  und noch im gleichen Monat in erster Version veröffentlicht~\cite{NDesk1stRelease}.
+  Der Autor hat diese als Nachfolger der Mono.GetOptions Bibliothek,
+  welche im Dezember 2006 schon existiert~\cite{MonoGetOptions3rdBlogPost} haben muss und dessen Entwicklung spätestens Ende 2007 eingestellt wurde,
+  über die jedoch wenige Informationen vorhanden sind.
+  Aufgrund dieses frühen Erscheinens ist die Bibliothek auf C\#2 ausgelegt, weswegen von vielen Möglichkeiten neuerer C\# Versionen,
+  die die Bedienung einer solchen Bibliothek deutlich einfacher machen würden viele neue Bedienmöglichkeiten mit sich bringen.
+  Die Bibliothek erlaubt das definieren von Optionen optional mit mehreren verwendbaren Namen.
+  Diese können entweder ein delegate\footnote{Ein delegate in C\# ist ein Referenzdatentyp, der eine Prozedur speichert die mehrere Werte annhemen kann und optional einen Wert zurückgeben kann.} bereitstellen, dass den Folgenden Parameter als String verarbeitet,
+  oder ein Typ angegeben in den der folgende Parameter durch einen \inlinecode{System.ComponentModel.TypeConverter} umgewandelt wird,
+  und dann ein delegate, dass der Parameter in dem vorher angegebenen Typ verarbeitet.
+  Des Weiteren werden Boolean flags unterstützt die durch \inlinecode{-OptionsName+} aktiviert
+  und durch \inlinecode{-OptiosName-} deaktiviert werden können~\cite{NDeskOptionSetDocumentation}.
+  Der letzte eigene Release wurde im Oktober 2008 veröffentlicht~\cite{NDeskOptionsLastRelease},
+  dann ist die Bibliothek als Mono.Options als Teil des Mono Projekts neuveröffentlicht worden~\cite{MonoOptions1stCommit},
+  dass seit 2011 durch Xamarin~Inc. weiterentwickelt wird~\cite{MonoFutureInterview}, welche seit 2016 Teil von Microsoft ist~\cite{MicrosoftBlogAcquireXamarin}.
+  Seit dem ist die Popularität der Bibliothek sehr stark gestiegen, sodass es aktuell knapp 600.000 Downloads auf nuget.org hat~\cite{MonoOptionsNuget}.
+  \subsubsection{Command Line Parser Bibliothek}
+  Die 2012\footnote{Der Autor selbst schreibt in der readme des Projekts 2005, jedoch habe ich keine Informationen finden können die dies decken, auf eine Anfrage hat der Autor nicht geantwortet} veröffentlichte Bibliothek Command Line Parser~\cite{FirstCommandLineParserCommit}  
+  hat als erstes das Konzept von Attribut-definierten Kommandozeilenoberflächen im C\#-Bereich.
+  Sie wird seit der Veröffentlichung aktiv weiterentwickelt, nutzt die Möglichkeiten aktueller C\# Versionen.
+  Die Bibliothek stellt eine vollständige Hilfefunktion, baumartige Organisation von Subkommandos, Parameter, Umfangreiche Typkonvertierungen, sowie Kurzformen bereit~\cite{CommandLineParserWiki}.
+  Au\ss erdem stellt die Bibliothek dedizierten F\# Support bereit, der jedoch in dieser Arbeit nicht weiter behandelt werden soll.
+  Die Bibliothek ist die am weitesten verbreitete Lösung im C\# Umfeld mit 6.1 Millionen Downloads auf nuget.org~\cite{CommandLineParserNuget}. 
+  \subsection{Bisher ungelöste Probleme}\label{subsec:currentproblems}
+  Im Folgenden möchte ich auf Probleme eingehen, die aktuell häufig in Verbindung mit 
+Kommandozeilen auftreten.
+  \subsubsection{Sonderzeichen-Unterstützung}
+Die Unterstützung von Sonderzeichen ist in Kommandozeilen schon immer ein Problem gewesen,
+ besonders unter Windows.
+Die normale Windows Kommandozeilenoberfläche (\inlinecode{cmd.exe})
+unterstützt alle Zeichen, die in der aktuellen Zeichensatztabelle enthalten sind. Unicode 
+Zeichensatztabellen werden bedoch nicht unterstützt, was darin resultiert, dass deutsche Umlaute 
+nicht gleichtzeitig mit kyrillischen Zeichen verwendet werden können, da es keine Windows 
+Zeichensatztabelle gibt, die Emojis unterstützt können diese garnicht in dieser Umgebung
+verwendet werden.
+Die Powershell unterstützt zwar Sonderzeichen aber nur für Powershell eigene Cmdlets.
+  Dies ist darin begründet das für der gr\"o\ss te Teil der Windows eigenen Befehle keine weiter Unterst\"utzung f\"ur Sonderzeichen bietet, 
+  da diese dafür unter Windows einen eigenen Einsprungspunkt definieren müssten.
+  Unter Linux ist vom System aus die Unterstützung für Unicode gegeben, unter einigen Systemen muss die in der Shell noch aktiviert werden~\cite{LinuxUnicode}.
+  Ein weiteres Problem ist die Verwendung von Backslashes, Anführungszeichen und Leerzeichen in Parameter, da dafür das gesamte Argumente mit Anführungsstrichen Umschlossen werden muss, und die genannten Zeichen mit einem vorhergehenden Backslash auskommentiert werden müssen.
+  \subsubsection{Konfigurationsdateimanagement}
+  Ein weiteres Problem ist es, das Konfigurationsdateien fast ausnahmslos nur selbst, aber nicht über die
+  Kommandozeilenoberfläche des Programms bearbeitet werden können.
+  Das führt dazu, das dort keine Hilfe/Dokumentation bereitgestellt werden kann.
+  Au\ss erdem könnte in einer Kommandozeilenoberfläche die Gültigkeit der eingegebenen Werte
+  überprüft werden, was bei dem bearbeiten einer einfachen Konfigurationsdatei nicht möglich ist.

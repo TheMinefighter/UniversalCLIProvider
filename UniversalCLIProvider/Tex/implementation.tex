@@ -3,8 +3,8 @@ Sie ist fast vollständig mit XML Kommentaren\footnote{Siehe https://docs.micros
 \subsection{Aufbau der Implementation}\label{subsec:Architecture}
 Die Implementation ist in 3 namespaces, sowie den root-namespace geteilt.
 In diesem liegt die Klasse \inlinecode{InvalidCLIConfigurationException}, eine Ausnahme, die ausgelöst wird, wenn die Bibliothek eine falsche Verwendung von Funktionen von seiten des Programmierers festgestellt hat.
-Allein durch das eingeben von inkorrekten Befehlen in die bereitgestellte Kommandozeilenoberfläche kann diese nicht ausgelöst werden. Au\
- ss erdem liegt in diesem namespace die \inlinecode{InterpretingOptions}-Klasse, die einige an vielen Stellen verwendete Optionen definiert.
+Allein durch das eingeben von inkorrekten Befehlen in die bereitgestellte Kommandozeilenoberfläche kann diese nicht ausgelöst werden.
+Au\ss erdem liegt in diesem namespace die \inlinecode{InterpretingOptions}-Klasse, die einige an vielen Stellen verwendete Einstellungen definiert.
 \subsubsection{UniversalCLIProvider.Attributes}
 Im \inlinecode{UniversalCLIProvider.Attributes} sind alle Attribute, die zur Definition von Kommandozeilenfunktionen verwendet werden können zusammengefasst, wie etwa das \inlinecode{CmdContextAttribute}.
 Alle diese Attribute speichern eine Referenz zu dem Programmelement auf das das Attribut angwendet wurde, sowie z.T. weitere Informationen die sich aus diesem ergeben.
@@ -301,16 +301,37 @@ Diese kann auf zwei wegen definiert werden:
 \subsubsection{Konfigurations-Management}\label{ConfigurationManagement}
 Die Bibliothek bietet die Möglichkeit Konfigurationsdateien von der Kommandozeilenoberfläche aus zu verwalten.
 Die Konfiguration wird dabei durch ein Objekt zur Laufzeit des Programms gespeichert, dass oft Referenzen zu anderen Konfigurationsteilen oder Mengen solcher enthält.
-Eine Referenz
+Eine Referenz zu so einem Konfigurationsobjekt muss in einer Eigenschaft in einem Kontext gespeichert werden.
+Diese Eigenschaft muss mit einem \inlinecode{CmdConfigurationProvider} Attribut gekennzeichnet sein, das mit dem Namen parametriert werden muss, mit dem später die Konfiguration aufgerufen werden soll.
+Die Klasse des Konfigurationsobjekts muss mit einem \inlinecode{CmdConfigurationNamespace} Attribut gekennzeichnet sein.
+Werte darin, die Konfigurierbar sein sollen, müssen mit einem \inlinecode{CmdConfigurationFieldAttribute} gekennzeichnet werden.
+
+Aktuell gibt es drei Operatoren für Konfigurationswerte:
+\begin{outline}
+ \1 Der \inlinecode{help} Operator gibt die Hilfe für das Feld aus.
+ \1 Der \inlinecode{get} Operator gibt den Wert des Feldes aus.
+ \1 Der \inlinecode{set} Operator setzt den Wet des Feldes auf den nachfolgenden Wert.
+ Wenn die Konfigurationsklasse das \inlinecode{IConfigurationRoot} Interface implementiert, wird hierbei die \inlinecode{Save} Methode aufgerufen um die \"Anderungen zu speichern.
+ \end{outline}
+
+In der Referenzverwendung gibt es eine Konfiguration unter der \inlinecode{--cfg} Option, die u. a. ein Feld namens \inlinecode{IntA} des Typ \inlinecode{int} besitzt, das standardmä\ss den Wert 7 besitzt.
+Um diesen Wert nun zu lesen muss der Befehl \inlinecode{ReferenceUsage --cfg IntA get} ausgeführt werden.
+Um den Wert des Feld auf 5 zu setzten muss \inlinecode{ReferenceUsage --cfg IntA set 5} ausgeführt werden.
+
+Arrays werden auch unterstützt\footnote{Eine Ausnahme ist der Typ \inlinecode{object[]}}.
+Das Feld \inlinecode{ManyStrings} ist vom Typ \inlinecode{string[]}
+Es können alle Werte des Arrays abgefragt werden (\inlinecode{ReferenceUsage --cfg ManyStrings get})
+oder auch einzelne Elemente (\inlinecode{ReferenceUsage --cfg ManyStrings[1] get}) aber auch gesetzt werden (\inlinecode{ReferenceUsage --cfg ManyStrings[1] set ANewString}).
+Es kann aber auch der gesamte Array ersetzt werden (\inlinecode{ReferenceUsage --cfg ManyStrings set "[\\"String1\\",\\"String2\\",\\"String3\\"]"}).
 
 \subsubsection{Hilfs Funktion}
 \subsubsection{Hexadezimalkodierung}\label{Hexadecimalencoding}
-Au\ss erdem stell sie Bibliothek die Funktion bereit, alle Programm-Argumente in ihrer Hexadezimalrepräsentation zu übergeben.
-Die Hexadezimal Repräsentation  basiert dabei auf einer beliebigen Zeichenkodierung, jedoch wird im standardmä\ss ig UTF-8(gemä\ss  ISO/IEC 10646:2017) verwendet.
+Au\ss erdem stellt sie Bibliothek die Funktion bereit, alle Programm-Argumente in ihrer Hexadezimalrepräsentation zu übergeben.
+Die Hexadezimal Repräsentation  basiert dabei auf einer beliebigen Zeichenkodierung, jedoch wird im standardmä\ss ig UTF-8 (gemä\ss ~ISO/IEC 10646:2017) verwendet.
 
 Die Kodierung besteht aus folgenden Teilen:
 \begin{outline}
- \1 8 (Hexadezimal) Ziffern für die Zeichensatztabelle, die verwendet wurde um die Argumente zu kodieren
+ \1 4 (Hexadezimal) Ziffern für die Zeichensatztabelle, die verwendet wurde um die Argumente zu kodieren
  \1 Für jedes Argument:
   \2 1 Ziffer die die Länge der Längenangabe angibt;
   muss zwischen 1 und 8 liegen 
