@@ -10,7 +10,7 @@ namespace ReferenceUsage {
 public abstract class CmdRootContext {
 	[CmdAction("BaseTest","A base Test",new[] {"Roses are red", "violets are blue", "this is a test and the rest of this class too"},new []{"ReferenceUsage --BaseTest","ReferenceUsage --b"}, "b")]
 	public static void BaseTest() {
-		Console.WriteLine("You have successfully entered BaseTest action.");
+		Console.WriteLine("You have successfully entered the BaseTest action.");
 	}
 
 	[CmdAction("TestB", "This is test B", new[] {"Roses are red", "violets are blue", "this is a test and the rest of this class too"},
