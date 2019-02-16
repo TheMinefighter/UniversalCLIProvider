@@ -328,7 +328,13 @@ Des weiteren werden auch eigene Klassen unterstützt, unter der Bedingung, dass 
 Zum Beispiel gibt es eine Eigenschaft des Typ \inlinecode{SubCfgClass[]} wobei die Klasse \inlinecode{SubCfgClass} die Eigenschaft \inlinecode{SomeBool} besitzt.
 Um diese Eigenschaft vom zweiten Element zu lesen muss der Befehl \inlinecode{ReferenceUsage --cfg SubCfg[1].SomeBool get} ausgeführt werden.
 Diese Schachtelung von Eigenschaften und Indexern kann (fast) unendlich weit fortgeführt werden.
-\subsubsection{Hilfs Funktion}
+\subsubsection{Hilfsfunktion}
+Die Bibliothek stellt eine Reihe von Hilfsfunktionen bereit, die auf den Beschreibungen basieren, die der Bibliothek durch die Attribute übermittelt werden:
+\begin{outline}
+ \1 Hilfe für Kontexte (\inlinecode{ReferenceUsage --help} oder \inlinecode{ReferenceUsage --xzy --help})
+ \1 Hilfe für Aktioen (z.B. \inlinecode{ReferenceUsage --TestC --help})
+% \1 Hilfe für Konfigurationen (\inlinecode{ReferenceUsage --cfg --help})
+\end{outline}
 \subsubsection{Hexadezimalkodierung}\label{Hexadecimalencoding}
 Au\ss erdem stellt sie Bibliothek die Funktion bereit, alle Programm-Argumente in ihrer Hexadezimalrepräsentation zu übergeben.
 Die Hexadezimal Repräsentation  basiert dabei auf einer beliebigen Zeichenkodierung, jedoch wird im standardmä\ss ig UTF-8 (gemä\ss ~ISO/IEC 10646:2017) verwendet.
@@ -357,5 +363,25 @@ Die Problematik liegt darin erstens immer Backslashes gesetzt werden müssen und
 Da sowieso ein Kodierungsschritt nötig ist und diese Funktion in jemandem Fall nur für automatisierte Szenarien zur Kommunikation zwischen Programmen sinnvoll ist,
 ist die Verwendung eines etwas komplizierteren, proprietärem  Kodierungsprozess gegenüber fehlender Zuverlässigkeit und höherem Aufwand meiner Meinung nach gerechtfertigt.
 \subsubsection{Interaktive Kommandozeilenoberfäche}
-
+Die Bibliothek bietet eine interaktive Funktion.
+Diese kann durch die \inlinecode{--Master:Hex} Option aufgerufen werden, da im Ursprungskontext der \inlinecode{defaultActionPreset} auf \inlinecode{Interactive} gesetzt ist,
+reicht auch der \inlinecode{ReferenceUsage} Befehl alleine um die interaktive Kommandozeilenoberfäche zu starten.
+Der aktuelle Kontext wird dann links angezeigt.
+Dort kann man dann in Subkontexte gehen (z.B. \inlinecode{XZY}), Aktionen im aktuellen Kontext ausführen (z.B. \inlinecode{Test Z})
+oder wider in den nächst höheren Kontext gehen (\inlinecode{..}).
+Wenn der \inlinecode{..} Befehl im höchsten Kontext ausgeführt wird, wird die interaktive Kommandozeilenoberfläche beendet.
+Es können von der interaktiven Kommandozeilenoberfläche aus nicht nur Aktionen, sondern auch z.B. Konfigurationsaufrufe getätigt werden.
 \subsection{Vergleich meiner Lösung mit bisherigen Lösungen}\label{subsec:Comparison}
+\begin{table}[]
+ \begin{tabular}{llll}
+  & Meine Lösung                                      & Mono.Options                                        & Command Line Parser                                 \\
+  Einfache Aktionen                  & \cellcolor[HTML]{6DF96D}Ja                        & \cellcolor[HTML]{6DF96D}Ja                          & \cellcolor[HTML]{6DF96D}Ja                          \\
+  Organisation durch Kontexte        & \cellcolor[HTML]{6DF96D}Ja                        & \cellcolor[HTML]{FD6864}Nein                        & \cellcolor[HTML]{6DF96D}Ja                          \\
+  Erweiterte Unterstützung von Flags & \cellcolor[HTML]{FAFF4D}Eingeschränkt             & \cellcolor[HTML]{FD6864}Ja                          & \cellcolor[HTML]{FAFF4D}Eingeschränkt               \\
+  Interaktive Funktion               & \cellcolor[HTML]{6DF96D}Ja                        & \cellcolor[HTML]{FD6864}Nein                        & \cellcolor[HTML]{FD6864}Nein                        \\
+  Aliasse                            & \cellcolor[HTML]{6DF96D}Ja                        & \cellcolor[HTML]{FD6864}Nein                        & \cellcolor[HTML]{FD6864}Nein                        \\
+  Konfigurationsmanagement           & \cellcolor[HTML]{6DF96D}{\color[HTML]{333333} Ja} & \cellcolor[HTML]{FD6864}{\color[HTML]{333333} Nein} & \cellcolor[HTML]{FD6864}{\color[HTML]{333333} Nein} \\
+  Geschwindigkeit                    & \cellcolor[HTML]{FAFF4D}Mittelmä\ss ig               & \cellcolor[HTML]{3EFD3E}Sehr gut                    & \cellcolor[HTML]{6DF96D}gut                         \\
+  Eigene JSON Unterstützung          & \cellcolor[HTML]{6DF96D}Ja                        & \cellcolor[HTML]{FD6864}{\color[HTML]{333333} Nein} & \cellcolor[HTML]{FD6864}{\color[HTML]{333333} Nein}
+ \end{tabular}
+\end{table}

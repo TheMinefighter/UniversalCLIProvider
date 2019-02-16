@@ -1,18 +1,19 @@
   \subsection{Differenzierung verschiedener Typen Kommandozeilenoberflächen}\label{subsec:DifferentCLITypes}
   Im Folgenden möchte ich verschiedenen Formen von Kommandozeilenoberflächen erläutern und die Differenzen zwischen ihnen aufzeigen.
-  \subsubsection{Windows typische Kommandozeilenoberflächen}
-  Typisch für Windows Kommandozeilenoberflächen wird ein \inlinecode{/} vor Paramternamen, manchmal auch vor Subkommmando-Namen, verwendet wird, wobei oft auch die Verwendung von \inlinecode{-} korrekt erkannt wird.
+  \subsubsection{Windows-typische Kommandozeilenoberflächen}
+  Es ist typisch für Windows Kommandozeilenoberflächen ist die Verwendung eines \inlinecode{/} vor Parameternamen, manchmal auch vor Subkommmando-Namen.
+  Wobei oft auch die Verwendung von \inlinecode{-} korrekt erkannt wird.
   Au\ss erdem werden im Windows Bereich oft sehr viele Funktionen, die z.T. nicht viel miteinander zu tun haben, in einen Befehl gelegt, welcher dann viele Subkommandos besitzt.
-  \subsubsection{*nix typische Kommandozeilenoberflächen}
-  *nix\footnote{*nix wird als Sammelbegriff für Unix und Unix basierte Systeme, wie Linux, MacOS oder OpenBSD, verwendet} typische Kommandozeilenoberflächen
+  \subsubsection{*nix-typische Kommandozeilenoberflächen}
+  *nix\footnote{*nix wird als Sammelbegriff für Unix und Unix basierte Systeme, wie Linux, MacOS oder OpenBSD, verwendet}-typische Kommandozeilenoberflächen
   zeichnen sich dadurch aus, dass sie statt des \inlinecode{/}, welches zu Mehrdeutigkeiten führen könnte, da in *nix Systemen Pfade mit Schrägstrichen beginnen, vor Parametern \inlinecode{--} verwenden.
-  Häufig benötigte Parameter haben meist eine Kurzform in Form eines einzelnen Buchstaben / Zeichen, welcher hinter einem \inlinecode{-} angegeben wird.
-  Viele Kommandozeilenoberflächen erlauben auch die aneinander Reihung solcher Kurzformen:
-  Wenn z.B. \inlinecode{-a} und \inlinecode{-m} Parameter Kurzformen sind, kann \inlinecode{-am} als Kurzform für beide Optionen verwendet werden.
-  Dabei muss \inlinecode{-a} ein Flag\footnote{Als Flag werden Parameter bezeichnet, die keinen weiteren Wert benötigen, sondern ein boolean Wert aktivieren.} sein,
-  \inlinecode{-m} kann auch ein Wertparamter sein dessen Wert dann dahinterstehen müsste.
-  Eine weitere Eigenschaft, die typisch für Kommandozeilenoberflächen im *nix Bereich ist, ist dass,
-  im Vergleich zu Windows Kommandozeilenoberflächen mehr getrennte Befehle mit weniger Subkommandos verwendet werden.
+  Häufig benötigte Parameter haben meist eine Kurzform in Form eines einzelnen Buchstaben bzw. Zeichen, welcher hinter einem \inlinecode{-} angegeben wird.
+  Viele Kommandozeilenoberflächen erlauben auch die Aneinander-Reihung solcher Kurzformen:
+  Wenn z.B. \inlinecode{-a} und \inlinecode{-m} Parameter-Kurzformen sind, kann \inlinecode{-am} als Kurzform für beide Optionen verwendet werden.
+  Dabei muss \inlinecode{-a} ein Flag\footnote{Als Flag werden Parameter bezeichnet, die keinen weiteren Wert benötigen, sondern ein boolean-Wert aktivieren.} sein,
+  \inlinecode{-m} kann auch ein Wertparameter sein, dessen Wert dann dahinterstehen müsste.
+  Eine weitere Eigenschaft, die typisch für Kommandozeilenoberflächen im *nix-Bereich ist, ist dass,
+  im Vergleich zu Windows Kommandozeilenoberflächen, mehr getrennte Befehle mit weniger Subkommandos verwendet werden.
   \subsubsection{Interaktive Kommandozeilenoberflächen}
   Mit der Veröffentlichung von Windows XP Professional im Jahr 2000, wurde die Windows Management Instrumentation (WMI),
   zusammen mit der dafür vorgesehenen Windows Management Instrumentation Command-line (WMIC) eingeführt~\cite{WMIProgrammingBlogPost}.
@@ -39,7 +40,7 @@
 	\label{fig:raspi-config}
   \end{figure}
   Die Navigation ist dort mit den Pfeil- und Zahlentasten, sowie der Tabtaste, möglich und macht die Bedienung sehr einfach und intuitiv~\cite{RaspiConfigOfficialInfo}.
-  \subsection{Vergangenheit \& Aktueller Stand der Technik für C\#}\label{subsec:CurrentState}
+  \subsection{Vergangenheit \& aktueller Stand der Technik für C\#}\label{subsec:CurrentState}
   \subsubsection{NDesk.Options / Mono.Options Bibliothek}
   Die NDesk.Options Bibliothek wurde zuerst im Januar 2008 angekündigt~\cite{NDeskAnnouncement},
   und noch im gleichen Monat in erster Version veröffentlicht~\cite{NDesk1stRelease}.

@@ -52,6 +52,7 @@ numbers=none,language={[Sharp]C},breaklines=true,frame=single, literate={ö}{{ö
 %\usepackage{hyperref} % Anklickbare Links im Dokument
 \usepackage{cleveref}
 \usepackage{xurl}
+\usepackage[table,xcdraw]{xcolor}
 %\usepackage{biber}
 
 % Daten für die Titelseite
@@ -71,8 +72,9 @@ numbers=none,language={[Sharp]C},breaklines=true,frame=single, literate={ö}{{ö
   \pagebreak
   %\section{Grundlagen\& Vorgehen} Verwandte Arbeiten;Validierung;Limitierungen
   \section{Einleitung \& Motivation}\label{sec:Intro}
-  In dieser Arbeit geht es um die Entwicklung einer Bibliothek, welche unabhängig von der konkreten Verwendung Kommandozeilenoberflächen bereitstellen kann, für C\#.
-  Die Motivation für dieses Projekt ist die Erfahrung bei einem anderen Projekt, dass es keine meinen speziellen Anforderungen entsprechende Bibliothek gab, 
+  In dieser Arbeit geht es um die Entwicklung einer Bibliothek für C\#, welche unabhängig von der konkreten Verwendung Kommandozeilenoberflächen bereitstellen kann.
+  Die Motivation für dieses Projekt geht aus meiner Erfahrung bei einem Projekt hervor.
+  Dabei musste ich feststellen, dass es keine meinen speziellen Anforderungen entsprechende Bibliothek gab, 
   so dass ich die Idee hatte selbst eine Alternative zu entwickeln.
   \section{Vergangenheit, Typen \& Probleme von Kommandozeilenoberflächen}
   \input{vergangenheit}
@@ -86,7 +88,7 @@ numbers=none,language={[Sharp]C},breaklines=true,frame=single, literate={ö}{{ö
   \section{Anmerkungen}\label{sec:AdditionalNotes}
   Das gesamte Projekt ist in C\# 7.3 mit der Entwicklungsumgebung JetBrains Rider entwickelt worden.
   Für dessen kostenfreie Bereitstellung ich mich an dieser Stelle bedanken möchte.
-  \subsection{Umgebungsvorraussetzungen zum nutzen der Bibliothek}\label{subsec:SystemRequirements}
+  \subsection{Umgebungsvorraussetzungen zum Nutzen der Bibliothek}\label{subsec:SystemRequirements}
    Die Bibliothek kann unter Windows (ab 7 SP1), Linux (Support hängt von der Distribution ab) und Mac OS X (ab 10.12) verwendet werden
   \footnote{genauere Informationen sind unter https://github.com/dotnet/core/blob/master/release-notes/2.1/2.1-supported-os.md verfügbar}, 
   da das Projekt .Net Core 2.1 untertsützt.
@@ -117,6 +119,7 @@ Mit der Umsetzung der Ziele die ich in Abschnitt \ref{sec:Future} kann die Bibli
    \1 Der vollständige Quellcode
    \1 Die kompilierte Bibliothek
    \1 Die kompilierte Referenzverwendung
+   \1 Diese Arbeit im PDF Format
   \end{outline}
   Alle Anhänge werden in digitaler Form auf CD bereitgestellt.
   \section{Literaturverzeichnis}\label{sec:Literature}

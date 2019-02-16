@@ -10,7 +10,7 @@ public enum CmdParameterUsage : byte {
 	///  The default usage will be replaced with one of the other ones once loaded
 	/// </summary>
 	/// <remarks>When there is no alias it will result in <see cref="SupportDeclaredRaw" /> otherwise in <see cref="SupportDirectAlias" /></remarks>
-	Default = 255,
+	Default = 0,
 
 	/// <summary>
 	///  Indicates that an alias with a declaration of the parameter supported

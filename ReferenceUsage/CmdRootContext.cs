@@ -4,7 +4,9 @@ using UniversalCLIProvider.Attributes;
 using UniversalCLIProvider.Interpreters;
 
 namespace ReferenceUsage {
-[CmdContext("ReferenceUsage", defaultActionPreset: ContextDefaultActionPreset.Interactive)]
+[CmdContext("ReferenceUsage","A description",
+	new[] {"A long description","That has multiple lines","which can manually separated","But when a line is sooo long that it does not fit in your console window, breaks will be added automatically"},
+	defaultActionPreset: ContextDefaultActionPreset.Interactive)]
 public abstract class CmdRootContext {
 	[CmdAction("BaseTest","A base Test",new[] {"Roses are red", "violets are blue", "this is a test and the rest of this class too"},new []{"ReferenceUsage --BaseTest","ReferenceUsage --b"}, "b")]
 	public static void BaseTest() {
@@ -17,11 +19,12 @@ public abstract class CmdRootContext {
 		Console.WriteLine($"You have used \"{test}\" as argument.");
 	}
 
-	[CmdAction("TestC", shortForm:"c")]
-	public static void C([CmdParameter("TestArg",usage:CmdParameterUsage.All),CmdParameterAlias("HelloW",new []{"Hello","World"},shortForm:"h")]  string[] args) {
+	[CmdAction("TestC", "This is test C", new[] {"Roses are red", "violets are blue", "this is a test and the rest of this class too"},
+		new[] {"ReferenceUsage /TestB LOL", "Writes LOL to the console"}, "c")]
+	public static void C([CmdParameter("TestArg",usage:CmdParameterUsage.All),CmdParameterAlias("HelloW",new []{"Hello","World"},"Uses Hello World as TestArg",shortForm:"h")]  string[] args) {
 		Console.WriteLine($"TestArg has the following elements: {string.Join(", ", args)}");
 	}
-[CmdContext("XZY", defaultActionPreset: ContextDefaultActionPreset.Exit)]
+[CmdContext("XZY","Another context",new []{"This is a context help", "consisting of multiple lines"},"x", ContextDefaultActionPreset.Exit)]
 	public  abstract class XZY {
 		[CmdAction("TestZ","A basic Test")]
 		public static void TestZ() {

@@ -21,7 +21,7 @@ public class ConfigurationInterpreter : BaseInterpreter {
 	}
 
 	internal override bool Interpret() {
-		if (Offset + 1 >= TopInterpreter.Args.Length || IsParameterEqual("help", TopInterpreter.Args[Offset], "?")) {
+		if (Offset + 1 >= TopInterpreter.Args.Length || IsParameterEqual("help", TopInterpreter.Args[Offset+1], "?")) {
 			HelpGenerators.PrintConfigurationContextHelp(_root, this, true);
 		}
 

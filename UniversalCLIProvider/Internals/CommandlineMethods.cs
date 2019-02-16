@@ -103,7 +103,7 @@ public static class CommandlineMethods {
 			tw.WriteLine(text);
 			return;
 		}
-
+//TODO split splitting and printing
 		bool firstLine = true;
 		int lastFallback = -1;
 		int lineStart = 0;
@@ -112,7 +112,7 @@ public static class CommandlineMethods {
 				int breakIndex = lastFallback != -1 ? lastFallback : i;
 				if (!firstLine) {
 					tw.WriteLine(text.Substring(lineStart,
-						breakIndex - lineStart - (lastFallback == -1 ? 0 : 1)));
+						breakIndex - lineStart));
 				}
 				else {
 					tw.Write(new string(' ', indent));

@@ -77,8 +77,12 @@ public class ContextInterpreter : BaseInterpreter {
 			}
 		}
 
-		UnderlyingContextAttribute.Load();
 		string search = TopInterpreter.Args[Offset];
+		if (IsParameterEqual("help",search,"?")) {
+			HelpGenerators.PrintContextHelp(UnderlyingContextAttribute, this);
+			return true;
+		}
+		UnderlyingContextAttribute.Load();
 		foreach (CmdContextAttribute cmdContextAttribute in UnderlyingContextAttribute.SubCtx) {
 			if (IsParameterEqual(cmdContextAttribute.Name, search,cmdContextAttribute.ShortForm, interactive)) {
 				if (IncreaseOffset() && interactive) {

@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Text;
 using JetBrains.Annotations;
 using UniversalCLIProvider.Attributes;
 using UniversalCLIProvider.Interpreters;
@@ -28,8 +27,7 @@ public static partial class HelpGenerators {
 	private static void ActionHelp([NotNull] CmdActionAttribute action, int width, int indent = 3, TextWriter tw = null) {
 		tw = tw ?? Console.Out;
 		action.LoadParametersAndAlias();
-		var helpBuilder = new StringBuilder();
-		helpBuilder.Append(CommandlineMethods.PadCentered(action.Name, width));
+		tw.Write(CommandlineMethods.PadCentered(action.Name, width));
 		if (!(action.LongDescription is null)) {
 			foreach (string s in action.LongDescription) {
 				CommandlineMethods.PrintWithPotentialIndent(s, width, 0, tw);
@@ -51,7 +49,7 @@ public static partial class HelpGenerators {
 						width, indent, tw);
 				}
 			}
-
+//TODO Differentiate directs
 			if (parameter.Usage.HasFlag(CmdParameterUsage.SupportDirectAlias) || parameter.Usage.HasFlag(CmdParameterUsage.SupportDeclaredAlias)) {
 				foreach (CmdParameterAliasAttribute alias in parameter.ParameterAliases) {
 					if (alias.Description is null) {
@@ -92,7 +90,7 @@ public static partial class HelpGenerators {
 	private static void ContextHelp([NotNull] CmdContextAttribute context, int width, int indent = 3, TextWriter tw = null) {
 		tw = tw ?? Console.Out;
 		context.Load();
-		tw.WriteLine(CommandlineMethods.PadCentered(context.Name, width));
+		tw.Write(CommandlineMethods.PadCentered(context.Name, width));
 		if (context.LongDescription is null) {
 			if (!(context.Description is null)) {
 				CommandlineMethods.PrintWithPotentialIndent(context.Description, width, indent, tw);
@@ -100,34 +98,25 @@ public static partial class HelpGenerators {
 		}
 		else {
 			foreach (string s in context.LongDescription) {
-				CommandlineMethods.PrintWithPotentialIndent(s, width, 3, tw);
+				CommandlineMethods.PrintWithPotentialIndent(s, width, 0, tw);
 			}
 		}
 
 		if (context.SubCtx.Count != 0) {
-			if (!(context.LongDescription is null)) {
-				foreach (string s in context.LongDescription) {
-					CommandlineMethods.PrintWithPotentialIndent(s, width, 0, tw);
-				}
-			}
-
 			tw.Write(CommandlineMethods.PadCentered("Contexts", width));
+			foreach (CmdContextAttribute subCtx in context.SubCtx) {
+				CommandlineMethods.PrintWithPotentialIndent(
+					$"{(subCtx.ShortForm is null ? "" : "-" + subCtx.ShortForm + " | ")}--{subCtx.Name}{(subCtx.Description is null ? "" : $": {subCtx.Description}")}",
+					width, indent, tw);
+			}
 		}
-
-		foreach (CmdContextAttribute subCtx in context.SubCtx) {
-			CommandlineMethods.PrintWithPotentialIndent(
-				$"{(subCtx.ShortForm is null ? "" : "-" + subCtx.ShortForm + " | ")}--{subCtx.Name}{(subCtx.Description is null ? "" : $": {subCtx.Description}")}",
-				width, indent, tw);
-		}
-
 		if (context.CtxActions.Count != 0) {
 			tw.Write(CommandlineMethods.PadCentered("Actions", width));
-		}
-
-		foreach (CmdActionAttribute action in context.CtxActions) {
-			CommandlineMethods.PrintWithPotentialIndent(
-				$"{(action.ShortForm is null ? "" : $"-{action.ShortForm} | ")}--{action.Name}{(action.Description is null ? "" : $": {action.Description}")}",
-				width, indent, tw);
+			foreach (CmdActionAttribute action in context.CtxActions) {
+				CommandlineMethods.PrintWithPotentialIndent(
+					$"{(action.ShortForm is null ? "" : $"-{action.ShortForm} | ")}--{action.Name}{(action.Description is null ? "" : $": {action.Description}")}",
+					width, indent, tw);
+			}
 		}
 	}
 
