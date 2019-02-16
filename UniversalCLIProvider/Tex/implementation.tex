@@ -318,12 +318,16 @@ In der Referenzverwendung gibt es eine Konfiguration unter der \inlinecode{--cfg
 Um diesen Wert nun zu lesen muss der Befehl \inlinecode{ReferenceUsage --cfg IntA get} ausgeführt werden.
 Um den Wert des Feld auf 5 zu setzten muss \inlinecode{ReferenceUsage --cfg IntA set 5} ausgeführt werden.
 
-Arrays werden auch unterstützt\footnote{Eine Ausnahme ist der Typ \inlinecode{object[]}}.
+Arrays werden auch unterstützt\footnote{Eine Ausnahme ist der Typ \inlinecode{object[]}, sowie mehrdimensionale Arrays}.
 Das Feld \inlinecode{ManyStrings} ist vom Typ \inlinecode{string[]}
 Es können alle Werte des Arrays abgefragt werden (\inlinecode{ReferenceUsage --cfg ManyStrings get})
 oder auch einzelne Elemente (\inlinecode{ReferenceUsage --cfg ManyStrings[1] get}) aber auch gesetzt werden (\inlinecode{ReferenceUsage --cfg ManyStrings[1] set ANewString}).
 Es kann aber auch der gesamte Array ersetzt werden (\inlinecode{ReferenceUsage --cfg ManyStrings set "[\\"String1\\",\\"String2\\",\\"String3\\"]"}).
 
+Des weiteren werden auch eigene Klassen unterstützt, unter der Bedingung, dass sie mit einem \inlinecode{CmdConfigurationNamespace} Attribut gekennzeichnet wurden.
+Zum Beispiel gibt es eine Eigenschaft des Typ \inlinecode{SubCfgClass[]} wobei die Klasse \inlinecode{SubCfgClass} die Eigenschaft \inlinecode{SomeBool} besitzt.
+Um diese Eigenschaft vom zweiten Element zu lesen muss der Befehl \inlinecode{ReferenceUsage --cfg SubCfg[1].SomeBool get} ausgeführt werden.
+Diese Schachtelung von Eigenschaften und Indexern kann (fast) unendlich weit fortgeführt werden.
 \subsubsection{Hilfs Funktion}
 \subsubsection{Hexadezimalkodierung}\label{Hexadecimalencoding}
 Au\ss erdem stellt sie Bibliothek die Funktion bereit, alle Programm-Argumente in ihrer Hexadezimalrepräsentation zu übergeben.

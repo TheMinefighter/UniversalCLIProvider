@@ -8,6 +8,17 @@ using UniversalCLIProvider.Attributes;
 
 namespace UniversalCLIProvider.Internals {
 public static class ConfigurationHelpers {
+	/// <summary>
+	/// Resolves a configuration path recursively
+	/// </summary>
+	/// <param name="path"> The path to resolve</param>
+	/// <param name="typeInfoOfItem"> The TypeInfo of the Item to process </param>
+	/// <param name="currentItem"> The currentItem, for which the path shall be resolved</param>
+	/// <param name="prop">The property found the match the path</param>
+	/// <param name="requiredIndexers">The indexers needed to call the property</param>
+	/// <param name="ro">Whether the property is ReadOnly</param>
+	/// <param name="lastNonIndexer">The last property not being an indexer</param>
+	/// <returns></returns>
 	public static bool ResolvePathRecursive([NotNull] string path, [NotNull] TypeInfo typeInfoOfItem, ref object currentItem, out PropertyInfo prop,
 		out object[] requiredIndexers, ref bool ro,
 		out PropertyInfo lastNonIndexer) {
@@ -38,7 +49,7 @@ public static class ConfigurationHelpers {
 
 			string currentPath = endOfCurrentBlock != -1 ? path.Substring(0, endOfCurrentBlock) : path;
 			prop = null;
-			foreach (PropertyInfo property in typeInfoOfItem.GetUnderlyingTypes().SelectMany(x => x.DeclaredProperties)) {
+			foreach (PropertyInfo property in typeInfoOfItem.GetUnderlyingTypes().Distinct().SelectMany(x => x.DeclaredProperties)) {
 				if (property.Name.Equals(currentPath, StringComparison.OrdinalIgnoreCase)) {
 					var configurationFieldAttribute = property.GetCustomAttribute<CmdConfigurationFieldAttribute>();
 					if (configurationFieldAttribute is null) {
@@ -64,14 +75,14 @@ public static class ConfigurationHelpers {
 		if (!string.IsNullOrEmpty(remainingPath)) { //Initiating the next recursive step
 			try {
 				currentItem = requiredIndexers is null
-					? prop.GetValue(currentItem, requiredIndexers)
-					: prop.GetValue(currentItem); //Evaluating props value when another recursive step shall be performed
+					? prop.GetValue(currentItem)
+					: prop.GetValue(currentItem, requiredIndexers); //Evaluating props value when another recursive step shall be performed
 			}
 			catch (Exception) {
 				return false;
 			}
 
-			if (!ResolvePathRecursive(remainingPath, typeInfoOfItem, ref currentItem, out prop, out requiredIndexers, ref ro,
+			if (!ResolvePathRecursive(remainingPath,currentItem.GetType().GetTypeInfo(), ref currentItem, out prop, out requiredIndexers, ref ro,
 				out PropertyInfo possibleLastNonIndexer)) {
 				return false;
 			}
@@ -111,6 +122,9 @@ public static class ConfigurationHelpers {
 
 		if (path.Length - 1 > endOfIndexer) {
 			remainingPath = path.Substring(endOfIndexer + 1);
+			if (remainingPath.StartsWith(".")) {
+				remainingPath = remainingPath.Substring(1);
+			}
 		}
 
 		return true;

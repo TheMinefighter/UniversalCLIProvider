@@ -14,7 +14,7 @@ public class ReferenceConfig : IConfigurationRoot {
 	public int IntA { get; set; } = 7;
 	
 	[CmdConfigurationField("SubCfg")]
-	public SubCfgClass SubCfg { get; set; } = new SubCfgClass();
+	public SubCfgClass[] SubCfg { get; set; } = { new SubCfgClass {IntB = 2, SomeBool = false}, new SubCfgClass()};
 
 
 	public void Save(IEnumerable<PropertyOrFieldInfo> c) {
@@ -24,6 +24,8 @@ public class ReferenceConfig : IConfigurationRoot {
 	public class SubCfgClass {
 		[CmdConfigurationField("IntB")]
 		public int IntB { get; set; } = 9;
+		[CmdConfigurationField("SomeBool")]
+		public bool SomeBool { get; set; } = true;
 	}
 }
 }
