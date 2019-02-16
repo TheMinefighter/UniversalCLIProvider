@@ -378,16 +378,18 @@ oder wider in den nächst höheren Kontext gehen (\inlinecode{..}).
 Wenn der \inlinecode{..} Befehl im höchsten Kontext ausgeführt wird, wird die interaktive Kommandozeilenoberfläche beendet.
 Es können von der interaktiven Kommandozeilenoberfläche aus nicht nur Aktionen, sondern auch z.B. Konfigurationsaufrufe getätigt werden.
 \subsection{Vergleich meiner Lösung mit bisherigen Lösungen}\label{subsec:Comparison}
-\begin{table}[]
+\begin{table}[H]
  \begin{tabular}{llll}
-  & Meine Lösung                                      & Mono.Options                                        & Command Line Parser                                 \\
-  Einfache Aktionen                  & \cellcolor[HTML]{6DF96D}Ja                        & \cellcolor[HTML]{6DF96D}Ja                          & \cellcolor[HTML]{6DF96D}Ja                          \\
-  Organisation durch Kontexte        & \cellcolor[HTML]{6DF96D}Ja                        & \cellcolor[HTML]{FD6864}Nein                        & \cellcolor[HTML]{6DF96D}Ja                          \\
-  Erweiterte Unterstützung von Flags & \cellcolor[HTML]{FAFF4D}Eingeschränkt             & \cellcolor[HTML]{FD6864}Ja                          & \cellcolor[HTML]{FAFF4D}Eingeschränkt               \\
-  Interaktive Funktion               & \cellcolor[HTML]{6DF96D}Ja                        & \cellcolor[HTML]{FD6864}Nein                        & \cellcolor[HTML]{FD6864}Nein                        \\
-  Aliasse                            & \cellcolor[HTML]{6DF96D}Ja                        & \cellcolor[HTML]{FD6864}Nein                        & \cellcolor[HTML]{FD6864}Nein                        \\
-  Konfigurationsmanagement           & \cellcolor[HTML]{6DF96D}{\color[HTML]{333333} Ja} & \cellcolor[HTML]{FD6864}{\color[HTML]{333333} Nein} & \cellcolor[HTML]{FD6864}{\color[HTML]{333333} Nein} \\
-  Geschwindigkeit                    & \cellcolor[HTML]{FAFF4D}Mittelmä\ss ig               & \cellcolor[HTML]{3EFD3E}Sehr gut                    & \cellcolor[HTML]{6DF96D}gut                         \\
-  Eigene JSON Unterstützung          & \cellcolor[HTML]{6DF96D}Ja                        & \cellcolor[HTML]{FD6864}{\color[HTML]{333333} Nein} & \cellcolor[HTML]{FD6864}{\color[HTML]{333333} Nein}
+  & Meine Lösung                          & Mono.Options                     & Command Line Parser                   \\
+  Einfache Aktionen           & \cellcolor[HTML]{6DF96D}Ja            & \cellcolor[HTML]{6DF96D}Ja       & \cellcolor[HTML]{6DF96D}Ja            \\
+  Organisation durch Kontexte & \cellcolor[HTML]{6DF96D}Ja            & \cellcolor[HTML]{FD6864}Nein     & \cellcolor[HTML]{6DF96D}Ja            \\
+  Unterstützung von Flags     & \cellcolor[HTML]{FAFF4D}Eingeschränkt & \cellcolor[HTML]{FD6864}Ja       & \cellcolor[HTML]{FAFF4D}Eingeschränkt \\
+  Interaktive Funktion        & \cellcolor[HTML]{6DF96D}Ja            & \cellcolor[HTML]{FD6864}Nein     & \cellcolor[HTML]{FD6864}Nein          \\
+  Aliasse                     & \cellcolor[HTML]{6DF96D}Ja            & \cellcolor[HTML]{FD6864}Nein     & \cellcolor[HTML]{FD6864}Nein          \\
+  Konfigurationsmanagement    & \cellcolor[HTML]{6DF96D}Ja            & \cellcolor[HTML]{FD6864}Nein     & \cellcolor[HTML]{FD6864}Nein          \\
+  Geschwindigkeit             & \cellcolor[HTML]{FAFF4D}Mittelmäßig   & \cellcolor[HTML]{3EFD3E}Sehr gut & \cellcolor[HTML]{6DF96D}gut           \\
+  Eigene JSON Unterstützung   & \cellcolor[HTML]{6DF96D}Ja            & \cellcolor[HTML]{FD6864}Nein     & \cellcolor[HTML]{FD6864}Nein
  \end{tabular}
+ \label{tab: DifferencesAndImprovements}
+ \caption{Differenzen zwischen meiner Bibliothek und anderen Lösungen}
 \end{table}
