@@ -218,7 +218,9 @@ Die Funktionen des Beispielprojekts, und damit auch der Bibliothek, möchte ich 
 Alle folgenden Befehle können in einer normalen Kommandozeile ausgeführt werden.
 Weitere Informationen dazu finden sich in Abschnitt~\ref{sec:Attachments}.%TODO do
 \subsubsection{Einfache Aktionsausführungen}
-Ein Aktionsattribut bezieht sich immer auf eine Methode.
+Ein \inlinecode{CmdAction}-Attribut bezieht sich immer auf eine Methode.
+Diese Methode wird ausgeführt, wenn in der Kommandozeilenoberflächen die Aktion aufgerufen wurde.
+
 Der einfachste Befehl, der eine Aktion ausführt, ist \inlinecode{ReferenceUsage --BaseTest}.
 Er führt die \inlinecode{BaseTest}-Aktion aus.
 Sie gibt \inlinecode{You have successfully entered the BaseTest action.} aus.
@@ -245,7 +247,7 @@ Die Verwendung von Arrays wird durch \inlinecode{TestC} gezeigt.
 Die Aktion hat den Parameter \inlinecode{--TestArg}, der vom Typ \inlinecode{string[]} ist.
 Solche Parameter können auf zwei Wegen bereitgestellt werden:
 \begin{outline}
- \1 Einfache Auflistung von Werten, z.B. \inlinecode{ReferenceUsage --TestC --TestArg Hallo Welt}, was in der Ausgabe "\inlinecode{TestArg has the following elements: Hallo, Welt}" resultiert.
+ \1 Einfache Auflistung von Werten, z.B. \inlinecode{ReferenceUsage --TestC --TestArg Hallo Welt}, was in der Ausgabe \inlinecode{TestArg has the following elements: Hallo, Welt} resultiert.
  Wenn bei dieser Methode ein Element auch eine Parameter- oder Aliasdeklaration sein kann, wird davor der Array beendet, und das Element als Parameter/Alias interpretiert.
  \1 Alternativ kann ein JSON-Array verwendet werden: \inlinecode{ReferenceUsage --TestC --TestArg "[\\"Hallo\\",\\"Welt\\"]"}.
  Die Verwendung von Backslashes ist der Windows \inlinecode{cmd.exe} geschuldet, wie in~\ref{Sonderzeichen} beschrieben.
@@ -255,9 +257,13 @@ Solche Parameter können auf zwei Wegen bereitgestellt werden:
 \end{outline} 
 
 Des Weiteren können im C\#-Quellcode Aliasse deklariert werden.
+Sie dienen dazu, dass Programmentwickler eine Vorauswahl für die Nutzer der Kommandozeilenoberfläche bereitstellen können.
+Außerdem stelle Abkürzung für die Verwendung von u.U. sehr langen, oft benötigten Werten da.
+
 Diese haben einen Namen, mit dem sie aufgerufen werden können, sowie einen Wert, den sie repräsentieren.
 So ist wird im eben verwendeten Beispiel \inlinecode{["Hello","World"]} durch \inlinecode{--HelloW} repräsentiert.
-Die Werte, die durch einen Alias repräsentiert werden können, sind beschränkt, da C\#-Attribute nur bestimmte Typen von Werten unterstützen\footnote{Weitere Informationen sind unter https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/attributes\#attribute-parameter-types verfügbar.}.
+Die Werte, die durch einen Alias repräsentiert werden können, sind beschränkt, da C\#-Attribute nur bestimmte Typen von Werten unterstützen
+\footnote{Weitere Informationen sind unter https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/attributes\#attribute-parameter-types verfügbar.}.
 Diese können auch Kurzformen (\inlinecode{-h}), sowie Beschreibungen für die Hilfe haben.
 
 Um zu bestimmen, in welcher Form ein Parameter angegeben werden kann, gibt es die \inlinecode{usage}-Eigenschaft vom Typ \inlinecode{CmdParameterUsage}.
@@ -303,13 +309,15 @@ Diese kann auf zwei Wegen definiert werden:
  Der \inlinecode{CustomizedDefaultAction}-Kontext besitzt eine Methode \inlinecode{TheDefaultAction}, die eine Zahl und einen \inlinecode{CmdContextInterpreter} als Parameter erwartet.
  Diese ist mit einem \inlinecode{CmdDefaultAction}-Attribut gekennzeichnet, das mit der Zahl 7 parametriert ist.
  Wenn nun der Befehl \inlinecode{ReferenceUsage --CustomizedDefaultAction} ausgeführt wird, wird die \inlinecode{TheDefaultAction}-Methode ausgeführt, die die übergebene Zahl sowie den Pfad des Interpreters ausgibt:
- "\inlinecode{The CmdDefaultActionAttribute supplied the number 7, the interpreter is currently located in the following path: ReferenceUsage>CustomizedDefaultAction}"
+ \inlinecode{The CmdDefaultActionAttribute supplied the number 7, the interpreter is currently located}
+ \inlinecode{in the following path: ReferenceUsage>CustomizedDefaultAction}
 \end{outline}
  Wenn beide Methoden verwendet werden, wird die Aktion des \inlinecode{CustomizedDefaultAction} ausgeführt;
  wenn keine spezifiziert wurde, wird die Hilfe für den Kontext ausgegeben.
 
 \subsubsection{Konfigurationsmanagement}\label{ConfigurationManagement}
 Die Bibliothek bietet die Möglichkeit, Konfigurationsdateien von der Kommandozeilenoberfläche aus zu verwalten.
+
 Die Konfiguration wird dabei durch ein Objekt zur Laufzeit des Programms gespeichert, das oft Referenzen zu anderen Konfigurationsteilen oder Mengen solcher enthält.
 Eine Referenz zu so einem Konfigurationsobjekt muss in einer Eigenschaft in einem Kontext gespeichert werden.
 Diese Eigenschaft muss mit einem \inlinecode{CmdConfigurationProvider}-Attribut gekennzeichnet sein, das mit dem Namen parametriert werden muss,
@@ -350,7 +358,8 @@ Die Bibliothek stellt eine Reihe von Hilfsfunktionen bereit, die auf den Beschre
  \1 Hilfe für einzelne Konfigurationswerte (\inlinecode{ReferenceUsage --cfg ManyStrings --help})
 \end{outline}
 \subsubsection{Hexadezimalkodierung}\label{Hexadecimalencoding}
-Außerdem stellt sie Bibliothek die Funktion bereit, alle Programm-Argumente in ihrer Hexadezimalrepräsentation zu übergeben.
+Außerdem stellt die Bibliothek die Funktion bereit, alle Programm-Argumente in ihrer Hexadezimalrepräsentation zu übergeben, um uneingeschränkt mit Sonderzeichen arbeiten zu können.
+
 Die Hexadezimalrepräsentation basiert dabei auf einer beliebigen Zeichenkodierung, jedoch wird standardmäßig UTF-8 (gemäß~ISO/IEC 10646:2017) verwendet.
 
 Die Kodierung besteht aus folgenden Teilen:
@@ -377,7 +386,8 @@ Die Problematik liegt darin, dass erstens immer Backslashes gesetzt werden müss
 Da sowieso ein Kodierungsschritt nötig ist und diese Funktion in jedem Fall nur für automatisierte Szenarien zur Kommunikation zwischen Programmen sinnvoll ist,
 ist die Verwendung eines etwas komplizierteren, proprietären Kodierungsprozesses gegenüber fehlender Zuverlässigkeit und höherem Aufwand meiner Meinung nach gerechtfertigt.
 \subsubsection{Interaktive Kommandozeilenoberfäche}
-Die Bibliothek bietet eine interaktive Funktion.
+Die Bibliothek bietet die Funktion einer interaktive Kommandozeilenoberfäche.
+
 Diese kann durch die \inlinecode{--Master:Interactive}-Option aufgerufen werden.
 Da im Ursprungskontext der \inlinecode{defaultActionPreset} auf \inlinecode{Interactive} gesetzt ist,
 reicht auch der \inlinecode{ReferenceUsage}-Befehl alleine, um die interaktive Kommandozeilenoberfäche zu starten.
