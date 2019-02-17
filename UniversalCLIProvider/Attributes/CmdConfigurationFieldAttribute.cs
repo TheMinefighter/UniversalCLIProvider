@@ -17,5 +17,7 @@ public class CmdConfigurationFieldAttribute : Attribute {
 		Description = description;
 		LongDescription = longDescription;
 	}
+
+	public void Load(PropertyOrFieldInfo reference) => UnderlyingPropertyOrFieldInfo = reference;
 }
 }

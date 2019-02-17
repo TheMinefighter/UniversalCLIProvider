@@ -1,6 +1,6 @@
 \documentclass[a4paper,11pt,titlepage,ngerman]{article}
 \usepackage{babel}
-\usepackage[T1]{fontenc}
+\usepackage[T1]{fontspec}
 \usepackage[utf8x]{inputenc}
 \usepackage[a4paper,margin=2.5cm]{geometry}
 \usepackage{csquotes}
@@ -31,7 +31,7 @@
 \usepackage{listings}
 \usepackage{color}
 \definecolor{mygreen}{rgb}{0,0.6,0}
-\definecolor{lightgray}{gray}{0.9}
+\definecolor{lightgray}{gray}{0.5}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
 \definecolor{mymauve}{rgb}{0.58,0,0.82}
 \lstset{
@@ -58,10 +58,10 @@ numbers=none,language={[Sharp]C},breaklines=true,frame=single, literate={ö}{{ö
 % Daten für die Titelseite
 \title{Entwicklung einer Bibliothek zum universellen Bereitstellen von Kommandozeilenoberflächen}
 \author{Tobias Brohl}
-\date{\today \linebreak \linebreak Facharbeit im Fach Informatik (If GK 1)}
+\date{\today \linebreak \linebreak Facharbeit am Engelbert-Kaempfer-Gymnasium Lemgo im Fach Informatik (If GK 1)}
 
 \parindent=0pt
-\newcommand{\inlinecode}[1]{{\lstinline[language=]$#1$}}
+\newcommand{\inlinecode}[1]{\colorbox{lightgray}{\lstinline[language=]$#1$}}
 \begin{document}
  \begin{sloppypar}
   \maketitle
@@ -73,9 +73,9 @@ numbers=none,language={[Sharp]C},breaklines=true,frame=single, literate={ö}{{ö
   %\section{Grundlagen\& Vorgehen} Verwandte Arbeiten;Validierung;Limitierungen
   \section{Einleitung \& Motivation}\label{sec:Intro}
   In dieser Arbeit geht es um die Entwicklung einer Bibliothek für C\#, welche unabhängig von der konkreten Verwendung Kommandozeilenoberflächen bereitstellen kann.
-  Die Motivation für dieses Projekt geht aus meiner Erfahrung bei einem Projekt hervor.
-  Dabei musste ich feststellen, dass es keine meinen speziellen Anforderungen entsprechende Bibliothek gab, 
-  so dass ich die Idee hatte selbst eine Alternative zu entwickeln.
+  Die Motivation für dieses Projekt geht aus meiner Erfahrung bei einem vorherigen Projekt hervor.
+  Dabei musste ich feststellen, dass es keine, meinen speziellen Anforderungen entsprechende, Bibliothek gab, 
+  sodass ich die Idee hatte, selbst eine Alternative zu entwickeln.
   \section{Vergangenheit, Typen \& Probleme von Kommandozeilenoberflächen}
   \input{vergangenheit}
 
@@ -87,41 +87,44 @@ numbers=none,language={[Sharp]C},breaklines=true,frame=single, literate={ö}{{ö
 
   \section{Anmerkungen}\label{sec:AdditionalNotes}
   Das gesamte Projekt ist in C\# 7.3 mit der Entwicklungsumgebung JetBrains Rider entwickelt worden.
-  Für dessen kostenfreie Bereitstellung ich mich an dieser Stelle bedanken möchte.
-  \subsection{Umgebungsvorraussetzungen zum Nutzen der Bibliothek}\label{subsec:SystemRequirements}
+  Für dessen kostenfreie Bereitstellung möchte ich mich an dieser Stelle bedanken.
+  \subsection{Umgebungsvorrausetzungen zum Nutzen der Bibliothek}\label{subsec:SystemRequirements}
    Die Bibliothek kann unter Windows (ab 7 SP1), Linux (Support hängt von der Distribution ab) und Mac OS X (ab 10.12) verwendet werden
-  \footnote{genauere Informationen sind unter https://github.com/dotnet/core/blob/master/release-notes/2.1/2.1-supported-os.md verfügbar}, 
-  da das Projekt .Net Core 2.1 untertsützt.
-  Für Windows ist die Verwendung des .NET Framework, ab Version 4.7.2, empfehlenswert, da dann die exe Dateien ohne Probleme verwendet werden können.
-  Des Weiteren untertützt das Projekt .NET Standard 
+  \footnote{Genauere Informationen sind unter https://github.com/dotnet/core/blob/master/release-notes/2.1/2.1-supported-os.md verfügbar.}, 
+  da das Projekt .Net Core 2.1 unterstützt.
+  Für Windows ist die Verwendung des .NET Framework, ab Version 4.7.2, empfehlenswert, da dann die \inlinecode{.exe}-Dateien ohne Probleme verwendet werden können.
+  Des Weiteren unterstützt das Projekt .NET Standard 
 2.0 und .NET Core 2.0.
   \subsection{Verwendung von weiteren Bibliotheken}\label{subsec:UsageOfLibraries}
   Ich habe folgende Bibliotheken für dieses Projekt verwendet:
   \begin{outline}
-   \1 Die \inlinecode{PropertyOrFieldInfo} Bibliothek, die ich selbst vollständig entwickelt und programmiert habe,
+   \1 Die \inlinecode{PropertyOrFieldInfo}-Bibliothek, die ich selbst vollständig entwickelt und programmiert habe,
    und 2018 unter MIT License veröffentlicht habe~\cite{PropOrFieldSite}, in der Version 1.0.1.
-   \1 Die \inlinecode{xunit} Bibliothek habe ich für Unit Tests verwendet, sie wird nicht mit der Bibliothek kompiliert wird.
+   \1 Die \inlinecode{xunit}-Bibliothek habe ich für Unit Tests verwendet; sie wird nicht mit der Bibliothek kompiliert.
    Ich habe die Version 2.4.1 verwendet, die 2018 unter MIT License veröffentlicht wurde~\cite{XunitReleaseNotes}.
-   \1 Die \inlinecode{Newtonsoft.Json} Bibliothek von James Newton-King, um JSON Inhalte zu verarbeiten, in der Version 12.0.1,
+   \1 Die \inlinecode{Newtonsoft.Json}-Bibliothek von James Newton-King, um JSON Inhalte zu verarbeiten, in der Version 12.0.1,
    die 2018 unter MIT License veröffentlicht wurde~\cite{JsonNetSite}.
-   \1 Die \inlinecode{Jetbrains.Annotations} Bibliothek, die nicht mit dem Programm kompiliert wird,
-   sondern ausschlie\ss lich während der Entwicklung des Programmes aktiv ist, und Funktionen wie Nullfähigkeitsprüfungen bereitstellt.
+   \1 Die \inlinecode{Jetbrains.Annotations}-Bibliothek, die nicht mit dem Programm kompiliert wird,
+   sondern ausschließlich während der Entwicklung des Programmes aktiv ist, und Funktionen wie Nullfähigkeitsprüfungen bereitstellt.
    Die Version 2018.3.0, die ich verwende, wurde 2019 unter MIT License veröffentlicht~\cite{AnnotationsNuget}.
   \end{outline}
   \section{Fazit}\label{sec:Conclusion}
-Abschlie\ss end kann man sagen, dass für bestimmte Anwendungen meine Lösung gro\ss e Vorteile gegenüber bisherigen Lösungen bietet, 
+Abschließend kann man sagen, dass für bestimmte Anwendungen meine Lösung große Vorteile gegenüber bisherigen Lösungen bietet, 
   und das Entwickeln von Kommandozeilenoberflächen deutlich erleichtern kann.
-Mit der Umsetzung der Ziele die ich in Abschnitt \ref{sec:Future} kann die Bibliothek einen noch grö\ss eren Umfang an Anwendungsfällen abdecken. 
+Mit der Umsetzung der Ziele, die ich in Abschnitt~\ref{sec:Future} erläutert habe, kann die Bibliothek einen noch größeren Umfang an Anwendungsfällen abdecken. 
   \newpage
   \section{Anhang}\label{sec:Attachments}
-  Der Anhang entählt folgende Inhalte:
+  Der Anhang enthält folgende Inhalte:
   \begin{outline}
-   \1 Der vollständige Quellcode
-   \1 Die kompilierte Bibliothek
-   \1 Die kompilierte Referenzverwendung
-   \1 Diese Arbeit im PDF Format
+   \1 den vollständige Quellcode
+   \1 die kompilierte Bibliothek
+   \1 das kompilierte Beispielprojekt
+   \1 diese Arbeit im PDF-Format
      \end{outline}
-  Zum ausführen der Referrnzverwendung unter Windows, muss man die cmd.exe öffnen, und mit \inlinecode{cd /d} gefolgt mit dem Pfad des Ordners, der kompilierten Referenzverwendun, ausführen.
+  Zum Ausführen des Beispielprojekts unter Windows, muss man die cmd.exe öffnen.
+  Dann muss der Befehl \inlinecode{cd /d} gefolgt mit dem Pfad des Ordners, der das kompilierten Beispielprojekt enthält, ausgeführt werden.
+  Danach können Befehle aus Kapitel~\ref{subsec:demonstration} ausgeführt werden.
+  
   Alle Anhänge werden in digitaler Form auf CD bereitgestellt.
   \section{Literaturverzeichnis}\label{sec:Literature}
   \printbibliography[heading=none]
@@ -131,7 +134,7 @@ Mit der Umsetzung der Ziele die ich in Abschnitt \ref{sec:Future} kann die Bibli
 	Hiermit erkläre ich, dass ich die vorliegende Facharbeit selbstständig und ohne fremde Hilfe angefertigt und nur die im Literaturverzeichnis
 	aufgeführten Hilfen und Quellen benutzt habe.
 	Insbesondere versichere ich, dass ich alle wörtlichen
-	und sinngemä\ss en Übernahmen aus anderen Werken als solche kenntlich gemacht habe.
+	und sinngemäßen Übernahmen aus anderen Werken als solche kenntlich gemacht habe.
 	\medbreak
 	Lemgo, den \today
 	\medbreak

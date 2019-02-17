@@ -22,7 +22,9 @@ public class ConfigurationInterpreter : BaseInterpreter {
 
 	internal override bool Interpret() {
 		if (Offset + 1 >= TopInterpreter.Args.Length || IsParameterEqual("help", TopInterpreter.Args[Offset+1], "?")) {
+			_root.Load(_typeInfoOfConfiguration);
 			HelpGenerators.PrintConfigurationContextHelp(_root, this, true);
+			return true;
 		}
 
 		bool ro = false;
@@ -40,6 +42,7 @@ public class ConfigurationInterpreter : BaseInterpreter {
 			var contextAttribute = lastNonIndexer.PropertyType.GetCustomAttribute<CmdConfigurationNamespaceAttribute>();
 			if (contextAttribute is null) {
 				var valueAttribute = lastNonIndexer.GetCustomAttribute<CmdConfigurationFieldAttribute>();
+				valueAttribute.Load(new PropertyOrFieldInfo(lastNonIndexer));
 				HelpGenerators.PrintConfigurationFieldHelp(valueAttribute, this);
 				return true;
 			}

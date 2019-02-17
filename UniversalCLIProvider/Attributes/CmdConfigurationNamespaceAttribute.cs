@@ -27,7 +27,7 @@ public class CmdConfigurationNamespaceAttribute : Attribute {
 			_underlyingType = underlyingType;
 			List<CmdConfigurationFieldAttribute> newValues = new List<CmdConfigurationFieldAttribute>();
 			foreach (PropertyOrFieldInfo propertyOrFieldInfo in _underlyingType.DeclaredPropertiesAndFields()) {
-				var attribute = propertyOrFieldInfo.GetCustomAttribute<CmdConfigurationFieldAttribute>();
+				var attribute = propertyOrFieldInfo.MemberInfo.GetCustomAttribute<CmdConfigurationFieldAttribute>();
 				if (attribute is null) continue;
 				attribute.UnderlyingPropertyOrFieldInfo = propertyOrFieldInfo;
 				newValues.Add(attribute);

@@ -31,6 +31,7 @@ public static partial class HelpGenerators {
 	public static void ConfigurationNamespaceHelp(CmdConfigurationNamespaceAttribute namespaceAttribute, int width, int indent = 3,
 		TextWriter tw = null) {
 		tw = tw ?? Console.Out;
+		
 		tw.Write(CommandlineMethods.PadCentered($"{namespaceAttribute.Name}{(namespaceAttribute.IsReadonly ? " (RW)" : "")}", width));
 		if (!(namespaceAttribute.LongDescription is null)) {
 			foreach (string s in namespaceAttribute.LongDescription) {

@@ -21,7 +21,7 @@ public abstract class CmdRootContext {
 
 	[CmdAction("TestC", "This is test C", new[] {"Roses are red", "violets are blue", "this is a test and the rest of this class too"},
 		new[] {"ReferenceUsage /TestB LOL", "Writes LOL to the console"}, "c")]
-	public static void C([CmdParameter("TestArg",usage:CmdParameterUsage.All),CmdParameterAlias("HelloW",new []{"Hello","World"},"Uses Hello World as TestArg",shortForm:"h")]  string[] args) {
+	public static void C([CmdParameter("TestArg",usage:CmdParameterUsage.All),CmdParameterAlias("HelloW",new []{"Hello","World"},"Uses Hello World as TestArg","h")]  string[] args) {
 		Console.WriteLine($"TestArg has the following elements: {string.Join(", ", args)}");
 	}
 [CmdContext("XZY","Another context",new []{"This is a context help", "consisting of multiple lines"},"x", ContextDefaultActionPreset.Exit)]

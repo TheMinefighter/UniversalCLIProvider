@@ -1,57 +1,63 @@
-Das Projekt ist, wie oben beschrieben schon jetzt sehr umfangreich, es gibt aber noch grö\ss eres Verbesserungspotential, welches ich in diesem Kapitel erläutern möchte.
+Das Projekt ist, wie oben beschrieben, schon jetzt sehr umfangreich, es gibt aber auch großes Verbesserungspotential, welches ich in diesem Kapitel erläutern möchte.
 \subsection{Ausbau der Kernfunktionen}\label{subsec:MoreFunctions}
 Ich möchte in der Zukunft die Kernfunktionen der Bibliothek erweitern.
-Zuerst möchte ich zum Konfigurationsmanagement zwei Operatoren hinzufügen: \inlinecode{Add} und \inlinecode{RemoveAt}, 
-die auf Werte die das \inlinecode{ICollection} angewendet werden kann, um es zu ermöglichen Listen Elemente hinzuzufügen und entfernen zu können.
-Dann überlege ich noch eine Funktion einzubauen, die es erlauben würde, Parameter zu deklarieren, die auf alle Werte in einem Kontext anwendbar sind.
-\subsection{Übertragbarkeit auf andere Programmiersprachen}\label{subsec:PortabilityToOtherLangs}
-Das Projekt ist in gro\ss en fast Vollständig in C\# ähnliche Sprache, wie Java, übertragbar, da fast alle modernen Sprachen ein Konzept von Annotationen oder Attributen implementieren.
-Jedoch implementieren nicht alle Sprache ein System von Reflections, wie es für diese Bibliothek nötig ist, wie z.B. Rust.
+Zuerst möchte ich zum Konfigurationsmanagement zwei Operatoren hinzufügen: \inlinecode{Add} und \inlinecode{RemoveAt}.
+Diese könnten auf Werte, die das \inlinecode{ICollection}-Interface implementieren, angewendet werden kann.
+Dies würde es ermöglichen, Elemente zu Listen hinzuzufügen und daraus zu entfernen.
+Dann überlege ich, noch eine Funktion einzubauen, die es erlauben würde, Parameter zu deklarieren, die auf alle Aktionen in einem Kontext anwendbar sind.
 \subsection{Geschwindigkeitsverbesserungen durch Speicherung von Reflections}\label{subsec:StoringReflections}
-Die grö\ss te Verbesserungsmöglichkeit der Bibliothek liegt darin, die Geschwindigkeit zu verbessern,
-da das interpretieren einer einfachen Aktion, einer Messung mit dotTrace zufolge, 452ms dauert.
-410ms davon werden dafür benötigt die Reflections von Klassen abzurufen, eine Problem, das nicht nur in C\#, sondern auch z.B. in Java existiert.
-Eine Lösung wäre es, die Reflections im vorraus zu speichern.
-Dafür wäre zuerst ein Software Development Kit (SDK) nötig, dass all nötigen Reflections erfasst und abspeichert.
-Des Weiteren wären geringe \"Anderungen in der Bibliothek nötig um externe Daten zu verwenden.
-Dabei stellt sich die Frage, wie man diese Daten speichert:
+Die größte Verbesserungsmöglichkeit der Bibliothek liegt darin, die Geschwindigkeit zu verbessern,
+da das Interpretieren einer einfachen Aktion, einer Messung mit dotTrace zufolge, 452ms dauert.
+410ms davon werden dafür benötigt, die Reflections von Klassen abzurufen, ein Problem, das nicht nur in C\#, sondern auch z.B. in Java existiert.
+Eine Lösung wäre es, die benötigten Reflections im Voraus zu speichern.
+Dafür wäre zuerst ein Software Development Kit (SDK) nötig, das alle nötigen Reflections erfasst und abspeichert.
+Des Weiteren wären geringe \"Anderungen in der Bibliothek nötig, um externe Daten zu verwenden.
+Dabei stellt sich die Frage, wie man diese Daten speichert, denn es gibt drei Möglichkeiten:
 \begin{outline}
- \1 Die Generierung einer C\# Klasse die in eine eigene Bibliothek kompiliert wird, dies würde jedoch die Einrichtung eines eigenen Projekts erfordern.
- \1 Die Generierung einer Bibliothek, die als Teil des Nutzer-Programms kompiliert wird, dies würde aber erfordern, dass das Nutzer Programm zwei Mal kompiliert wird.
- \1 Die Verwendung einer eingebunden z.B. JSON Datei, die zur Laufzeit der Bibliothek ausgewertet wird, dies könnte aber etwas langsamer als die anderen beiden Optionen sein.
+ \1 Die Generierung einer C\#-Klasse, die in eine eigene Bibliothek kompiliert wird; dies würde jedoch die Einrichtung eines eigenen Projekts erfordern.
+ \1 Die Generierung einer Bibliothek, die als Teil des Nutzer-Programms kompiliert wird; dies würde aber erfordern, dass das Nutzer-Programm zwei Mal kompiliert wird.
+ \1 Die Verwendung einer eingebunden z.B. JSON-Datei, die zur Laufzeit der Bibliothek ausgewertet wird; dies könnte aber etwas langsamer als die anderen beiden Optionen sein.
 \end{outline}
 Eine endgültige Evaluation dieser Optionen steht noch aus.
-Zuletzt wäre eine Integration in die C\# Build Pipeline wünschenswert, sowie Integrationen in dritt Werkzeuge (z.B. das Build-Pipeline
- Projekt\footnote{Weitere Informationen sind unter https://github.com/KBuroz/Build-Pipeline verfügbar}) und IDEs.
-\subsection{Implementation einer Funktion für Grafische Kommandozeilenbenutzeroberfächen}
-Eine weitere Verbesserugsmöglichkeit wäre die Implementation einer Funktion, die Grafische Kommandozeilenbenutzeroberfächen (GCLUI) generiert.
-Diese würde die gleiche, auf Kontexten basierende, Ordungsstruktur, wie die normale Kommandozeilenbenutzeroberfächen verwenden.
-Interessant wäre es zur Werte-\"Ubergabe einen grafischen Editor für Objekt Strukturen zu implementieren.
+Zuletzt wäre eine Integration in die C\#-Build-Pipeline wünschenswert, sowie Integrationen in Drittwerkzeuge (z.B. das Build-Pipeline
+Projekt\footnote{Weitere Informationen sind unter https://github.com/KBuroz/Build-Pipeline verfügbar.}) und IDEs.
+\subsection{Implementation einer Funktion für grafische Kommandozeilenbenutzeroberfächen}
+Eine weitere Verbesserugsmöglichkeit wäre die Implementation einer Funktion, die grafische Kommandozeilenbenutzeroberfächen (GCLUI) generiert.
+Diese würde die gleiche, auf Kontexten basierende, Ordungsstruktur wie die normale Kommandozeilenbenutzeroberfächen verwenden.
+Interessant wäre es, zur Werte-\"Ubergabe einen grafischen Editor für Objektstrukturen zu implementieren.
 GCLUIs würden ein weiteres Alleinstellungsmerkmal der Bibliothek darstellen.
 \subsection{Implementation einer eigenen Auto-Vervollständigung}\label{subsec:Autocomplete}
 Die Implementation einer Auto-Vervollständigung würde der Bibliothek ein weiteres Schlüsselmerkmal gegenüber anderen C\# Bibliotheken geben.
 Wenn dieses Feature aber auch in der Praxis praktisch sein soll, wäre es wichtig weitere Informationen über übergebenen Daten haben.
-So wäre zum Beispiel ein Attribut für Parameter sinnvoll, das es ermöglicht zu definieren, das der Parameter ein Pfad eines Ordners, 
+So wäre zum Beispiel ein Attribut für Parameter sinnvoll, das es ermöglicht zu definieren, das der Parameter ein Pfad eines Ordners,
 der existiert, ist, so dass die Auto-Vervollständigung entsprechende Werte vorschlagen kann.
 Nur mit solchen Informationen kann eine Autovervollständigung im Alltäglichen arbeiten mit der Software einen Vorteil schaffen.
-Im Folgenden möchte ich auf verschieden Umgebungen für automatische Vervollständigungen eingehen.
-\subsubsection{Auto-Vervollständigung für die Interaktive Kommandozeilenoberfläche}
-Eie Funktion zur automatischen Vervollständigung von Befehlen in der Interaktive Kommandozeilenoberfläche, würde die Verwendung dieser Potentiell deutlich attraktiver machen, 
-da in einer interaktiven Kommandozeilenoberfäche es möglich ist, eine sehr umfangreiche Vervollständigung zu bieten.
-Dabei gibt es viele unterschiedliche  Ausführungen, wie z.B. die der o.g. Python-Nubia Bibliothek, alle mit ihren Vor- und Nachteilen.
-Eine umfangreiche Evaluation dieser wird der Implementation mindestens einer vorrausgehen. 
-\subsubsection{Auto-Vervollständigung für Linux Kommandozeilen}
-In vielen Linux Umgebungen ist es möglich das Verhalten zur Auto-Vervollständigung in der Systemeigenen Shell anzupassen.
-Dafür muss eine Bash Datei mit vorgegebenen Funktionen vorhanden sein~\cite{BashAutoComplete}.
-In der Zukunft wäre es denkbar, in diese Bibliothek eine Funktion zu implementieren, die es ermöglicht diese Dateien auf Basis der definierten Aktion,
-Kontexte und anderer Eigenschaften vollautomatisch zu generieren.
-\subsubsection{Auto-Vervollständigung für die Windows Powershell}
-Die Windows Powershell hat eine Auto-Vervollständigungs Funktion, aber nur für Powershell Cmdlets.
-Cmdlets bieten selber eine eigene einfache Kommandozeilenoberfläche, diese wird dann automatisch vervollständigt und dessen Eingaben werden automatisch in Objekte verarbeitet~\cite{CustomCmdlet}.
-Daher wäre es dann nötig eine Funktion zu entwickeln, die für ein C\# Programm einen Powerdhell Cmdlet generiert, dass die gleichen möglichen Befehle hat, 
-das dann in der Powershell automatisch Vervollständigt werden kann.
-  Ich gehe davon aus das dieser Prozess sehr komplex wäre, und bin mir nicht sicher ob es möglich ist in dieser Umgebung, zum Beispiel für Konfigurationspfade, eine Vervollständigung bereitzustellen.
-\subsection{Verbesserung der Unit-Test Abdeckung}\label{subsec:MoreUnitTests}
-Die Bibliothek besitzt einige Unit-Tests im Projekt \inlinecode{UnitTests}, diese decken aber, einem Test mit dem Programm dotCover zufolge, 10\% der Befehle ab.
-Es wäre bei einer Veröffentlichung der Bibliothek wünschenswert mindestens 95\% der Befehle automatisch testen zu können, damit eine Zuverlässige Weiterentwicklung möglich ist, 
-da es sonst dazu kommen könnte das fehlerhafte Software Veröffentlicht wird.
+Diese kann (mit verschiedenen Beschränkungen) in folgenden Umgebungen passieren
+%Im Folgenden möchte ich auf verschieden Umgebungen für automatische Vervollständigungen eingehen.
+\begin{outline}
+ \1 In der Interaktive Kommandozeilenoberfläche
+ \1 In regulären Linux Kommandozeilen~\cite{BashAutoComplete}
+ \1 In der Windows Powershell
+\end{outline}
+%\subsubsection{Auto-Vervollständigung für die Interaktive Kommandozeilenoberfläche}
+%Eie Funktion zur automatischen Vervollständigung von Befehlen in der Interaktive Kommandozeilenoberfläche, würde die Verwendung dieser Potentiell deutlich attraktiver machen,
+%da in einer interaktiven Kommandozeilenoberfäche es möglich ist, eine sehr umfangreiche Vervollständigung zu bieten.
+%Dabei gibt es viele unterschiedliche  Ausführungen, wie z.B. die der o.g. Python-Nubia Bibliothek, alle mit ihren Vor- und Nachteilen.
+%Eine umfangreiche Evaluation dieser wird der Implementation mindestens einer vorrausgehen.
+%\subsubsection{Auto-Vervollständigung für Linux Kommandozeilen}
+%In vielen Linux Umgebungen ist es möglich das Verhalten zur Auto-Vervollständigung in der Systemeigenen Shell anzupassen.
+%Dafür muss eine Bash Datei mit vorgegebenen Funktionen vorhanden sein~\cite{BashAutoComplete}.
+%In der Zukunft wäre es denkbar, in diese Bibliothek eine Funktion zu implementieren, die es ermöglicht diese Dateien auf Basis der definierten Aktion,
+%Kontexte und anderer Eigenschaften vollautomatisch zu generieren.
+%\subsubsection{Auto-Vervollständigung für die Windows Powershell}
+%Die Windows Powershell hat eine Auto-Vervollständigungs Funktion, aber nur für Powershell Cmdlets.
+%Cmdlets bieten selber eine eigene einfache Kommandozeilenoberfläche, diese wird dann automatisch vervollständigt und dessen Eingaben werden automatisch in Objekte verarbeitet~\cite{CustomCmdlet}.
+%Daher wäre es dann nötig eine Funktion zu entwickeln, die für ein C\# Programm einen Powerdhell Cmdlet generiert, dass die gleichen möglichen Befehle hat,
+%das dann in der Powershell automatisch Vervollständigt werden kann.
+%Ich gehe davon aus das dieser Prozess sehr komplex wäre, und bin mir nicht sicher ob es möglich ist in dieser Umgebung, zum Beispiel für Konfigurationspfade, eine Vervollständigung bereitzustellen.
+\subsection{Verbesserung der Unit-Test-Abdeckung}\label{subsec:MoreUnitTests}
+Die Bibliothek besitzt einige Unit-Tests im Projekt \inlinecode{UnitTests}, diese decken aber, einer Analyse mit dem Programm dotCover zufolge, nur 10\% der Befehle ab.
+Es wäre bei einer Veröffentlichung der Bibliothek wünschenswert, mindestens 95\% der Befehle automatisch testen zu können, damit eine zuverlässige Weiterentwicklung möglich ist und es nicht dazu kommen kann, das fehlerhafte Software veröffentlicht wird.
+\subsection{Übertragbarkeit auf andere Programmiersprachen}\label{subsec:PortabilityToOtherLangs}
+Das Projekt ist fast vollständig in C\#-ähnliche Sprachen, wie Java, übertragbar, da fast alle modernen Sprachen ein Konzept von Annotationen oder Attributen implementieren.
+Jedoch implementieren nicht alle Sprache ein System von Reflections, wie es für diese Bibliothek nötig ist, die ist z.B. bei Rust der Fall.
