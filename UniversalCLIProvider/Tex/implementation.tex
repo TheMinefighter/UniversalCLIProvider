@@ -53,7 +53,7 @@ Folgende Klassen sind in diesem namespace vorhanden:
  \1 Die \inlinecode{ConfigurationInterpreter}-Klasse interpretiert Befehle zum Konfigurationsmanagement.
 \end{outline}
 \subsection{Erläuterung der Implementation der Klasse ContextInterpreter}\label{subsec:ContextInterpreter}
-Die Klasse \inlinecode{ContextInterpreter} erfüllt Schlüsselfunktionen in dieser Bibliothek.
+Im Folgenden werde ich die Funktionsweise der Klasse \inlinecode{ContextInterpreter} näher erläutern, da sie Schlüsselfunktionen in dieser Bibliothek erfüllt.
 Sie erbt von der abstrakten \inlinecode{BaseInterpreter}-Klasse folgende Inhalte:
 \begin{outline}
  \1 Die \inlinecode{Name}-Eigenschaft, die jedem Interpreter einen Namen gibt.
@@ -218,24 +218,15 @@ Die Funktionen des Beispielprojekts, und damit auch der Bibliothek, möchte ich 
 Alle folgenden Befehle können in einer normalen Kommandozeile ausgeführt werden.
 Weitere Informationen dazu finden sich in Abschnitt~\ref{sec:Attachments}.%TODO do
 \subsubsection{Einfache Aktionsausführungen}
-Ein \inlinecode{CmdAction}-Attribut bezieht sich immer auf eine Methode.
+Eine AKtion, wird im C\#-Code durch eine Methode dargestellt, die durch ein \inlinecode{CmdAction}-Attribut gekennzeichnet wird.
 Diese Methode wird ausgeführt, wenn in der Kommandozeilenoberflächen die Aktion aufgerufen wurde.
 
 Der einfachste Befehl, der eine Aktion ausführt, ist \inlinecode{ReferenceUsage --BaseTest}.
 Er führt die \inlinecode{BaseTest}-Aktion aus.
 Sie gibt \inlinecode{You have successfully entered the BaseTest action.} aus.
-Da die Kurzform \inlinecode{-b} definiert ist, kann auch \inlinecode{ReferenceUsage -b} genutzt werden.
-
-Weitere Eigenschaften einer Aktion sind:
-\begin{outline}
- \1 die Beschreibung
- \1 die lange Beschreibung
- \1 die Beispiele
-\end{outline}
-Sie werden alle ausschließlich zum Generierenen der Hilfe verwendet werden.
 
 Der nächste Befehl ist die \inlinecode{TestB}-Aktion.
-Sie benötigt zusätzlich noch das \inlinecode{Argument-One}-Argument vom Typ \inlinecode{string}.
+Dieser benötigt zusätzlich noch das \inlinecode{Argument-One}-Argument vom Typ \inlinecode{string}.
 Eine einfache Ausführung ist \inlinecode{ReferenceUsage --TestB --Argument-One Test}.
 Das gibt dann \inlinecode{You have used "Test" as argument.} aus.
 
@@ -243,28 +234,28 @@ Auch das Argument hat eine Kurzform (\inlinecode{-o}), die verwendet werden kann
 Wenn das Argument weggelassen wird (\inlinecode{ReferenceUsage --TestB}), wird der definierte Standard-Wert für dieses verwendet:
 \inlinecode{You have used "DefaultValue" as argument.}
 
-Die Verwendung von Arrays wird durch \inlinecode{TestC} gezeigt.
+Die Verwendung von Arrays als Argument wird durch \inlinecode{TestC} gezeigt.
 Die Aktion hat den Parameter \inlinecode{--TestArg}, der vom Typ \inlinecode{string[]} ist.
 Solche Parameter können auf zwei Wegen bereitgestellt werden:
 \begin{outline}
- \1 Einfache Auflistung von Werten, z.B. \inlinecode{ReferenceUsage --TestC --TestArg Hallo Welt}, was in der Ausgabe \inlinecode{TestArg has the following elements: Hallo, Welt} resultiert.
- Wenn bei dieser Methode ein Element auch eine Parameter- oder Aliasdeklaration sein kann, wird davor der Array beendet, und das Element als Parameter/Alias interpretiert.
+ \1 Einfache Auflistung von Werten, z.B. \inlinecode{ReferenceUsage --TestC --TestArg Hallo Welt},
+ was in der Ausgabe \inlinecode{TestArg has the following elements: Hallo, Welt} resultiert.
+ Wenn bei dieser Methode ein Element auch eine Parameter- oder Aliasdeklaration (s. u.) sein kann, wird davor der Array beendet,
+ und das Element als Parameter/Alias interpretiert.
  \1 Alternativ kann ein JSON-Array verwendet werden: \inlinecode{ReferenceUsage --TestC --TestArg "[\\"Hallo\\",\\"Welt\\"]"}.
  Die Verwendung von Backslashes ist der Windows \inlinecode{cmd.exe} geschuldet, wie in~\ref{Sonderzeichen} beschrieben.
  Im Gegensatz zur vorherigen Methode ist es hier möglich, einen leeren Array (\inlinecode{[]}) zu übergeben.
  Außerdem können bei dieser Methode auch ohne Probleme Elemente, die den Namen von weiteren Parametern entsprechen, verwendet werden.
  JSON-Objekte können auch für das \"Ubergeben von Daten anderer Typen (Ausnahme \inlinecode{string}) verwendet werden.
-\end{outline} 
+\end{outline}
 
 Des Weiteren können im C\#-Quellcode Aliasse deklariert werden.
-Sie dienen dazu, dass Programmentwickler eine Vorauswahl für die Nutzer der Kommandozeilenoberfläche bereitstellen können.
-Außerdem stelle Abkürzung für die Verwendung von u.U. sehr langen, oft benötigten Werten da.
-
 Diese haben einen Namen, mit dem sie aufgerufen werden können, sowie einen Wert, den sie repräsentieren.
 So ist wird im eben verwendeten Beispiel \inlinecode{["Hello","World"]} durch \inlinecode{--HelloW} repräsentiert.
 Die Werte, die durch einen Alias repräsentiert werden können, sind beschränkt, da C\#-Attribute nur bestimmte Typen von Werten unterstützen
 \footnote{Weitere Informationen sind unter https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/attributes\#attribute-parameter-types verfügbar.}.
-Diese können auch Kurzformen (\inlinecode{-h}), sowie Beschreibungen für die Hilfe haben.
+Aliasse dienen dazu, dass Programmentwickler eine Vorauswahl der Parameterfür die Nutzer der Kommandozeilenoberfläche bereitstellen können,
+außerdem stelle Abkürzung für die Verwendung von u.U. sehr langen, oft benötigten Werten da.
 
 Um zu bestimmen, in welcher Form ein Parameter angegeben werden kann, gibt es die \inlinecode{usage}-Eigenschaft vom Typ \inlinecode{CmdParameterUsage}.
 Sie ist standardmäßig auf \inlinecode{CmdParameterUsage.Default} gesetzt, was darin resultiert, dass die Bibliothek entscheidet, welche Option sinnvoll ist.
@@ -274,18 +265,21 @@ Wenn man diese Einstellung selber bestimmen möchte, kann man jede mögliche Kom
  \1 Unterstützung von Aliassen mit vorheriger Parameter-Deklaration: \inlinecode{ReferenceUsage --TestC --TestArg --HelloW}
  \1 Unterstützung von Aliassen ohne vorherige Parameter-Deklaration: \inlinecode{ReferenceUsage --TestC --HelloW}
 \end{outline}
+Parameter besitzen des Weiteren auch eine Beschreibung, die in der Hilfe einsehbar ist und auch Aktionen haben mehrere weitere Eigenschaften,
+die zum Generieren der Hilfe genutzt werden:
+\begin{outline}
+ \1 die Beschreibung
+ \1 die lange Beschreibung
+ \1 die Beispiele
+\end{outline}
 
-Parameter besitzen des Weiteren auch eine Beschreibung, die in der Hilfe einsehbar ist.
+Im C\#-Code wird jede Methode, die eine Aktion ausführt, durch ein \inlinecode{CmdAction}-Attribut gekennzeichnet.
 
-\subsubsection{Verwendung von Kontexten}
+Diese können auch Kurzformen (\inlinecode{-h}), sowie Beschreibungen für die Hilfe haben.
+
+\subsubsection{Verwe`ndung von Kontexten}
 Kontexte bieten die Möglichkeit, Aktionen in Untergruppen ordnen.
-Ein Kontext-Attribut bezieht sich immer auf eine Klasse, die eine solche Gruppe darstellt.
-
-Wenn dieser Kontext nicht der Ursprungskontext einer Kommandozeilenoberfläche ist, 
-muss die Klasse, auf die sich das Attribut bezieht, ein geschachtelter Typ in einer Klasse, die wiederum auch ein \inlinecode{CmdContextAttribute} besitzt, sein.
-Nur in einer diesen Bedingungen entsprechenden Klasse können Aktionen, kommandozeilenverwaltete Konfigurationen und Kontext-Standard-Aktionen deklariert werden.
-
-Wenn nun eine Aktion aufgerufen werden soll, die sich nicht im Ursprungskontext befindet,
+Wenn eine Aktion aufgerufen werden soll, die sich nicht im Ursprungskontext befindet,
 muss der gesamte Pfad bis zum gewünschten Kontext, durch die Angabe der Namen der Kontexte in der Kommandozeilenoberfläche übergeben werden.
 So befindet sich zum Beispiel die \inlinecode{TestZ}-Aktion im \inlinecode{XZY}-Kontext.
 Um die Aktion auszuführen, muss also der Befehl \inlinecode{ReferenceUsage --XZY --TestZ} verwendet werden.
@@ -302,21 +296,26 @@ Diese kann auf zwei Wegen definiert werden:
  \2 \inlinecode{Exit} beendet die Kommandozeilenoberfläche.
  \2 \inlinecode{Help} zeigt die Hilfe an.
  \2 \inlinecode{Interactive} startet eine interaktive Kommandozeilenoberfläche in diesem Kontext.
- \1 Es kann im Kontext eine Mthode deklariert werden, die mit dem \inlinecode{CmdDefaultActionAttribute} gekennzeichnet ist.
+ \1 Es kann im Kontext eine Methode deklariert werden, die mit dem \inlinecode{CmdDefaultActionAttribute} gekennzeichnet ist.
  Dieses kann zusätzlich Parameter für die Methode enthalten.
  Wenn die Methode einen Parameter mehr erwartet als bereitgestellt wurde, wird als letzter Parameter der aktuelle \inlinecode{CmdContextInterpreter} übergeben.
- 
- Der \inlinecode{CustomizedDefaultAction}-Kontext besitzt eine Methode \inlinecode{TheDefaultAction}, die eine Zahl und einen \inlinecode{CmdContextInterpreter} als Parameter erwartet.
+ Der \inlinecode{CustomizedDefaultAction}-Kontext besitzt eine Methode \inlinecode{TheDefaultAction},
+ die eine Zahl und einen \inlinecode{CmdContextInterpreter} als Parameter erwartet.
  Diese ist mit einem \inlinecode{CmdDefaultAction}-Attribut gekennzeichnet, das mit der Zahl 7 parametriert ist.
  Wenn nun der Befehl \inlinecode{ReferenceUsage --CustomizedDefaultAction} ausgeführt wird, wird die \inlinecode{TheDefaultAction}-Methode ausgeführt, die die übergebene Zahl sowie den Pfad des Interpreters ausgibt:
  \inlinecode{The CmdDefaultActionAttribute supplied the number 7, the interpreter is currently located}
  \inlinecode{in the following path: ReferenceUsage>CustomizedDefaultAction}
 \end{outline}
- Wenn beide Methoden verwendet werden, wird die Aktion des \inlinecode{CustomizedDefaultAction} ausgeführt;
- wenn keine spezifiziert wurde, wird die Hilfe für den Kontext ausgegeben.
+Wenn beide Methoden verwendet werden, wird die Aktion des \inlinecode{CustomizedDefaultAction} ausgeführt;
+wenn keine spezifiziert wurde, wird die Hilfe für den Kontext ausgegeben.
+
+Im C\#-Code werden Klassen, die solche Kontexte darstellen, als geschachtelte Klassen, in den Code des Ursprungskontexts eingefügt.
+Dabei ist es nicht ausgeschlossen, das sich darin weitere geschactelte Klassen befinden.
+Sie müssen jeweils mit dem \inlinecode{CmdContextAttribute} gekennzeichnet sein, damit sie als Kontext erkannt werden.  
+ 
 
 \subsubsection{Konfigurationsmanagement}\label{ConfigurationManagement}
-Die Bibliothek bietet die Möglichkeit, Konfigurationsdateien von der Kommandozeilenoberfläche aus zu verwalten.
+Die Bibliothek bietet die Möglichkeit, Konfigurationsdateien des Nutzer-Programms von der Kommandozeilenoberfläche aus zu verwalten.
 
 Die Konfiguration wird dabei durch ein Objekt zur Laufzeit des Programms gespeichert, das oft Referenzen zu anderen Konfigurationsteilen oder Mengen solcher enthält.
 Eine Referenz zu so einem Konfigurationsobjekt muss in einer Eigenschaft in einem Kontext gespeichert werden.
@@ -330,7 +329,8 @@ Aktuell gibt es drei Operatoren für Konfigurationswerte:
  \1 Der \inlinecode{help}-Operator gibt die Hilfe für das Feld aus.
  \1 Der \inlinecode{get}-Operator gibt den Wert des Feldes aus.
  \1 Der \inlinecode{set}-Operator setzt den Wet des Feldes auf den nachfolgenden Wert.
- Wenn die Konfigurationsklasse das \inlinecode{IConfigurationRoot}-Interface implementiert, wird hierbei die \inlinecode{Save}-Methode aufgerufen, um die \"Anderungen zu speichern.
+ Wenn die Konfigurationsklasse das \inlinecode{IConfigurationRoot}-Interface implementiert, 
+ wird hierbei die \inlinecode{Save}-Methode aufgerufen, um die \"Anderungen zu speichern.
  \end{outline}
 
 In dem Beispielprojekt gibt es eine Konfiguration unter der \inlinecode{--cfg}-Option, die u. a. ein Feld namens \inlinecode{IntA} des Typ \inlinecode{int} besitzt,
@@ -348,7 +348,9 @@ Darüber hinaus kann auch der gesamte Array ersetzt werden (\inlinecode{Referenc
 Des Weiteren werden auch eigene Klassen unterstützt, unter der Bedingung, dass sie mit einem \inlinecode{CmdConfigurationNamespace}-Attribut gekennzeichnet wurden.
 Zum Beispiel gibt es eine Eigenschaft des Typ \inlinecode{SubCfgClass[]}, wobei die Klasse \inlinecode{SubCfgClass} die Eigenschaft \inlinecode{SomeBool} besitzt.
 Um diese Eigenschaft vom zweiten Element zu lesen, muss der Befehl \inlinecode{ReferenceUsage --cfg SubCfg[1].SomeBool get} ausgeführt werden.
-Diese Schachtelung von Eigenschaften und Indexern kann (fast) unendlich weit fortgeführt werden.
+Diese Schachtelung von Eigenschaften und Indices kann (fast) unendlich weit fortgeführt werden.
+
+
 \subsubsection{Hilfsfunktion}
 Die Bibliothek stellt eine Reihe von Hilfsfunktionen bereit, die auf den Beschreibungen basieren, die der Bibliothek durch die Attribute übermittelt werden:
 \begin{outline}
