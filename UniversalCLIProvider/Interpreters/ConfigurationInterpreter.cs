@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
@@ -12,8 +13,9 @@ public class ConfigurationInterpreter : BaseInterpreter {
 	private readonly CmdConfigurationNamespaceAttribute _root;
 	private readonly TypeInfo _typeInfoOfConfiguration;
 
-	public ConfigurationInterpreter(CommandlineOptionInterpreter top, CmdConfigurationNamespaceAttribute root, object referenceToObject,
-		TypeInfo typeInfoOfConfiguration, int offset = 0) : base(top,root.Name,
+	public ConfigurationInterpreter(CommandlineOptionInterpreter top, CmdConfigurationNamespaceAttribute root,
+		object referenceToObject,
+		TypeInfo typeInfoOfConfiguration, int offset = 0) : base(top, root.Name,
 		offset) {
 		_root = root;
 		_referenceToObject = referenceToObject;
@@ -21,7 +23,7 @@ public class ConfigurationInterpreter : BaseInterpreter {
 	}
 
 	internal override bool Interpret() {
-		if (Offset + 1 >= TopInterpreter.Args.Length || IsParameterEqual("help", TopInterpreter.Args[Offset+1], "?")) {
+		if (Offset + 1 >= TopInterpreter.Args.Length || IsParameterEqual("help", TopInterpreter.Args[Offset + 1], "?")) {
 			_root.Load(_typeInfoOfConfiguration);
 			HelpGenerators.PrintConfigurationContextHelp(_root, this, true);
 			return true;
@@ -30,7 +32,8 @@ public class ConfigurationInterpreter : BaseInterpreter {
 		bool ro = false;
 		IncreaseOffset();
 		object requiredObject = _referenceToObject;
-		if (!ConfigurationHelpers.ResolvePathRecursive(TopInterpreter.Args[Offset], _typeInfoOfConfiguration, ref requiredObject, out PropertyInfo prop,
+		if (!ConfigurationHelpers.ResolvePathRecursive(TopInterpreter.Args[Offset], _typeInfoOfConfiguration, ref requiredObject,
+			out PropertyInfo prop,
 			out object[] indexers, ref ro, out PropertyInfo lastNonIndexer)) {
 			Console.WriteLine("Could not resolve the path provided");
 			return false;
@@ -100,6 +103,34 @@ public class ConfigurationInterpreter : BaseInterpreter {
 			}
 
 			return true;
+		}
+
+		if (IsParameterEqual("RemoveAt", Operator, allowPrefixFree: true)) {
+			var valueAttribute = prop.GetCustomAttribute<CmdConfigurationFieldAttribute>();
+			if (ro || !prop.CanWrite) {
+				Console.WriteLine("The given value is not writable"); //Err
+			}
+
+			if (!typeof(ICollection).IsAssignableFrom(prop.PropertyType)) {
+				Console.WriteLine("The object that you try to remove an element from is no collection."); //Err
+			}
+
+			if (IncreaseOffset()) {
+				Console.WriteLine("Please supply a value to set the given value to!"); //Err
+			}
+
+			if (!CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], out int removalIndex)) {
+				Console.WriteLine($"The given string couldn't be parsed to {prop.PropertyType}!"); //Err
+				return false;
+			}
+			try {
+				((IList) (indexers is null ? prop.GetValue(requiredObject) : prop.GetValue(requiredObject, indexers))).RemoveAt(removalIndex); //Safe due to previous assignability check
+			}
+			catch (Exception e) {
+				Console.WriteLine("An error occurred while removing an object:"); //Err
+				Console.WriteLine(e);
+				return false;
+			}
 		}
 
 		Console.WriteLine("Could not resolve the operator provided");

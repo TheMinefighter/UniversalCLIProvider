@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
@@ -43,7 +44,7 @@ public static class ConfigurationHelpers {
 				}
 				else {
 					endOfCurrentBlock = bracketIndex;
-					remainingPath = path.Substring(bracketIndex );
+					remainingPath = path.Substring(bracketIndex);
 				}
 			}
 
@@ -82,7 +83,7 @@ public static class ConfigurationHelpers {
 				return false;
 			}
 
-			if (!ResolvePathRecursive(remainingPath,currentItem.GetType().GetTypeInfo(), ref currentItem, out prop, out requiredIndexers, ref ro,
+			if (!ResolvePathRecursive(remainingPath, currentItem.GetType().GetTypeInfo(), ref currentItem, out prop, out requiredIndexers, ref ro,
 				out PropertyInfo possibleLastNonIndexer)) {
 				return false;
 			}
@@ -107,12 +108,8 @@ public static class ConfigurationHelpers {
 	private static bool ResolveIndexerInPath([NotNull] string path, [NotNull] TypeInfo typeInfoOfItem, ref PropertyInfo prop,
 		ref object[] requiredIndexers, out string remainingPath) {
 		remainingPath = null;
-		int endOfIndexer = path.IndexOf(']');
-		if (endOfIndexer == -1) {
-			return false;
-		}
 
-		if (!SplitIndexerArguments(path.Substring(1, endOfIndexer - 1), out string[] indexerParameters)) {
+		if (!SplitIndexerArguments(path.Substring(1), out string[] indexerParameters, out remainingPath)) {
 			return false;
 		}
 
@@ -120,11 +117,8 @@ public static class ConfigurationHelpers {
 			return false;
 		}
 
-		if (path.Length - 1 > endOfIndexer) {
-			remainingPath = path.Substring(endOfIndexer + 1);
-			if (remainingPath.StartsWith(".")) {
-				remainingPath = remainingPath.Substring(1);
-			}
+		if (remainingPath.Length!=0&& remainingPath.StartsWith(".")) {
+			remainingPath = remainingPath.Substring(1);
 		}
 
 		return true;
@@ -135,37 +129,80 @@ public static class ConfigurationHelpers {
 		indexParameters = new object[parameters.Length];
 		indexer = null;
 		foreach (PropertyInfo possibleIndexer in type.GetUnderlyingTypes().Distinct().SelectMany(x => x.DeclaredProperties)
-			.Where(x => x.GetIndexParameters().Length == parameters.Length&&x.PropertyType!=typeof(object))) {
-			bool success = true;
-			ParameterInfo[] paras = possibleIndexer.GetIndexParameters();
-			for (int i = 0; i < parameters.Length; i++) {
-				try {
-					indexParameters[i] = JsonConvert.DeserializeObject(parameters[i], paras[i].ParameterType);
+			.Where(x => x.GetIndexParameters().Length == parameters.Length)) {
+			if (indexer is null || indexer.PropertyType.IsAssignableFrom(possibleIndexer.PropertyType)) {
+				bool success = true;
+				ParameterInfo[] paras = possibleIndexer.GetIndexParameters();
+				for (int i = 0; i < parameters.Length; i++) {
+					try {
+						indexParameters[i] = JsonConvert.DeserializeObject(parameters[i], paras[i].ParameterType);
+					}
+					catch (JsonException) {
+						success = false;
+						break;
+					}
 				}
-				catch (JsonException) {
-					success = false;
-					break;
-				}
-			}
 
-			if (success) {
-				indexer = possibleIndexer;
-				return true;
+				if (success) {
+					indexer = possibleIndexer;
+				}
 			}
 		}
 
-		return false;
+		return !(indexer is null);
 	}
 
-	public static bool SplitIndexerArguments([NotNull] string src, out string[] result) {
-		result = new[] {src};
-		return true;
-		if (!src.Contains(',')) {
-			result = new[] {src};
-			return true;
-		} //TODO Implement
+	public static bool SplitIndexerArguments([NotNull] string src, out string[] result, out string remainingSrc) {
+		//partially based on https://stackoverflow.com/a/55503527/6730162
+		result = null;
+		var serializer = new JsonSerializer();
+		List<string> resultList = new List<string>();
+		remainingSrc = src;
 
-		throw new NotImplementedException("Multiple Indexer parameters haven't been implemented yet");
+		while (true) {
+			using (var stringReader = new StringReader(remainingSrc))
+			using (var reader = new JsonTextReader(stringReader) {SupportMultipleContent = true}) {
+				try {
+					reader.Read();
+					//TODO Cache results
+					serializer.Deserialize(reader);
+				}
+				catch (Exception) {
+					return false;
+				}
+
+				resultList.Add(remainingSrc.Substring(0, reader.LinePosition));
+				remainingSrc = remainingSrc.Substring(reader.LinePosition);
+				bool cont = false;
+				while (true) {
+					if (remainingSrc.Length == 0) {
+						return false;
+					}
+
+					char read = remainingSrc[0];
+					switch (read) {
+						case ' ':
+							remainingSrc = remainingSrc.Substring(1);
+							continue;
+						case ',':
+							cont = true;
+							break;
+						case ']': break;
+						default: return false;
+					}
+
+					break;
+				}
+				remainingSrc = remainingSrc.Substring(1);
+				if (!cont) {
+					break;
+				}
+			}
+		}
+
+		
+		result = resultList.ToArray();
+		return true;
 	}
 
 	[NotNull]

@@ -218,7 +218,7 @@ Die Funktionen des Beispielprojekts, und damit auch der Bibliothek, möchte ich 
 Alle folgenden Befehle können in einer normalen Kommandozeile ausgeführt werden.
 Weitere Informationen dazu finden sich in Abschnitt~\ref{sec:Attachments}.%TODO do
 \subsubsection{Einfache Aktionsausführungen}
-Eine Aktion, wird im C\#-Code durch eine Methode dargestellt, die durch ein \inlinecode{CmdAction}-Attribut gekennzeichnet wird.
+Eine Aktion wird im C\#-Code durch eine Methode dargestellt, die durch ein \inlinecode{CmdAction}-Attribut gekennzeichnet wurde.
 Diese Methode wird ausgeführt, wenn in der Kommandozeilenoberflächen die Aktion aufgerufen wurde.
 
 Der einfachste Befehl, der eine Aktion ausführt, ist \inlinecode{ReferenceUsage --BaseTest}.
@@ -251,11 +251,11 @@ Solche Parameter können auf zwei Wegen bereitgestellt werden:
 
 Des Weiteren können im C\#-Quellcode Aliasse deklariert werden.
 Diese haben einen Namen, mit dem sie aufgerufen werden können, sowie einen Wert, den sie repräsentieren.
-So ist wird im eben verwendeten Beispiel \inlinecode{["Hello","World"]} durch \inlinecode{--HelloW} repräsentiert.
+So wird im eben verwendeten Beispiel \inlinecode{["Hello","World"]} durch \inlinecode{--HelloW} repräsentiert.
 Die Werte, die durch einen Alias repräsentiert werden können, sind beschränkt, da C\#-Attribute nur bestimmte Typen von Werten unterstützen
 \footnote{Weitere Informationen sind unter https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/attributes\#attribute-parameter-types verfügbar.}.
-Aliasse dienen dazu, dass Programmentwickler eine Vorauswahl der Parameterfür die Nutzer der Kommandozeilenoberfläche bereitstellen können,
-außerdem stelle Abkürzung für die Verwendung von u.U. sehr langen, oft benötigten Werten da.
+Aliasse dienen dazu, dass Programmentwickler eine Vorauswahl der Parameterfür die Nutzer der Kommandozeilenoberfläche bereitstellen können.
+Außerdem können sie eine Abkürzung für die Verwendung von u.U. sehr langen, oft benötigten Werten sein.
 
 Um zu bestimmen, in welcher Form ein Parameter angegeben werden kann, gibt es die \inlinecode{usage}-Eigenschaft vom Typ \inlinecode{CmdParameterUsage}.
 Sie ist standardmäßig auf \inlinecode{CmdParameterUsage.Default} gesetzt, was darin resultiert, dass die Bibliothek entscheidet, welche Option sinnvoll ist.
@@ -290,7 +290,7 @@ Kontexte können eine \inlinecode{ContextDefaultAction} definieren, die ausgefü
 Diese kann auf zwei Wegen definiert werden:
 \begin{outline}
  \1 Im \inlinecode{CmdContextAttribute} kann ein \inlinecode{ContextDefaultActionPreset} angegeben werden, um eine der Vorlagen zu verwenden.
- So ist zum Beispiel für den \inlinecode{XZY} Kontext die \inlinecode{Exit}-Vorlage aktiv,
+ So ist zum Beispiel für den \inlinecode{XZY}-Kontext die \inlinecode{Exit}-Vorlage aktiv,
  sodass sich die Kommandozeilenoberfläche bei der Eingabe von \inlinecode{ReferenceUsage --XZY} beendet.
  Es gibt folgende Vorlagen:
  \2 \inlinecode{Exit} beendet die Kommandozeilenoberfläche.
@@ -310,7 +310,7 @@ Wenn beide Methoden verwendet werden, wird die Aktion des \inlinecode{Customized
 wenn keine spezifiziert wurde, wird die Hilfe für den Kontext ausgegeben.
 
 Im C\#-Code werden Klassen, die solche Kontexte darstellen, als geschachtelte Klassen, in den Code des Ursprungskontexts eingefügt.
-Dabei ist es nicht ausgeschlossen, das sich darin weitere geschactelte Klassen befinden.
+Dabei ist es nicht ausgeschlossen, das sich darin weitere geschachtelte Klassen befinden.
 Sie müssen jeweils mit dem \inlinecode{CmdContextAttribute} gekennzeichnet sein, damit sie als Kontext erkannt werden.  
  
 
@@ -334,7 +334,7 @@ Aktuell gibt es drei Operatoren für Konfigurationswerte:
  \end{outline}
 
 In dem Beispielprojekt gibt es eine Konfiguration unter der \inlinecode{--cfg}-Option, die u. a. ein Feld namens \inlinecode{IntA} des Typ \inlinecode{int} besitzt,
-das standardmäßig Wert 7 hat.
+das standardmäßig den Wert 7 hat.
 Um diesen Wert nun zu lesen, muss der Befehl \inlinecode{ReferenceUsage --cfg IntA get} ausgeführt werden.
 Um den Wert des Felds auf 5 zu setzen, muss \inlinecode{ReferenceUsage --cfg IntA set 5} ausgeführt werden.
 
@@ -384,7 +384,7 @@ Sie ist mit minimalen Modifikationen auch in vielen anderen Sprachen, wie Java, 
 Dieses Feature erlaubt es auch, Sonderzeichen, wie Emojis, problemfrei zu übertragen, was in normalen Kommandozeilenoberflächen mit wenigen Ausnahmen nicht möglich ist.
 Außerdem sind damit alle Probleme um das Verwenden von Backslashes gelöst.
 Hier stellt sich natürlich die Frage, weswegen ich nicht JSON hierfür verwendet habe.
-Die Problematik liegt darin, dass erstens immer Backslashes gesetzt werden müssen und, zweitens, dass bestimmte Sonderzeichenfolgen in JSON nicht kodiert werden können, wie auch in der Spezifikation bemerkt~\cite{JSONSpec}.
+Die Problematik liegt darin, dass erstens immer Backslashes gesetzt werden müssen und  zweitens, dass bestimmte Sonderzeichenfolgen in JSON nicht kodiert werden können, wie auch in der Spezifikation bemerkt~\cite{JSONSpec}.
 Da sowieso ein Kodierungsschritt nötig ist und diese Funktion in jedem Fall nur für automatisierte Szenarien zur Kommunikation zwischen Programmen sinnvoll ist,
 ist die Verwendung eines etwas komplizierteren, proprietären Kodierungsprozesses gegenüber fehlender Zuverlässigkeit und höherem Aufwand meiner Meinung nach gerechtfertigt.
 \subsubsection{Interaktive Kommandozeilenoberfäche}

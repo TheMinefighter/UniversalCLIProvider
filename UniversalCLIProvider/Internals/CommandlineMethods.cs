@@ -24,6 +24,13 @@ public static class CommandlineMethods {
 	private static readonly Type[] OverridenTypes =
 		{typeof(DateTime), typeof(DateTimeOffset), typeof(TimeSpan), typeof(Guid), typeof(Uri)};
 
+	public static bool GetValueFromString<T>([NotNull] string source, out T value,
+		[CanBeNull] JsonSerializerSettings serializerSettings = null, bool enableCustomCompatSupport = true) {
+		bool success = GetValueFromString(source, typeof(T), out object tmp, serializerSettings, enableCustomCompatSupport);
+		value = tmp is T t ? t : default(T);
+		return success;
+
+	}
 	/// <summary>
 	///  Parses a string while taking the special requirements for CLIs into account
 	/// </summary>
