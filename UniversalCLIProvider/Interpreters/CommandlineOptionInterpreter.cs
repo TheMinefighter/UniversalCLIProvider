@@ -55,7 +55,16 @@ public class CommandlineOptionInterpreter {
 			}
 		}
 
-		contextInterpreter.Interpret();
+		try {
+			contextInterpreter.Interpret();
+		}
+		catch (CLIUsageException e) {
+			Console.WriteLine(e.Message);
+			if (e.InnerException!=null) {
+				Console.WriteLine(e.InnerException);
+			}
+			throw;
+		}
 	}
 }
 }
