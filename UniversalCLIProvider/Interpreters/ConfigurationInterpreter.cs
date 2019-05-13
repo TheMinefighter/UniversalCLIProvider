@@ -22,24 +22,21 @@ public class ConfigurationInterpreter : BaseInterpreter {
 		_typeInfoOfConfiguration = typeInfoOfConfiguration;
 	}
 
-	internal override bool Interpret() {
+	internal override void Interpret() {
 		if (Offset + 1 >= TopInterpreter.Args.Length || IsParameterEqual("help", TopInterpreter.Args[Offset + 1], "?")) {
 			_root.Load(_typeInfoOfConfiguration);
 			HelpGenerators.PrintConfigurationContextHelp(_root, this, true);
-			return true;
+			return;
 		}
 
 		bool ro = false;
 		IncreaseOffset();
 		object requiredObject = _referenceToObject;
-		if (!ConfigurationHelpers.ResolvePathRecursive(TopInterpreter.Args[Offset], _typeInfoOfConfiguration, ref requiredObject,
-			out PropertyInfo prop,
-			out object[] indexers, ref ro, out PropertyInfo lastNonIndexer)) {
-			Console.WriteLine("Could not resolve the path provided");
-			return false;
-		}
+		(PropertyInfo prop, object[] indexers, PropertyInfo lastNonIndexer) =
+			ConfigurationHelpers.ResolvePathRecursive(TopInterpreter.Args[Offset], _typeInfoOfConfiguration, ref requiredObject,
+				ref ro);
 
-		IncreaseOffset();
+			IncreaseOffset();
 		string Operator = TopInterpreter.Args[Offset];
 		if (IsParameterEqual("Help", Operator, allowPrefixFree: true)) {
 			var contextAttribute = lastNonIndexer.PropertyType.GetCustomAttribute<CmdConfigurationNamespaceAttribute>();
@@ -47,7 +44,7 @@ public class ConfigurationInterpreter : BaseInterpreter {
 				var valueAttribute = lastNonIndexer.GetCustomAttribute<CmdConfigurationFieldAttribute>();
 				valueAttribute.Load(new PropertyOrFieldInfo(lastNonIndexer));
 				HelpGenerators.PrintConfigurationFieldHelp(valueAttribute, this);
-				return true;
+				return;
 			}
 			else {
 				HelpGenerators.PrintConfigurationContextHelp(contextAttribute, this);
@@ -60,28 +57,26 @@ public class ConfigurationInterpreter : BaseInterpreter {
 				currentValue = indexers is null ? prop.GetValue(requiredObject) : prop.GetValue(requiredObject, indexers);
 			}
 			catch (Exception e) {
-				Console.WriteLine("An error occurred while obtaining the value requested:"); //Err
-				Console.WriteLine(e);
-				return false;
+				throw new CLIUsageException("An error occurred while obtaining the value requested:", e);
 			}
 
 			Console.WriteLine(JsonConvert.SerializeObject(currentValue));
-			return true;
+			return;
 		}
 
 		if (IsParameterEqual("Set", Operator, allowPrefixFree: true)) {
 			var valueAttribute = prop.GetCustomAttribute<CmdConfigurationFieldAttribute>();
 			if (ro || !prop.CanWrite) {
-				Console.WriteLine("The given value is not writable"); //Err
+				throw new CLIUsageException("The given property is read only");
 			}
 
 			if (IncreaseOffset()) {
-				Console.WriteLine("Please supply a value to set the given value to!"); //Err
+				throw new CLIUsageException("Please supply a value to set the given value to!");
 			}
 
 			if (!CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], prop.PropertyType, out object newValue)) {
-				Console.WriteLine($"The given string couldn't be parsed to {prop.PropertyType}!"); //Err
-				return false;
+				throw new CLIUsageException(
+					$"The given string (TopInterpreter.Args[Offset]) couldn't be parsed to {prop.PropertyType}!");
 			}
 
 			try {
@@ -93,51 +88,46 @@ public class ConfigurationInterpreter : BaseInterpreter {
 				}
 			}
 			catch (Exception e) {
-				Console.WriteLine("An error occurred while writing the value:"); //Err
-				Console.WriteLine(e);
-				return false;
+				throw new CLIUsageException("An error occurred while writing the value:", e);
 			}
 
 			if (_referenceToObject is IConfigurationRoot iCfgRoot) {
 				iCfgRoot.Save(Enumerable.Repeat(new PropertyOrFieldInfo(lastNonIndexer), 1));
 			}
 
-			return true;
+			return;
 		}
 
 		if (IsParameterEqual("RemoveAt", Operator, allowPrefixFree: true)) {
 			var valueAttribute = prop.GetCustomAttribute<CmdConfigurationFieldAttribute>();
 			if (ro || !prop.CanWrite) {
-				Console.WriteLine("The given value is not writable"); //Err
+				throw new CLIUsageException("The given value is not writable");
 			}
 
 			if (!typeof(ICollection).IsAssignableFrom(prop.PropertyType)) {
-				Console.WriteLine("The object that you try to remove an element from is no collection."); //Err
+				throw new CLIUsageException("The object that you try to remove an element from is no collection.");
 			}
 
 			if (IncreaseOffset()) {
-				Console.WriteLine("Please supply a value to set the given value to!"); //Err
+				throw new CLIUsageException("Please supply a value to set the given value to!");
 			}
 
 			if (!CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], out int removalIndex)) {
-				Console.WriteLine($"The given string couldn't be parsed to {prop.PropertyType}!"); //Err
-				return false;
+				throw new CLIUsageException($"The given string couldn't be parsed to {prop.PropertyType}!");
 			}
+
 			try {
-				((IList) (indexers is null ? prop.GetValue(requiredObject) : prop.GetValue(requiredObject, indexers))).RemoveAt(removalIndex); //Safe due to previous assignability check
+				((IList) (indexers is null ? prop.GetValue(requiredObject) : prop.GetValue(requiredObject, indexers)))
+					.RemoveAt(removalIndex); //Safe due to previous assignability check
 			}
 			catch (Exception e) {
-				Console.WriteLine("An error occurred while removing an object:"); //Err
-				Console.WriteLine(e);
-				return false;
+				throw new CLIUsageException("An error occurred while removing an object:", e);
 			}
 		}
 
-		Console.WriteLine("Could not resolve the operator provided");
+		throw new CLIUsageException("Could not resolve the operator provided");
 		//TODO Remove and Add missing
 		//_root.Interpret(printErrors);
-		return false;
-		throw new NotImplementedException();
 	}
 }
 }

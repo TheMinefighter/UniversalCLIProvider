@@ -11,7 +11,8 @@ public class CmdConfigurationFieldAttribute : Attribute {
 	public string Name;
 	internal PropertyOrFieldInfo UnderlyingPropertyOrFieldInfo;
 
-	public CmdConfigurationFieldAttribute(string name, string description = null, string[] longDescription = null, bool isReadonly = false) {
+	public CmdConfigurationFieldAttribute(string name, string description = null, string[] longDescription = null,
+		bool isReadonly = false) {
 		Name = name;
 		IsReadonly = isReadonly;
 		Description = description;

@@ -29,8 +29,8 @@ public static class CommandlineMethods {
 		bool success = GetValueFromString(source, typeof(T), out object tmp, serializerSettings, enableCustomCompatSupport);
 		value = tmp is T t ? t : default(T);
 		return success;
-
 	}
+
 	/// <summary>
 	///  Parses a string while taking the special requirements for CLIs into account
 	/// </summary>
@@ -40,11 +40,15 @@ public static class CommandlineMethods {
 	/// <param name="serializerSettings">Custom JSON SerializerSettings</param>
 	/// <param name="enableCustomCompatSupport">Whether to enable the CLI optimizing changes before the JSON Deserializer</param>
 	/// <remarks>
-	///  For supported primary types see https://github.com/JamesNK/Newtonsoft.Json/blob/master/Src/Newtonsoft.Json/Utilities/ConvertUtils.cs (@
+	///  For supported primary types see
+	///  https://github.com/JamesNK/Newtonsoft.Json/blob/master/Src/Newtonsoft.Json/Utilities/ConvertUtils.cs (@
 	///  internal enum PrimitiveTypeCode)
 	/// </remarks>
 	/// <remarks>Types with modified support:</remarks>
-	/// <remarks><see cref="Enum" />: Allowing Enum.Parse (e.g. <c>NumberStyles.Any</c>, <c>Any</c>) when enum is the explicit target type</remarks>
+	/// <remarks>
+	///  <see cref="Enum" />: Allowing Enum.Parse (e.g. <c>NumberStyles.Any</c>, <c>Any</c>) when enum is the explicit target
+	///  type
+	/// </remarks>
 	/// <remarks>
 	///  <see cref="DateTime" />, <see cref="TimeSpan" />, <see cref="DateTimeOffset" />, <see cref="Uri" />, <see cref="Guid" />,
 	///  <see cref="string" />Allowed without quotation marks when explicit
@@ -110,6 +114,7 @@ public static class CommandlineMethods {
 			tw.WriteLine(text);
 			return;
 		}
+
 //TODO split splitting and printing
 		bool firstLine = true;
 		int lastFallback = -1;
@@ -150,7 +155,8 @@ public static class CommandlineMethods {
 	/// <param name="width">The targeted width</param>
 	/// <param name="pad">The padding character to use, defaults to =</param>
 	/// <remarks>
-	///  When the difference between the length of <paramref name="src" /> and <paramref name="width" /> is odd, there will be one less padding
+	///  When the difference between the length of <paramref name="src" /> and <paramref name="width" /> is odd, there will be one less
+	///  padding
 	///  character on the left
 	/// </remarks>
 	/// <returns>The padded string</returns>
@@ -178,7 +184,8 @@ public static class CommandlineMethods {
 		(Console.BackgroundColor, Console.ForegroundColor) = backup;
 	}
 
-	internal static bool IsParameterEqual([CanBeNull] string expected, [NotNull] string given, bool ignoreCase, string expectedShortForm = null,
+	internal static bool IsParameterEqual([CanBeNull] string expected, [NotNull] string given, bool ignoreCase,
+		string expectedShortForm = null,
 		bool allowPrefixFree = false) {
 		if (expected is null) {
 			return false;
@@ -210,13 +217,14 @@ public static class CommandlineMethods {
 					break;
 				case ' ' when !quoting: {
 					string tmpString = lastStringBuilder.ToString();
-					if (tmpString != String.Empty) {
+					if (tmpString != string.Empty) {
 						yield return tmpString;
 						lastStringBuilder = new StringBuilder();
 					}
 
 					break;
 				}
+
 				case '\\' when !backslashActive:
 					backslashActive = true;
 					break;
@@ -236,7 +244,7 @@ public static class CommandlineMethods {
 		}
 
 		string lastString = lastStringBuilder.ToString();
-		if (lastString != String.Empty) {
+		if (lastString != string.Empty) {
 			yield return lastString;
 		}
 	}

@@ -9,8 +9,11 @@ public enum CmdParameterUsage : byte {
 	/// <summary>
 	///  The default usage will be replaced with one of the other ones once loaded
 	/// </summary>
-	/// <remarks>When there is no alias it will result in <see cref="SupportDeclaredRaw" /> otherwise in <see cref="SupportDirectAlias" /></remarks>
-	Default = 1<<7,//128
+	/// <remarks>
+	///  When there is no alias it will result in <see cref="SupportDeclaredRaw" /> otherwise in
+	///  <see cref="SupportDirectAlias" />
+	/// </remarks>
+	Default = 1 << 7, //128
 
 	/// <summary>
 	///  Indicates that an alias with a declaration of the parameter supported
@@ -31,8 +34,8 @@ public enum CmdParameterUsage : byte {
 	SupportDeclaredRaw = 1 << 2, //4
 
 	/// <summary>
-	/// Indicates the support for all three types mentioned beforehand
+	///  Indicates the support for all three types mentioned beforehand
 	/// </summary>
-	All = SupportDeclaredRaw|SupportDirectAlias|SupportDeclaredAlias //7
+	All = SupportDeclaredRaw | SupportDirectAlias | SupportDeclaredAlias //7
 }
 }

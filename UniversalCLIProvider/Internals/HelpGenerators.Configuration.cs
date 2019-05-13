@@ -12,7 +12,8 @@ public static partial class HelpGenerators {
 	/// <param name="namespaceAttribute">The fieldAttribute to print help for</param>
 	/// <param name="interpreter">The interpreter to use</param>
 	/// <param name="showGenericConfigurationInfo"></param>
-	public static void PrintConfigurationContextHelp(CmdConfigurationNamespaceAttribute namespaceAttribute, BaseInterpreter interpreter,
+	public static void PrintConfigurationContextHelp(CmdConfigurationNamespaceAttribute namespaceAttribute,
+		BaseInterpreter interpreter,
 		bool showGenericConfigurationInfo = false) {
 		if (showGenericConfigurationInfo) {
 			ConfigurationGenericHelp(interpreter, Console.WindowWidth, interpreter.TopInterpreter.Options.DefaultIndent);
@@ -31,8 +32,9 @@ public static partial class HelpGenerators {
 	public static void ConfigurationNamespaceHelp(CmdConfigurationNamespaceAttribute namespaceAttribute, int width, int indent = 3,
 		TextWriter tw = null) {
 		tw = tw ?? Console.Out;
-		
-		tw.Write(CommandlineMethods.PadCentered($"{namespaceAttribute.Name}{(namespaceAttribute.IsReadonly ? " (RW)" : "")}", width));
+
+		tw.Write(
+			CommandlineMethods.PadCentered($"{namespaceAttribute.Name}{(namespaceAttribute.IsReadonly ? " (RW)" : "")}", width));
 		if (!(namespaceAttribute.LongDescription is null)) {
 			foreach (string s in namespaceAttribute.LongDescription) {
 				CommandlineMethods.PrintWithPotentialIndent(s, width, 0, tw);
@@ -73,10 +75,12 @@ public static partial class HelpGenerators {
 	/// <param name="width">The width of the console</param>
 	/// <param name="indent">The indent to use</param>
 	/// <param name="tw">The Textwriter to write the help to</param>
-	public static void ConfigurationFieldHelp(CmdConfigurationFieldAttribute fieldAttribute, int width, int indent = 3, TextWriter tw = null) {
+	public static void ConfigurationFieldHelp(CmdConfigurationFieldAttribute fieldAttribute, int width, int indent = 3,
+		TextWriter tw = null) {
 		tw = tw ?? Console.Out;
 		tw.Write(CommandlineMethods.PadCentered(
-			$"{fieldAttribute.Name} (R{(fieldAttribute.IsReadonly ? "W" : "O")},{fieldAttribute.UnderlyingPropertyOrFieldInfo.ValueType})", width));
+			$"{fieldAttribute.Name} (R{(fieldAttribute.IsReadonly ? "W" : "O")},{fieldAttribute.UnderlyingPropertyOrFieldInfo.ValueType})",
+			width));
 		if (fieldAttribute.LongDescription is null) {
 			if (fieldAttribute.Description is null) {
 				tw.WriteLine("This value has no further description");

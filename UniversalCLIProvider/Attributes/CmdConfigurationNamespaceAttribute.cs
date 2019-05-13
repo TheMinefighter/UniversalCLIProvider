@@ -15,7 +15,8 @@ public class CmdConfigurationNamespaceAttribute : Attribute {
 	public string[] LongDescription;
 	public string Name;
 
-	public CmdConfigurationNamespaceAttribute(string name, string description, string[] longDescription = null, bool isReadonly = false) {
+	public CmdConfigurationNamespaceAttribute(string name, string description, string[] longDescription = null,
+		bool isReadonly = false) {
 		IsReadonly = isReadonly;
 		Name = name;
 		Description = description;
@@ -25,7 +26,7 @@ public class CmdConfigurationNamespaceAttribute : Attribute {
 	public void Load(TypeInfo underlyingType) {
 		if (!_loaded) {
 			_underlyingType = underlyingType;
-			List<CmdConfigurationFieldAttribute> newValues = new List<CmdConfigurationFieldAttribute>();
+			var newValues = new List<CmdConfigurationFieldAttribute>();
 			foreach (PropertyOrFieldInfo propertyOrFieldInfo in _underlyingType.DeclaredPropertiesAndFields()) {
 				var attribute = propertyOrFieldInfo.MemberInfo.GetCustomAttribute<CmdConfigurationFieldAttribute>();
 				if (attribute is null) continue;

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UniversalCLIProvider;
 using UniversalCLIProvider.Internals;
 using Xunit;
 
@@ -25,15 +26,16 @@ public class ConfigurationHelperTests {
 	[Theory, MemberData(nameof(ResolveTestData))]
 	public static void ResolveIndexerParametersTest(string[] parameters, Type indexerOwner, bool expectedSuccess,
 		object[] expectedIndexerParameters, PropertyInfo expectedIndexer) {
-		bool success = ConfigurationHelpers.ResolveIndexerParameters(parameters, indexerOwner.GetTypeInfo(), out object[] indexParameters,
-			out PropertyInfo indexer);
-		Assert.Equal(expectedSuccess, success);
-		if (success) {
+		if (!expectedSuccess) {
+			Assert.Throws<Exception>(
+				() => { ConfigurationHelpers.ResolveIndexerParameters(parameters, indexerOwner.GetTypeInfo()); });
+		}
+		else {
+			(object[] indexParameters, PropertyInfo indexer) =
+				ConfigurationHelpers.ResolveIndexerParameters(parameters, indexerOwner.GetTypeInfo());
 			Assert.Equal(expectedIndexerParameters, indexParameters);
 			Assert.Equal(expectedIndexer.ToString(), indexer.ToString()); //Direct equality checks are not supported
 		}
-
-		//Array
 	}
 
 
@@ -41,12 +43,17 @@ public class ConfigurationHelperTests {
 	 InlineData("\"PossiblyErrorCreatingToken:P{},[]\"]", true, new[] {"\"PossiblyErrorCreatingToken:P{},[]\""}, ""),
 	 InlineData("{\"MultipleTokens\":4},\"xyz\",5]", true, new[] {"{\"MultipleTokens\":4}", "\"xyz\"", "5"}, ""),
 	 InlineData("{\"MultipleTokens\":4} ,\"with whitespaces and\",5]additional Data", true,
-		 new[] {"{\"MultipleTokens\":4}", "\"with whitespaces and\"", "5"}, "additional Data"), InlineData("\"InvalidJsonToke", false, null, null),
+		 new[] {"{\"MultipleTokens\":4}", "\"with whitespaces and\"", "5"}, "additional Data"),
+	 InlineData("\"InvalidJsonToke", false, null, null),
 	 InlineData("\"InvalidEndTerminator\")", false, null, null), InlineData("\"NoEndTerminator\"", false, null, null)]
 	public static void SplitIndexersTest(string input, bool expectedSuccess, string[] expectedResult, string expectedRemainings) {
-		bool success = ConfigurationHelpers.SplitIndexerArguments(input, out string[] result, out string remainingSrc);
-		Assert.Equal(expectedSuccess, success);
-		if (success) {
+		if (!expectedSuccess) {
+			Assert.Throws<CLIUsageException>(
+				() => { ConfigurationHelpers.SplitIndexerArguments(input); });
+		}
+		else {
+			(string[] result, string remainingSrc) = ConfigurationHelpers.SplitIndexerArguments(input);
+
 			Assert.Equal(expectedResult, result);
 			Assert.Equal(expectedRemainings, remainingSrc);
 		}

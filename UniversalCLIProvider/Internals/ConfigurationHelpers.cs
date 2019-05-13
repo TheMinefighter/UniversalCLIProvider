@@ -10,7 +10,7 @@ using UniversalCLIProvider.Attributes;
 namespace UniversalCLIProvider.Internals {
 public static class ConfigurationHelpers {
 	/// <summary>
-	/// Resolves a configuration path recursively
+	///  Resolves a configuration path recursively
 	/// </summary>
 	/// <param name="path"> The path to resolve</param>
 	/// <param name="typeInfoOfItem"> The TypeInfo of the Item to process </param>
@@ -20,18 +20,15 @@ public static class ConfigurationHelpers {
 	/// <param name="ro">Whether the property is ReadOnly</param>
 	/// <param name="lastNonIndexer">The last property not being an indexer</param>
 	/// <returns></returns>
-	public static bool ResolvePathRecursive([NotNull] string path, [NotNull] TypeInfo typeInfoOfItem, ref object currentItem, out PropertyInfo prop,
-		out object[] requiredIndexers, ref bool ro,
-		out PropertyInfo lastNonIndexer) {
-		prop = null;
-		requiredIndexers = null;
-		lastNonIndexer = null;
-		path = path.Trim();
+	public static (PropertyInfo prop, object[] requiredIndexers, PropertyInfo lastNonIndexer) ResolvePathRecursive(
+		[NotNull] string path, [NotNull] TypeInfo typeInfoOfItem, ref object currentItem, ref bool ro) {
+		PropertyInfo prop = null;
+		object[] requiredIndexers = null;
+		PropertyInfo lastNonIndexer = null;
+		path = 	path.Trim();
 		string remainingPath = null;
 		if (path.StartsWith("[")) {
-			if (!ResolveIndexerInPath(path, typeInfoOfItem, ref prop, ref requiredIndexers, out remainingPath)) {
-				return false;
-			}
+			( prop,  requiredIndexers, remainingPath)=ResolveIndexerInPath(path, typeInfoOfItem);
 		}
 		else {
 			int dotIndex = path.IndexOf('.');
@@ -49,7 +46,6 @@ public static class ConfigurationHelpers {
 			}
 
 			string currentPath = endOfCurrentBlock != -1 ? path.Substring(0, endOfCurrentBlock) : path;
-			prop = null;
 			foreach (PropertyInfo property in typeInfoOfItem.GetUnderlyingTypes().Distinct().SelectMany(x => x.DeclaredProperties)) {
 				if (property.Name.Equals(currentPath, StringComparison.OrdinalIgnoreCase)) {
 					var configurationFieldAttribute = property.GetCustomAttribute<CmdConfigurationFieldAttribute>();
@@ -61,7 +57,6 @@ public static class ConfigurationHelpers {
 						ro = true;
 					}
 
-					typeInfoOfItem = property.PropertyType.GetTypeInfo();
 					prop = property;
 					lastNonIndexer = prop;
 					break;
@@ -69,7 +64,7 @@ public static class ConfigurationHelpers {
 			}
 
 			if (prop is null) {
-				return false;
+				throw new CLIUsageException($"The property {currentItem} could not be resolved for the class {typeInfoOfItem.Name}.");
 			}
 		}
 
@@ -77,23 +72,22 @@ public static class ConfigurationHelpers {
 			try {
 				currentItem = requiredIndexers is null
 					? prop.GetValue(currentItem)
-					: prop.GetValue(currentItem, requiredIndexers); //Evaluating props value when another recursive step shall be performed
+					: prop.GetValue(currentItem,
+						requiredIndexers); //Evaluating props value when another recursive step shall be performed
 			}
-			catch (Exception) {
-				return false;
-			}
-
-			if (!ResolvePathRecursive(remainingPath, currentItem.GetType().GetTypeInfo(), ref currentItem, out prop, out requiredIndexers, ref ro,
-				out PropertyInfo possibleLastNonIndexer)) {
-				return false;
+			catch (Exception e) {
+				throw new CLIUsageException($"Whilst obtaining the value of {currentItem} an error occurred which might be caused by the programs developer:", e);
 			}
 
-			if (!(possibleLastNonIndexer is null)) {
-				lastNonIndexer = possibleLastNonIndexer;
+			PropertyInfo possibleLastNonIndexer;
+			(prop,requiredIndexers, possibleLastNonIndexer)= ResolvePathRecursive(remainingPath, currentItem.GetType().GetTypeInfo(), ref currentItem, ref ro);
+
+				if (!(possibleLastNonIndexer is null)) {
+					lastNonIndexer = possibleLastNonIndexer;
 			}
 		}
 
-		return true;
+		return (prop, requiredIndexers, lastNonIndexer);
 	}
 
 	/// <summary>
@@ -105,29 +99,21 @@ public static class ConfigurationHelpers {
 	/// <param name="requiredIndexers">The indexing operators to be used</param>
 	/// <param name="remainingPath">The path remaining to be resolved later on</param>
 	/// <returns>Whether the operation were successful</returns>
-	private static bool ResolveIndexerInPath([NotNull] string path, [NotNull] TypeInfo typeInfoOfItem, ref PropertyInfo prop,
-		ref object[] requiredIndexers, out string remainingPath) {
-		remainingPath = null;
-
-		if (!SplitIndexerArguments(path.Substring(1), out string[] indexerParameters, out remainingPath)) {
-			return false;
-		}
-
-		if (!ResolveIndexerParameters(indexerParameters, typeInfoOfItem, out requiredIndexers, out prop)) {
-			return false;
-		}
-
-		if (remainingPath.Length!=0&& remainingPath.StartsWith(".")) {
+	private static (PropertyInfo prop,object[] requiredIndexers, string remainingPath) ResolveIndexerInPath([NotNull] string path,
+		[NotNull] TypeInfo typeInfoOfItem) {
+		(string[] indexerParameters, string remainingPath) = SplitIndexerArguments(path.Substring(1));
+		(object[] requiredIndexers, PropertyInfo prop) = ResolveIndexerParameters(indexerParameters, typeInfoOfItem);
+		if (remainingPath.Length != 0 && remainingPath.StartsWith(".")) {
 			remainingPath = remainingPath.Substring(1);
 		}
 
-		return true;
+		return (prop,requiredIndexers, remainingPath);
 	}
 
-	public static bool ResolveIndexerParameters([NotNull] string[] parameters, [NotNull] TypeInfo type, out object[] indexParameters,
-		out PropertyInfo indexer) {
-		indexParameters = new object[parameters.Length];
-		indexer = null;
+	public static (object[] indexParameters, PropertyInfo indexer) ResolveIndexerParameters([NotNull] string[] parameters,
+		[NotNull] TypeInfo type) {
+		var indexParameters = new object[parameters.Length];
+		PropertyInfo indexer = null;
 		foreach (PropertyInfo possibleIndexer in type.GetUnderlyingTypes().Distinct().SelectMany(x => x.DeclaredProperties)
 			.Where(x => x.GetIndexParameters().Length == parameters.Length)) {
 			if (indexer is null || indexer.PropertyType.IsAssignableFrom(possibleIndexer.PropertyType)) {
@@ -149,16 +135,14 @@ public static class ConfigurationHelpers {
 			}
 		}
 
-		return !(indexer is null);
+		return (indexParameters, indexer);
 	}
 
-	public static bool SplitIndexerArguments([NotNull] string src, out string[] result, out string remainingSrc) {
+	public static (string[] splittedArguments, string remainingSrc) SplitIndexerArguments([NotNull] string src) {
 		//partially based on https://stackoverflow.com/a/55503527/6730162
-		result = null;
 		var serializer = new JsonSerializer();
-		List<string> resultList = new List<string>();
-		remainingSrc = src;
-
+		var resultList = new List<string>();
+		string remainingSrc = src;
 		while (true) {
 			using (var stringReader = new StringReader(remainingSrc))
 			using (var reader = new JsonTextReader(stringReader) {SupportMultipleContent = true}) {
@@ -167,8 +151,8 @@ public static class ConfigurationHelpers {
 					//TODO Cache results
 					serializer.Deserialize(reader);
 				}
-				catch (Exception) {
-					return false;
+				catch (Exception e) {
+					throw new CLIUsageException($"An error occurred whilst trying to resolve the first part of {remainingSrc}:", e);
 				}
 
 				resultList.Add(remainingSrc.Substring(0, reader.LinePosition));
@@ -176,7 +160,7 @@ public static class ConfigurationHelpers {
 				bool cont = false;
 				while (true) {
 					if (remainingSrc.Length == 0) {
-						return false;
+						throw new CLIUsageException($"The indexer ({src}) was not terminated");
 					}
 
 					char read = remainingSrc[0];
@@ -188,11 +172,14 @@ public static class ConfigurationHelpers {
 							cont = true;
 							break;
 						case ']': break;
-						default: return false;
+						default:
+							throw new CLIUsageException(
+								$"The indexer ({src}) was formatted incorrectly at the beginning of \"{remainingSrc}\"");
 					}
 
 					break;
 				}
+
 				remainingSrc = remainingSrc.Substring(1);
 				if (!cont) {
 					break;
@@ -200,14 +187,14 @@ public static class ConfigurationHelpers {
 			}
 		}
 
-		
-		result = resultList.ToArray();
-		return true;
+		string[] result = resultList.ToArray();
+		return (result, remainingSrc);
 	}
 
 	[NotNull]
 	public static IEnumerable<TypeInfo> GetUnderlyingTypes([NotNull] this TypeInfo src) {
-		IEnumerable<TypeInfo> baseEnumerator = src.ImplementedInterfaces.SelectMany(x => x.GetTypeInfo().GetUnderlyingTypes()).Append(src);
+		IEnumerable<TypeInfo> baseEnumerator =
+			src.ImplementedInterfaces.SelectMany(x => x.GetTypeInfo().GetUnderlyingTypes()).Append(src);
 		if (!(src.BaseType is null)) {
 			baseEnumerator = baseEnumerator.Concat(src.BaseType.GetTypeInfo().GetUnderlyingTypes());
 		}

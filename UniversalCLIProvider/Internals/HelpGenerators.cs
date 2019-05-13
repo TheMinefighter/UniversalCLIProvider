@@ -49,8 +49,10 @@ public static partial class HelpGenerators {
 						width, indent, tw);
 				}
 			}
+
 //TODO Differentiate directs
-			if (parameter.Usage.HasFlag(CmdParameterUsage.SupportDirectAlias) || parameter.Usage.HasFlag(CmdParameterUsage.SupportDeclaredAlias)) {
+			if (parameter.Usage.HasFlag(CmdParameterUsage.SupportDirectAlias) ||
+				parameter.Usage.HasFlag(CmdParameterUsage.SupportDeclaredAlias)) {
 				foreach (CmdParameterAliasAttribute alias in parameter.ParameterAliases) {
 					if (alias.Description is null) {
 						tw.WriteLine((alias.ShortForm is null ? "--" : "-" + alias.ShortForm + " | --") + alias.Name);
@@ -110,6 +112,7 @@ public static partial class HelpGenerators {
 					width, indent, tw);
 			}
 		}
+
 		if (context.CtxActions.Count != 0) {
 			tw.Write(CommandlineMethods.PadCentered("Actions", width));
 			foreach (CmdActionAttribute action in context.CtxActions) {

@@ -16,16 +16,18 @@ public class CmdActionAttribute : Attribute {
 	private bool _cached;
 	public List<CmdParameterAttribute> Parameters;
 	public MethodInfo UnderlyingMethod;
-/// <summary>
-/// Marks a method to be executable from commandline
-/// </summary>
-/// <param name="name"> The name to be used from commandline</param>
-/// <param name="description">The description what the method does, optional</param>
-/// <param name="longDescription">A long description what the method does, each item representing a paragraph, optional</param>
-/// <param name="usageExamples">Examples for the commands usage, optional</param>
-/// <param name="shortForm">The short form for calling this action, optional</param>
-/// <exception cref="InvalidCLIConfigurationException">Thrown when the <paramref name="name"/> is invalid</exception>
-	public CmdActionAttribute([NotNull] string name, string description = null, string[] longDescription = null, string[] usageExamples = null,
+
+	/// <summary>
+	///  Marks a method to be executable from commandline
+	/// </summary>
+	/// <param name="name"> The name to be used from commandline</param>
+	/// <param name="description">The description what the method does, optional</param>
+	/// <param name="longDescription">A long description what the method does, each item representing a paragraph, optional</param>
+	/// <param name="usageExamples">Examples for the commands usage, optional</param>
+	/// <param name="shortForm">The short form for calling this action, optional</param>
+	/// <exception cref="InvalidCLIConfigurationException">Thrown when the <paramref name="name" /> is invalid</exception>
+	public CmdActionAttribute([NotNull] string name, string description = null, string[] longDescription = null,
+		string[] usageExamples = null,
 		string shortForm = null) {
 #if DEBUG
 		if (string.IsNullOrWhiteSpace(name)) {

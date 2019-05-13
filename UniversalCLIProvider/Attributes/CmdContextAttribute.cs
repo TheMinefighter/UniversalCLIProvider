@@ -5,7 +5,6 @@ using System.Reflection;
 using JetBrains.Annotations;
 using PropertyOrFieldInfoPackage;
 using UniversalCLIProvider.Internals;
-using UniversalCLIProvider.Interpreters;
 
 namespace UniversalCLIProvider.Attributes {
 [AttributeUsage(AttributeTargets.Class), UsedImplicitly]
@@ -22,7 +21,8 @@ public class CmdContextAttribute : Attribute {
 	[CanBeNull] public readonly string Description;
 
 	/// <summary>
-	///  The Long description of the context, each element in the array represents one paragraph, linebreaks within the paragraph will be created
+	///  The Long description of the context, each element in the array represents one paragraph, linebreaks within the paragraph will be
+	///  created
 	///  automatically
 	/// </summary>
 	[CanBeNull] public readonly string[] LongDescription;
@@ -53,7 +53,8 @@ public class CmdContextAttribute : Attribute {
 	internal IList<CmdActionAttribute> CtxActions;
 
 	/// <summary>
-	///  The action to be run when no further Arguments are supplied, can easily be set with the defaultActionPreset constructor parameter
+	///  The action to be run when no further Arguments are supplied, can easily be set with the defaultActionPreset constructor
+	///  parameter
 	///  or the <see cref="CmdDefaultActionAttribute" />
 	/// </summary>
 	[NotNull] public ContextDefaultAction DefaultAction;
@@ -73,7 +74,10 @@ public class CmdContextAttribute : Attribute {
 	/// </summary>
 	/// <param name="name">the name of the newly created context</param>
 	/// <param name="description">The description of the context, defaults to null</param>
-	/// <param name="longDescription">The extended description of the context, each item of the array representing a paragraph, defaults to null</param>
+	/// <param name="longDescription">
+	///  The extended description of the context, each item of the array representing a paragraph, defaults
+	///  to null
+	/// </param>
 	/// <param name="shortForm">A shortform for this context</param>
 	/// <param name="defaultActionPreset">
 	///  The preset for the <see cref="ContextDefaultAction" />, aka the action to run when no further arguments are
@@ -83,7 +87,6 @@ public class CmdContextAttribute : Attribute {
 	public CmdContextAttribute([NotNull] string name, string description = null, string[] longDescription = null,
 		string shortForm = null, ContextDefaultActionPreset defaultActionPreset = ContextDefaultActionPreset.Help) {
 #if DEBUG
-
 		if (string.IsNullOrWhiteSpace(name)) {
 			throw new InvalidCLIConfigurationException("A name is required for any context",
 				new ArgumentException("Value cannot be null or whitespace.", nameof(name)));
@@ -144,11 +147,13 @@ public class CmdContextAttribute : Attribute {
 				CtxParameters.Add(parameterAttribute);
 			}*/
 
-				var configurationProviderAttribute = propertyOrField.MemberInfo.GetCustomAttribute<CmdConfigurationProviderAttribute>();
+				var configurationProviderAttribute =
+					propertyOrField.MemberInfo.GetCustomAttribute<CmdConfigurationProviderAttribute>();
 				if (!(configurationProviderAttribute is null)) {
 					configurationProviderAttribute.UnderlyingPropertyOrField = propertyOrField;
 					configurationProviderAttribute.Root =
-						configurationProviderAttribute.UnderlyingPropertyOrField.ValueType.GetCustomAttribute<CmdConfigurationNamespaceAttribute>();
+						configurationProviderAttribute.UnderlyingPropertyOrField.ValueType
+							.GetCustomAttribute<CmdConfigurationNamespaceAttribute>();
 #if DEBUG
 					if (configurationProviderAttribute.Root is null) {
 						throw new InvalidCLIConfigurationException(
@@ -181,10 +186,12 @@ public class CmdContextAttribute : Attribute {
 
 #endif
 						DefaultAction =
-							new ContextDefaultAction(interpreter: x => methodInfo.Invoke(null, defaultActionAttribute.Parameters.Append(x).ToArray()));
+							new ContextDefaultAction(interpreter: x =>
+								methodInfo.Invoke(null, defaultActionAttribute.Parameters.Append(x).ToArray()));
 					}
 					else {
-						throw new InvalidCLIConfigurationException($"In the type {UnderlyingType.FullName} you have set the method {methodInfo.Name}" +
+						throw new InvalidCLIConfigurationException(
+							$"In the type {UnderlyingType.FullName} you have set the method {methodInfo.Name}" +
 							$" to be the context's default action, in the defining attribute you have supplied {defaultActionAttribute.Parameters.Length} parameters" +
 							" but that count must be the count of parameters accepted by the method or on less. Neither was the case.");
 					}

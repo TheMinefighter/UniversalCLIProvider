@@ -36,7 +36,8 @@ public class CommandlineOptionInterpreter {
 		}
 
 		var contextInterpreter =
-			new ContextInterpreter(this, TopContextAttribute) {UnderlyingContextAttribute = {UnderlyingType = baseContext.GetTypeInfo()}};
+			new ContextInterpreter(this, TopContextAttribute)
+				{UnderlyingContextAttribute = {UnderlyingType = baseContext.GetTypeInfo()}};
 
 		contextInterpreter.UnderlyingContextAttribute.Load();
 		if (Args.Length > 0) {

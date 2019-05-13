@@ -18,7 +18,7 @@ public abstract class BaseInterpreter {
 	/// </summary>
 	public CommandlineOptionInterpreter TopInterpreter { get; }
 
-	public BaseInterpreter Parent { get; }
+	protected BaseInterpreter Parent { get; }
 
 	public IEnumerable<BaseInterpreter> PathBottomUp {
 		get {
@@ -72,11 +72,13 @@ public abstract class BaseInterpreter {
 	///  Starts the interpretation
 	/// </summary>
 	/// <returns>Whether the interpretation was successful</returns>
-	internal abstract bool Interpret();
+	internal abstract void Interpret();
 
 
-	internal bool IsParameterEqual(string expected, string given = null, string expectedShortForm = null, bool allowPrefixFree = false) =>
-		CommandlineMethods.IsParameterEqual(expected, given ?? TopInterpreter.Args[Offset], TopInterpreter.Options.IgnoreParameterCase,
+	internal bool IsParameterEqual(string expected, string given = null, string expectedShortForm = null,
+		bool allowPrefixFree = false) =>
+		CommandlineMethods.IsParameterEqual(expected, given ?? TopInterpreter.Args[Offset],
+			TopInterpreter.Options.IgnoreParameterCase,
 			expectedShortForm, allowPrefixFree);
 }
 }

@@ -18,7 +18,7 @@ public class CmdParameterAttribute : Attribute {
 	public CmdParameterUsage Usage;
 
 
-	public CmdParameterAttribute(string name, string description=null, CmdParameterUsage usage = CmdParameterUsage.Default) {
+	public CmdParameterAttribute(string name, string description = null, CmdParameterUsage usage = CmdParameterUsage.Default) {
 		Name = name;
 		Description = description;
 		Usage = usage;
