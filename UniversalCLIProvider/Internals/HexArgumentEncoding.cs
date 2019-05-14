@@ -46,12 +46,11 @@ public static class HexArgumentEncoding {
 	/// <param name="arg"> The original hexadecimal argument</param>
 	/// <param name="newArgs"> the decoded arguments</param>
 	/// <returns>Whether the parsing operation were successful</returns>
-	public static bool ArgumentsFromHex([NotNull] string arg, out List<string> newArgs) {
+	public static void ArgumentsFromHex([NotNull] string arg, out List<string> newArgs) {
 		newArgs = null;
 		int currentOffset = 0;
 		if (arg.Length < 4 + currentOffset) {
 			throw new CLIUsageException("The hexadecimal data is not long enough for evaluating the encoding");
-			return false;
 		}
 
 		Encoding encoding = Encoding.GetEncoding(int.Parse(arg.Substring(currentOffset, 4), NumberStyles.HexNumber));
@@ -64,7 +63,8 @@ public static class HexArgumentEncoding {
 			}
 
 			if (arg.Length < currentOffset + 1) {
-				throw new CLIUsageException($"The hexadecimal data is not long enough for evaluating the proposed length of argument {count}");
+				throw new CLIUsageException(
+					$"The hexadecimal data is not long enough for evaluating the proposed length of argument {count}");
 			}
 
 			int proposedLengthOfLength;
@@ -77,7 +77,8 @@ public static class HexArgumentEncoding {
 
 			currentOffset++;
 			if (arg.Length < currentOffset + proposedLengthOfLength) {
-				throw new CLIUsageException($"The hexadecimal data is not long enough for evaluating the proposed length of argument {count}");
+				throw new CLIUsageException(
+					$"The hexadecimal data is not long enough for evaluating the proposed length of argument {count}");
 			}
 
 			int proposedLength;
@@ -102,8 +103,6 @@ public static class HexArgumentEncoding {
 			count++;
 			newArgs.Add(encoding.GetString(rawArgument));
 		}
-
-		return true;
 	}
 }
 }

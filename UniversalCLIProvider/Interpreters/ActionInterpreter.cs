@@ -23,7 +23,8 @@ public class ActionInterpreter : BaseInterpreter {
 			if (TopInterpreter.Args.Length - 1 == Offset) {
 				HelpGenerators.PrintActionHelp(UnderlyingAction, this);
 				return;
-			} else {
+			}
+			else {
 				IncreaseOffset();
 				if (IsParameterDeclaration(out CmdParameterAttribute found, allowPrefixFree: true)) {
 					HelpGenerators.PrintParameterHelp(found, this);
@@ -31,7 +32,8 @@ public class ActionInterpreter : BaseInterpreter {
 				}
 
 				CmdParameterAliasAttribute aliasAttribute =
-					UnderlyingAction.Parameters.SelectMany(x => x.ParameterAliases).FirstOrDefault(x=>IsParameterEqual(x.Name,TopInterpreter.Args[Offset],x.ShortForm));
+					UnderlyingAction.Parameters.SelectMany(x => x.ParameterAliases)
+						.FirstOrDefault(x => IsParameterEqual(x.Name, TopInterpreter.Args[Offset], x.ShortForm));
 				if (aliasAttribute is null) {
 					//TODO special error
 					HelpGenerators.PrintActionHelp(UnderlyingAction, this);
@@ -62,7 +64,8 @@ public class ActionInterpreter : BaseInterpreter {
 					invokersDeclared[i] = true;
 				}
 				else {
-					throw new CLIUsageException($"The parameter {allParameterInfos[i].Name} of type {allParameterInfos[i].ParameterType} is not defined.");
+					throw new CLIUsageException(
+						$"The parameter {allParameterInfos[i].Name} of type {allParameterInfos[i].ParameterType} is not defined.");
 					//throw
 				}
 			}

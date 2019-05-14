@@ -19,16 +19,6 @@ public class CommandlineOptionInterpreter {
 		Interpret(typeof(T));
 	}
 
-	public bool HexadecimalPreprocessor() {
-		string arg = Args[1];
-		if (!HexArgumentEncoding.ArgumentsFromHex(arg, out List<string> newArgs)) {
-			return false;
-		}
-
-		Args = newArgs.ToArray();
-		return true;
-	}
-
 	public void Interpret(Type baseContext) {
 		TopContextAttribute = baseContext.GetCustomAttribute(typeof(CmdContextAttribute)) as CmdContextAttribute;
 		if (TopContextAttribute is null) {
@@ -42,9 +32,9 @@ public class CommandlineOptionInterpreter {
 		contextInterpreter.UnderlyingContextAttribute.Load();
 		if (Args.Length > 0) {
 			if (contextInterpreter.IsParameterEqual(Options.HexOption, Args[0])) {
-				if (HexadecimalPreprocessor()) {
-					Interpret(baseContext);
-				}
+				HexArgumentEncoding.ArgumentsFromHex(Args[1], out List<string> newArgs);
+				Args = newArgs.ToArray();
+				Interpret(baseContext);
 
 				return;
 			}
@@ -60,9 +50,10 @@ public class CommandlineOptionInterpreter {
 		}
 		catch (CLIUsageException e) {
 			Console.WriteLine(e.Message);
-			if (e.InnerException!=null) {
+			if (e.InnerException != null) {
 				Console.WriteLine(e.InnerException);
 			}
+
 			throw;
 		}
 	}

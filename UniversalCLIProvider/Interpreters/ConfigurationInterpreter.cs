@@ -36,7 +36,7 @@ public class ConfigurationInterpreter : BaseInterpreter {
 			ConfigurationHelpers.ResolvePathRecursive(TopInterpreter.Args[Offset], _typeInfoOfConfiguration, ref requiredObject,
 				ref ro);
 
-			IncreaseOffset();
+		IncreaseOffset();
 		string Operator = TopInterpreter.Args[Offset];
 		if (IsParameterEqual("Help", Operator, allowPrefixFree: true)) {
 			var contextAttribute = lastNonIndexer.PropertyType.GetCustomAttribute<CmdConfigurationNamespaceAttribute>();

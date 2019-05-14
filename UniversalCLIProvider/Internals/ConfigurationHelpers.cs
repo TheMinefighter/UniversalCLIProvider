@@ -25,10 +25,10 @@ public static class ConfigurationHelpers {
 		PropertyInfo prop = null;
 		object[] requiredIndexers = null;
 		PropertyInfo lastNonIndexer = null;
-		path = 	path.Trim();
+		path = path.Trim();
 		string remainingPath = null;
 		if (path.StartsWith("[")) {
-			( prop,  requiredIndexers, remainingPath)=ResolveIndexerInPath(path, typeInfoOfItem);
+			(prop, requiredIndexers, remainingPath) = ResolveIndexerInPath(path, typeInfoOfItem);
 		}
 		else {
 			int dotIndex = path.IndexOf('.');
@@ -76,14 +76,17 @@ public static class ConfigurationHelpers {
 						requiredIndexers); //Evaluating props value when another recursive step shall be performed
 			}
 			catch (Exception e) {
-				throw new CLIUsageException($"Whilst obtaining the value of {currentItem} an error occurred which might be caused by the programs developer:", e);
+				throw new CLIUsageException(
+					$"Whilst obtaining the value of {currentItem} an error occurred which might be caused by the programs developer:",
+					e);
 			}
 
 			PropertyInfo possibleLastNonIndexer;
-			(prop,requiredIndexers, possibleLastNonIndexer)= ResolvePathRecursive(remainingPath, currentItem.GetType().GetTypeInfo(), ref currentItem, ref ro);
+			(prop, requiredIndexers, possibleLastNonIndexer) =
+				ResolvePathRecursive(remainingPath, currentItem.GetType().GetTypeInfo(), ref currentItem, ref ro);
 
-				if (!(possibleLastNonIndexer is null)) {
-					lastNonIndexer = possibleLastNonIndexer;
+			if (!(possibleLastNonIndexer is null)) {
+				lastNonIndexer = possibleLastNonIndexer;
 			}
 		}
 
@@ -99,7 +102,7 @@ public static class ConfigurationHelpers {
 	/// <param name="requiredIndexers">The indexing operators to be used</param>
 	/// <param name="remainingPath">The path remaining to be resolved later on</param>
 	/// <returns>Whether the operation were successful</returns>
-	private static (PropertyInfo prop,object[] requiredIndexers, string remainingPath) ResolveIndexerInPath([NotNull] string path,
+	private static (PropertyInfo prop, object[] requiredIndexers, string remainingPath) ResolveIndexerInPath([NotNull] string path,
 		[NotNull] TypeInfo typeInfoOfItem) {
 		(string[] indexerParameters, string remainingPath) = SplitIndexerArguments(path.Substring(1));
 		(object[] requiredIndexers, PropertyInfo prop) = ResolveIndexerParameters(indexerParameters, typeInfoOfItem);
@@ -107,7 +110,7 @@ public static class ConfigurationHelpers {
 			remainingPath = remainingPath.Substring(1);
 		}
 
-		return (prop,requiredIndexers, remainingPath);
+		return (prop, requiredIndexers, remainingPath);
 	}
 
 	public static (object[] indexParameters, PropertyInfo indexer) ResolveIndexerParameters([NotNull] string[] parameters,

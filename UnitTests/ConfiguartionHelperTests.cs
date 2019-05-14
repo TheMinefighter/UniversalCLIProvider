@@ -14,11 +14,11 @@ public class ConfigurationHelperTests {
 		new TheoryData<string[], Type, bool, object[], PropertyInfo> {
 			{
 				new[] {"3"}, typeof(string[]), true, new object[] {3},
-				typeof(string[]).GetTypeInfo().GetUnderlyingTypes().SelectMany(x => x.GetRuntimeProperties())
+				typeof(IList<string>).GetTypeInfo().GetRuntimeProperties()
 					.First(x => x.GetIndexParameters().Length > 0 && x.PropertyType == typeof(string))
 			}, {
 				new[] {"\"Test\""}, typeof(Dictionary<string, int>), true, new object[] {"Test"},
-				typeof(Dictionary<string, int>).GetTypeInfo().GetUnderlyingTypes().SelectMany(x => x.GetRuntimeProperties())
+				typeof(Dictionary<string, int>).GetTypeInfo().GetRuntimeProperties()
 					.First(x => x.GetIndexParameters().Length > 0 && x.PropertyType == typeof(int))
 			}
 		};
