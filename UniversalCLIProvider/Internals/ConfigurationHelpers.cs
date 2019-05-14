@@ -194,8 +194,15 @@ public static class ConfigurationHelpers {
 		return (result, remainingSrc);
 	}
 
+	/// <summary>
+	/// Gets all type infos of types the given type inherits and implements on all levels
+	/// </summary>
+	/// <param name="src">The type for which base types to search</param>
+	/// <remarks>You might want to use <see cref="Enumerable.Distinct{TSource}(System.Collections.Generic.IEnumerable{TSource})"/>
+	/// on this functions output in performance critical applications, due to the fact that doubled mentions of types are not actively prevented</remarks>
+	/// <returns>An IEnumerable of all types src depends on</returns>
 	[NotNull]
-	public static IEnumerable<TypeInfo> GetUnderlyingTypes([NotNull] this TypeInfo src) {
+	public static IEnumerable<TypeInfo> GetUnderlyingTypes([NotNull] this TypeInfo src) {*/
 		IEnumerable<TypeInfo> baseEnumerator =
 			src.ImplementedInterfaces.SelectMany(x => x.GetTypeInfo().GetUnderlyingTypes()).Append(src);
 		if (!(src.BaseType is null)) {

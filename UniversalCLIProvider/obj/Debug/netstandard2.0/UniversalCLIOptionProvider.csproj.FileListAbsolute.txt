@@ -1,6 +1,0 @@
-F:\TobiasAcc\Documents\CS\UniversalCLIOptionProvider\UniversalCLIOptionProvider\bin\Debug\netstandard2.0\UniversalCLIOptionProvider.deps.json
-F:\TobiasAcc\Documents\CS\UniversalCLIOptionProvider\UniversalCLIOptionProvider\bin\Debug\netstandard2.0\UniversalCLIOptionProvider.dll
-F:\TobiasAcc\Documents\CS\UniversalCLIOptionProvider\UniversalCLIOptionProvider\obj\Debug\netstandard2.0\UniversalCLIOptionProvider.csprojResolveAssemblyReference.cache
-F:\TobiasAcc\Documents\CS\UniversalCLIOptionProvider\UniversalCLIOptionProvider\obj\Debug\netstandard2.0\UniversalCLIOptionProvider.csproj.CoreCompileInputs.cache
-F:\TobiasAcc\Documents\CS\UniversalCLIOptionProvider\UniversalCLIOptionProvider\obj\Debug\netstandard2.0\UniversalCLIOptionProvider.AssemblyInfoInputs.cache
-F:\TobiasAcc\Documents\CS\UniversalCLIOptionProvider\UniversalCLIOptionProvider\obj\Debug\netstandard2.0\UniversalCLIOptionProvider.AssemblyInfo.cs
