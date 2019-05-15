@@ -5,7 +5,14 @@ using JetBrains.Annotations;
 using UniversalCLIProvider.Internals;
 
 namespace UniversalCLIProvider.Interpreters {
+/// <summary>
+/// A common interface for all interpreters of commandline input
+/// </summary>
 public abstract class BaseInterpreter {
+	/// <summary>
+	/// The name of the Interpreter
+	/// </summary>
+	/// <remarks>This should be human readable</remarks>
 	public string Name { get; }
 
 	/// <summary>
@@ -19,13 +26,13 @@ public abstract class BaseInterpreter {
 	public CommandlineOptionInterpreter TopInterpreter { get; }
 
 	/// <summary>
-/// The parent from which this Interpreter got its interpretation task
-/// </summary>
+	/// The parent from which this Interpreter got its interpretation task
+	/// </summary>
 	protected BaseInterpreter Parent { get; }
 
 	/// <summary>
-/// List of all parents from bottom to top
-/// </summary>
+	/// List of all parents from bottom to top
+	/// </summary>
 	public IEnumerable<BaseInterpreter> PathBottomUp {
 		get {
 			BaseInterpreter current = this;
@@ -80,13 +87,13 @@ public abstract class BaseInterpreter {
 	internal abstract void Interpret();
 
 	/// <summary>
-/// Checks if a given parameter matches a specified one
-/// </summary>
-/// <param name="expected">The expected parameter</param>
-/// <param name="given">The given parameter to compare with, null to get next from interpretation task</param>
-/// <param name="expectedShortForm">The ShortForm of <paramref name="expected"/> null for none</param>
-/// <param name="allowPrefixFree">Whether it can be used without prefix, defaults to no</param>
-/// <returns>Whether the given form matched the expected form or its ShortForm</returns>
+	/// Checks if a given parameter matches a specified one
+	/// </summary>
+	/// <param name="expected">The expected parameter</param>
+	/// <param name="given">The given parameter to compare with, null to get next from interpretation task</param>
+	/// <param name="expectedShortForm">The ShortForm of <paramref name="expected"/> null for none</param>
+	/// <param name="allowPrefixFree">Whether it can be used without prefix, defaults to no</param>
+	/// <returns>Whether the given form matched the expected form or its ShortForm</returns>
 	internal bool IsParameterEqual(string expected, string given = null, string expectedShortForm = null,
 		bool allowPrefixFree = false) =>
 		CommandlineMethods.IsParameterEqual(expected, given ?? TopInterpreter.Args[Offset],

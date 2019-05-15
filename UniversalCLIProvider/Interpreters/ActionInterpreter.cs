@@ -9,20 +9,28 @@ using UniversalCLIProvider.Internals;
 
 namespace UniversalCLIProvider.Interpreters {
 public class ActionInterpreter : BaseInterpreter {
+	/// <summary>
+/// All collection types that a parameter can have for which a basic lists will work a value
+/// </summary>
+	private static readonly Type[] CollectionsCoveredByLists = {
+		typeof(List<>), typeof(IList<>), typeof(ICollection<>), typeof(IEnumerable<>), typeof(IReadOnlyList<>),
+		typeof(IReadOnlyCollection<>), typeof(ReadOnlyCollection<>)
+	};
+
+	private readonly CmdActionAttribute _underlyingAction;
 	private bool _cached;
-	public CmdActionAttribute UnderlyingAction;
 
 	public ActionInterpreter(CmdActionAttribute myActionAttribute, BaseInterpreter parent, int offset = 0) : base(parent,
-		myActionAttribute.Name, offset) => UnderlyingAction = myActionAttribute;
+		myActionAttribute.Name, offset) => _underlyingAction = myActionAttribute;
 
 
 	/// <inheritdoc />
 	internal override void Interpret() {
-		UnderlyingAction.LoadParametersAndAlias();
+		_underlyingAction.LoadParametersAndAlias();
 		//TODO Investigate mult layer help
 		if (TopInterpreter.Args.Skip(Offset - 1).Any(x => IsParameterEqual("help", x, "?"))) {
 			if (TopInterpreter.Args.Length - 1 == Offset) {
-				HelpGenerators.PrintActionHelp(UnderlyingAction, this);
+				HelpGenerators.PrintActionHelp(_underlyingAction, this);
 				return;
 			}
 			else {
@@ -33,11 +41,11 @@ public class ActionInterpreter : BaseInterpreter {
 				}
 
 				CmdParameterAliasAttribute aliasAttribute =
-					UnderlyingAction.Parameters.SelectMany(x => x.ParameterAliases)
+					_underlyingAction.Parameters.SelectMany(x => x.ParameterAliases)
 						.FirstOrDefault(x => IsParameterEqual(x.Name, TopInterpreter.Args[Offset], x.ShortForm));
 				if (aliasAttribute is null) {
 					//TODO special error
-					HelpGenerators.PrintActionHelp(UnderlyingAction, this);
+					HelpGenerators.PrintActionHelp(_underlyingAction, this);
 					return;
 				}
 
@@ -49,7 +57,7 @@ public class ActionInterpreter : BaseInterpreter {
 		Dictionary<CmdParameterAttribute, object> invocationArguments =
 			Offset == TopInterpreter.Args.Length ? new Dictionary<CmdParameterAttribute, object>() : GetValues();
 
-		ParameterInfo[] allParameterInfos = UnderlyingAction.UnderlyingMethod.GetParameters();
+		ParameterInfo[] allParameterInfos = _underlyingAction.UnderlyingMethod.GetParameters();
 		var invokers = new object[allParameterInfos.Length];
 		var invokersDeclared = new bool[allParameterInfos.Length];
 		foreach (KeyValuePair<CmdParameterAttribute, object> invocationArgument in invocationArguments) {
@@ -70,14 +78,13 @@ public class ActionInterpreter : BaseInterpreter {
 			}
 		}
 
-		object returned = UnderlyingAction.UnderlyingMethod.Invoke(null, invokers);
+		object returned = _underlyingAction.UnderlyingMethod.Invoke(null, invokers);
 	}
 
 	/// <summary>
-	///  reads all arguments
+	/// Reads all following commandline parameters matches them up to action parameters parses them
 	/// </summary>
-	/// <param name="invokationArguments"></param>
-	/// <returns></returns>
+	/// <returns> A <see cref="Dictionary{TKey,TValue}"/> of <see cref="CmdParameterAttribute"/> and their values</returns>
 	private Dictionary<CmdParameterAttribute, object> GetValues() {
 		var invocationArguments = new Dictionary<CmdParameterAttribute, object>();
 		// value = null;
@@ -102,70 +109,15 @@ public class ActionInterpreter : BaseInterpreter {
 				if (IsAlias(found, out object aliasValue)) {
 					invocationArguments.Add(found, aliasValue);
 				}
-				else if (found.Usage.HasFlag(CmdParameterUsage.SupportDeclaredRaw) ) {
-					object valueFromString = CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], parameterType);	
+				else if (found.Usage.HasFlag(CmdParameterUsage.SupportDeclaredRaw)) {
+					object valueFromString = CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], parameterType);
 					invocationArguments.Add(found, valueFromString);
 				}
 				else if (found.Usage.HasFlag(CmdParameterUsage.SupportDeclaredRaw) && parameterType.GetInterfaces().Any(
 						x => (iEnumerableCache = x).IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>)
 					)
 				) {
-					#region Based upon https://stackoverflow.com/a/2493258/6730162 last access 04.03.2018
-
-					Type realType = iEnumerableCache.GetGenericArguments()[0];
-					Type specificList = typeof(List<>).MakeGenericType(realType);
-					ConstructorInfo ci = specificList.GetConstructor(new Type[] { });
-					object listOfRealType = ci.Invoke(new object[] { });
-
-					#endregion
-
-					MethodInfo addMethodInfo = specificList.GetMethod("Add");
-					Offset--;
-					while (true) {
-						if (IncreaseOffset()) {
-							break;
-						}
-
-						if (IsAnyAlias(out CmdParameterAttribute tmpParameterAttribute, out object _) &&
-							tmpParameterAttribute.Usage.HasFlag(CmdParameterUsage.SupportDirectAlias) ||
-							IsParameterDeclaration(out CmdParameterAttribute _)) {
-							break;
-						}
-
-						object toAppend = CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], realType);
-						Debug.Assert(addMethodInfo != null,
-							nameof(addMethodInfo) +
-							" != null"); //safe because of the fact that any generic type based on List<> will have an add method
-						addMethodInfo.Invoke(listOfRealType, new object[] {toAppend});
-					}
-
-					if (new Type[] {
-						typeof(List<>), typeof(IList<>), typeof(ICollection<>), typeof(IEnumerable<>), typeof(IReadOnlyList<>),
-						typeof(IReadOnlyCollection<>), typeof(ReadOnlyCollection<>)
-					}.Select(x => x.MakeGenericType(realType)).Contains(parameterType)) {
-						invocationArguments.Add(found, listOfRealType);
-					}
-					else if (parameterType == realType.MakeArrayType()) {
-						MethodInfo baseMethodToArray = typeof(Enumerable).GetMethod("ToArray");
-						Debug.Assert(baseMethodToArray != null,
-							nameof(baseMethodToArray) + " != null"); // safe because The Type has such method
-						object arrayOfRealType = baseMethodToArray.MakeGenericMethod(realType)
-							.Invoke(null, new object[] {listOfRealType});
-						invocationArguments.Add(found, arrayOfRealType);
-					}
-					else {
-						//Just to provide an open interface for custom types
-
-						ConstructorInfo constructorInfo =
-							parameterType.GetConstructor(new Type[] {typeof(IEnumerable<>).MakeGenericType(realType)});
-
-						if (constructorInfo is null) {
-							throw new CLIUsageException(
-								$"The data for the parameter {found.Name} was not formatted properly, or the collection type could not be initialized");
-						}
-
-						constructorInfo.Invoke(new object[] {listOfRealType});
-					}
+					HandleEnumerableInput(iEnumerableCache, parameterType, invocationArguments, found);
 				}
 
 				else {
@@ -179,9 +131,67 @@ public class ActionInterpreter : BaseInterpreter {
 		}
 	}
 
+	private void HandleEnumerableInput(Type iEnumerableCache, Type parameterType,
+		Dictionary<CmdParameterAttribute, object> invocationArguments,
+		CmdParameterAttribute found) {
+		#region Based upon https://stackoverflow.com/a/2493258/6730162 last access 04.03.2018
+
+		Type realType = iEnumerableCache.GetGenericArguments()[0];
+		Type specificList = typeof(List<>).MakeGenericType(realType);
+		ConstructorInfo ci = specificList.GetConstructor(new Type[] { });
+		object listOfRealType = ci.Invoke(new object[] { });
+
+		#endregion
+
+		MethodInfo addMethodInfo = specificList.GetMethod("Add");
+		Offset--;
+		while (true) {
+			if (IncreaseOffset()) {
+				break;
+			}
+
+			if (IsAnyAlias(out CmdParameterAttribute tmpParameterAttribute, out object _) &&
+				tmpParameterAttribute.Usage.HasFlag(CmdParameterUsage.SupportDirectAlias) ||
+				IsParameterDeclaration(out CmdParameterAttribute _)) {
+				break;
+			}
+
+			object toAppend = CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], realType);
+			Debug.Assert(addMethodInfo != null,
+				nameof(addMethodInfo) +
+				" != null"); //safe because of the fact that any generic type based on List<> will have an add method
+			addMethodInfo.Invoke(listOfRealType, new object[] {toAppend});
+		}
+
+		if (CollectionsCoveredByLists.Select(x => x.MakeGenericType(realType)).Contains(parameterType)) {
+			invocationArguments.Add(found, listOfRealType);
+		}
+		else if (parameterType == realType.MakeArrayType()) {
+			MethodInfo baseMethodToArray = typeof(Enumerable).GetMethod("ToArray");
+			Debug.Assert(baseMethodToArray != null,
+				nameof(baseMethodToArray) + " != null"); // safe because The Type has such method
+			object arrayOfRealType = baseMethodToArray.MakeGenericMethod(realType)
+				.Invoke(null, new object[] {listOfRealType});
+			invocationArguments.Add(found, arrayOfRealType);
+		}
+		else {
+			//Just to provide an open interface for custom types
+
+			ConstructorInfo constructorInfo =
+				parameterType.GetConstructor(new Type[] {typeof(IEnumerable<>).MakeGenericType(realType)});
+
+			if (constructorInfo is null) {
+				throw new CLIUsageException(
+					$"The data for the parameter {found.Name} was not formatted properly, or the collection type could not be initialized");
+			}
+
+			constructorInfo.Invoke(new object[] {listOfRealType});
+		}
+	}
+
 	private bool IsParameterDeclaration(out CmdParameterAttribute found, string search = null, bool allowPrefixFree = false) {
 		search = search ?? TopInterpreter.Args[Offset];
-		foreach (CmdParameterAttribute cmdParameterAttribute in (IEnumerable<CmdParameterAttribute>) UnderlyingAction.Parameters) {
+		foreach (CmdParameterAttribute cmdParameterAttribute in (IEnumerable<CmdParameterAttribute>) _underlyingAction.Parameters) {
 			if (IsParameterEqual(cmdParameterAttribute.Name, search, cmdParameterAttribute.ShortForm, allowPrefixFree)) {
 				found = cmdParameterAttribute;
 				return true;
@@ -194,7 +204,7 @@ public class ActionInterpreter : BaseInterpreter {
 
 
 	private bool IsAnyAlias(out CmdParameterAttribute aliasType, out object value, string source = null) {
-		foreach (CmdParameterAttribute cmdParameterAttribute in UnderlyingAction.Parameters) {
+		foreach (CmdParameterAttribute cmdParameterAttribute in _underlyingAction.Parameters) {
 			if (IsAlias(cmdParameterAttribute, out value, source ?? TopInterpreter.Args[Offset])) {
 				aliasType = cmdParameterAttribute;
 				return true;
