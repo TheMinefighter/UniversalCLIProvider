@@ -18,8 +18,14 @@ public abstract class BaseInterpreter {
 	/// </summary>
 	public CommandlineOptionInterpreter TopInterpreter { get; }
 
+	/// <summary>
+/// The parent from which this Interpreter got its interpretation task
+/// </summary>
 	protected BaseInterpreter Parent { get; }
 
+	/// <summary>
+/// List of all parents from bottom to top
+/// </summary>
 	public IEnumerable<BaseInterpreter> PathBottomUp {
 		get {
 			BaseInterpreter current = this;
@@ -69,12 +75,18 @@ public abstract class BaseInterpreter {
 	}
 
 	/// <summary>
-	///  Starts the interpretation
+	///  Starts the interpretation of any interpreter
 	/// </summary>
-	/// <returns>Whether the interpretation was successful</returns>
 	internal abstract void Interpret();
 
-
+	/// <summary>
+/// Checks if a given parameter matches a specified one
+/// </summary>
+/// <param name="expected">The expected parameter</param>
+/// <param name="given">The given parameter to compare with, null to get next from interpretation task</param>
+/// <param name="expectedShortForm">The ShortForm of <paramref name="expected"/> null for none</param>
+/// <param name="allowPrefixFree">Whether it can be used without prefix, defaults to no</param>
+/// <returns>Whether the given form matched the expected form or its ShortForm</returns>
 	internal bool IsParameterEqual(string expected, string given = null, string expectedShortForm = null,
 		bool allowPrefixFree = false) =>
 		CommandlineMethods.IsParameterEqual(expected, given ?? TopInterpreter.Args[Offset],

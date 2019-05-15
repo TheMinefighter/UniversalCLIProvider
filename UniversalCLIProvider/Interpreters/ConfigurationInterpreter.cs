@@ -74,10 +74,7 @@ public class ConfigurationInterpreter : BaseInterpreter {
 				throw new CLIUsageException("Please supply a value to set the given value to!");
 			}
 
-			if (!CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], prop.PropertyType, out object newValue)) {
-				throw new CLIUsageException(
-					$"The given string (TopInterpreter.Args[Offset]) couldn't be parsed to {prop.PropertyType}!");
-			}
+			object newValue = CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], prop.PropertyType);
 
 			try {
 				if (indexers is null) {
@@ -112,9 +109,7 @@ public class ConfigurationInterpreter : BaseInterpreter {
 				throw new CLIUsageException("Please supply a value to set the given value to!");
 			}
 
-			if (!CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], out int removalIndex)) {
-				throw new CLIUsageException($"The given string couldn't be parsed to {prop.PropertyType}!");
-			}
+			int removalIndex = CommandlineMethods.GetValueFromString<int>(TopInterpreter.Args[Offset]);	
 
 			try {
 				((IList) (indexers is null ? prop.GetValue(requiredObject) : prop.GetValue(requiredObject, indexers)))

@@ -139,6 +139,7 @@ public class ContextInterpreter : BaseInterpreter {
 		throw new CLIUsageException($"Failed to Parse Argument Nr {Offset + 1}: \"{search}\"");
 	}
 
+	/// <inheritdoc />
 	internal override void Interpret() => Interpret(out ContextInterpreter _);
 }
 }

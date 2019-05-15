@@ -202,7 +202,7 @@ public static class ConfigurationHelpers {
 	/// on this functions output in performance critical applications, due to the fact that doubled mentions of types are not actively prevented</remarks>
 	/// <returns>An IEnumerable of all types src depends on</returns>
 	[NotNull]
-	public static IEnumerable<TypeInfo> GetUnderlyingTypes([NotNull] this TypeInfo src) {*/
+	public static IEnumerable<TypeInfo> GetUnderlyingTypes([NotNull] this TypeInfo src) {
 		IEnumerable<TypeInfo> baseEnumerator =
 			src.ImplementedInterfaces.SelectMany(x => x.GetTypeInfo().GetUnderlyingTypes()).Append(src);
 		if (!(src.BaseType is null)) {

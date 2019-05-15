@@ -24,11 +24,9 @@ public static class CommandlineMethods {
 	private static readonly Type[] OverridenTypes =
 		{typeof(DateTime), typeof(DateTimeOffset), typeof(TimeSpan), typeof(Guid), typeof(Uri)};
 
-	public static bool GetValueFromString<T>([NotNull] string source, out T value,
+	public static T GetValueFromString<T>([NotNull] string source,
 		[CanBeNull] JsonSerializerSettings serializerSettings = null, bool enableCustomCompatSupport = true) {
-		bool success = GetValueFromString(source, typeof(T), out object tmp, serializerSettings, enableCustomCompatSupport);
-		value = tmp is T t ? t : default(T);
-		return success;
+		return (T) GetValueFromString(source, typeof(T), serializerSettings, enableCustomCompatSupport);
 	}
 
 	/// <summary>
@@ -36,7 +34,6 @@ public static class CommandlineMethods {
 	/// </summary>
 	/// <param name="source">The string to parse</param>
 	/// <param name="expectedType">The type expected, should be as narrow as possible</param>
-	/// <param name="value">The value the parsing operation returned</param>
 	/// <param name="serializerSettings">Custom JSON SerializerSettings</param>
 	/// <param name="enableCustomCompatSupport">Whether to enable the CLI optimizing changes before the JSON Deserializer</param>
 	/// <remarks>
@@ -55,18 +52,16 @@ public static class CommandlineMethods {
 	/// </remarks>
 	/// <remarks><see cref="Nullable{T}" /> types also supported</remarks>
 	/// <returns>Whether parsing was successful</returns>
-	public static bool GetValueFromString([NotNull] string source, [NotNull] Type expectedType, out object value,
+	public static object GetValueFromString([NotNull] string source, [NotNull] Type expectedType,
 		[CanBeNull] JsonSerializerSettings serializerSettings = null, bool enableCustomCompatSupport = true) {
 		serializerSettings = serializerSettings ?? new JsonSerializerSettings();
 		serializerSettings.Converters.Add(new StringEnumConverter());
-		value = null;
 		if (enableCustomCompatSupport) {
 			if (expectedType.IsEnum ||
 				expectedType.IsGenericType && expectedType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
 				expectedType.GenericTypeArguments.Length == 1 &&
 				expectedType.GenericTypeArguments[0].IsEnum && Enum.IsDefined(expectedType, source)) {
-				value = Enum.Parse(expectedType, source);
-				return true;
+				return Enum.Parse(expectedType, source);
 			}
 
 			if (OverridenTypes.Contains(expectedType)) {
@@ -77,13 +72,12 @@ public static class CommandlineMethods {
 
 			if (NullableOverridenTypes.Contains(expectedType)) {
 				if (source == "null") {
-					return true;
+					return null;
 				}
 
 				if (!source.StartsWith("\"")) {
 					if (expectedType == typeof(string)) {
-						value = source;
-						return true;
+						return source;
 					}
 
 					source = "\"" + source + "\"";
@@ -92,13 +86,12 @@ public static class CommandlineMethods {
 		}
 
 		try {
-			value = JsonConvert.DeserializeObject(source, expectedType, serializerSettings);
+			return JsonConvert.DeserializeObject(source, expectedType, serializerSettings);
 		}
-		catch (Exception) {
-			return false;
+		catch (Exception e) {
+			throw new CLIUsageException($"Whilst trying to parse {source} as a json of type {expectedType} an error occurred:",e);
 		}
 
-		return true;
 	}
 
 	/// <summary>
@@ -184,6 +177,15 @@ public static class CommandlineMethods {
 		(Console.BackgroundColor, Console.ForegroundColor) = backup;
 	}
 
+	/// <summary>
+	/// Checks if a given parameter matches a specified one
+	/// </summary>
+	/// <param name="expected">The expected parameter</param>
+	/// <param name="given">The given parameter to compare with</param>
+	/// <param name="ignoreCase">Whether to ignore the case of the parameter provided</param>
+	/// <param name="expectedShortForm">The ShortForm of <paramref name="expected"/> null for none</param>
+	/// <param name="allowPrefixFree">Whether it can be used without prefix, defaults to no</param>
+	/// <returns>Whether the given form matched the expected form or its ShortForm</returns>
 	internal static bool IsParameterEqual([CanBeNull] string expected, [NotNull] string given, bool ignoreCase,
 		string expectedShortForm = null,
 		bool allowPrefixFree = false) {

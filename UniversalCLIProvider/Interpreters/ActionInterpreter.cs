@@ -16,6 +16,7 @@ public class ActionInterpreter : BaseInterpreter {
 		myActionAttribute.Name, offset) => UnderlyingAction = myActionAttribute;
 
 
+	/// <inheritdoc />
 	internal override void Interpret() {
 		UnderlyingAction.LoadParametersAndAlias();
 		//TODO Investigate mult layer help
@@ -59,15 +60,13 @@ public class ActionInterpreter : BaseInterpreter {
 
 		for (int i = 0; i < allParameterInfos.Length; i++) {
 			if (!invokersDeclared[i]) {
-				if (allParameterInfos[i].HasDefaultValue) {
-					invokers[i] = allParameterInfos[i].DefaultValue;
-					invokersDeclared[i] = true;
-				}
-				else {
+				if (!allParameterInfos[i].HasDefaultValue) {
 					throw new CLIUsageException(
 						$"The parameter {allParameterInfos[i].Name} of type {allParameterInfos[i].ParameterType} is not defined.");
-					//throw
 				}
+
+				invokers[i] = allParameterInfos[i].DefaultValue;
+				invokersDeclared[i] = true;
 			}
 		}
 
@@ -80,12 +79,12 @@ public class ActionInterpreter : BaseInterpreter {
 	/// <param name="invokationArguments"></param>
 	/// <returns></returns>
 	private Dictionary<CmdParameterAttribute, object> GetValues() {
-		var invokationArguments = new Dictionary<CmdParameterAttribute, object>();
+		var invocationArguments = new Dictionary<CmdParameterAttribute, object>();
 		// value = null;
 		while (true) {
 			if (!IsParameterDeclaration(out CmdParameterAttribute found)) {
-				if (IsAlias(out found, out object aliasValue) && found.Usage.HasFlag(CmdParameterUsage.SupportDirectAlias)) {
-					invokationArguments.Add(found, aliasValue);
+				if (IsAnyAlias(out found, out object aliasValue) && found.Usage.HasFlag(CmdParameterUsage.SupportDirectAlias)) {
+					invocationArguments.Add(found, aliasValue);
 				}
 				else {
 					throw new CLIUsageException($"Couldn't resolve what {TopInterpreter.Args[Offset]} should be");
@@ -101,11 +100,11 @@ public class ActionInterpreter : BaseInterpreter {
 
 				Type parameterType = found.UnderlyingParameter.ParameterType;
 				if (IsAlias(found, out object aliasValue)) {
-					invokationArguments.Add(found, aliasValue);
+					invocationArguments.Add(found, aliasValue);
 				}
-				else if (found.Usage.HasFlag(CmdParameterUsage.SupportDeclaredRaw) &&
-					CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], parameterType, out object given)) {
-					invokationArguments.Add(found, given);
+				else if (found.Usage.HasFlag(CmdParameterUsage.SupportDeclaredRaw) ) {
+					object valueFromString = CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], parameterType);	
+					invocationArguments.Add(found, valueFromString);
 				}
 				else if (found.Usage.HasFlag(CmdParameterUsage.SupportDeclaredRaw) && parameterType.GetInterfaces().Any(
 						x => (iEnumerableCache = x).IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>)
@@ -127,13 +126,13 @@ public class ActionInterpreter : BaseInterpreter {
 							break;
 						}
 
-						if (IsAlias(out CmdParameterAttribute tmpParameterAttribute, out object _) &&
+						if (IsAnyAlias(out CmdParameterAttribute tmpParameterAttribute, out object _) &&
 							tmpParameterAttribute.Usage.HasFlag(CmdParameterUsage.SupportDirectAlias) ||
 							IsParameterDeclaration(out CmdParameterAttribute _)) {
 							break;
 						}
 
-						CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], realType, out object toAppend);
+						object toAppend = CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], realType);
 						Debug.Assert(addMethodInfo != null,
 							nameof(addMethodInfo) +
 							" != null"); //safe because of the fact that any generic type based on List<> will have an add method
@@ -144,7 +143,7 @@ public class ActionInterpreter : BaseInterpreter {
 						typeof(List<>), typeof(IList<>), typeof(ICollection<>), typeof(IEnumerable<>), typeof(IReadOnlyList<>),
 						typeof(IReadOnlyCollection<>), typeof(ReadOnlyCollection<>)
 					}.Select(x => x.MakeGenericType(realType)).Contains(parameterType)) {
-						invokationArguments.Add(found, listOfRealType);
+						invocationArguments.Add(found, listOfRealType);
 					}
 					else if (parameterType == realType.MakeArrayType()) {
 						MethodInfo baseMethodToArray = typeof(Enumerable).GetMethod("ToArray");
@@ -152,7 +151,7 @@ public class ActionInterpreter : BaseInterpreter {
 							nameof(baseMethodToArray) + " != null"); // safe because The Type has such method
 						object arrayOfRealType = baseMethodToArray.MakeGenericMethod(realType)
 							.Invoke(null, new object[] {listOfRealType});
-						invokationArguments.Add(found, arrayOfRealType);
+						invocationArguments.Add(found, arrayOfRealType);
 					}
 					else {
 						//Just to provide an open interface for custom types
@@ -175,7 +174,7 @@ public class ActionInterpreter : BaseInterpreter {
 			}
 
 			if (IncreaseOffset()) {
-				return invokationArguments;
+				return invocationArguments;
 			}
 		}
 	}
@@ -193,11 +192,8 @@ public class ActionInterpreter : BaseInterpreter {
 		return false;
 	}
 
-//      internal bool IsAlias(CmdParameterAttribute expectedAliasType, out object value, string source = null) {
-//         return base.IsAlias(expectedAliasType, out value, source ?? TopInterpreter.Args[Offset]);
-//      }
 
-	private bool IsAlias(out CmdParameterAttribute aliasType, out object value, string source = null) {
+	private bool IsAnyAlias(out CmdParameterAttribute aliasType, out object value, string source = null) {
 		foreach (CmdParameterAttribute cmdParameterAttribute in UnderlyingAction.Parameters) {
 			if (IsAlias(cmdParameterAttribute, out value, source ?? TopInterpreter.Args[Offset])) {
 				aliasType = cmdParameterAttribute;
