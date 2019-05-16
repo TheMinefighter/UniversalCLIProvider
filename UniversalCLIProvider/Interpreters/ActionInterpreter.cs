@@ -10,15 +10,17 @@ using UniversalCLIProvider.Internals;
 namespace UniversalCLIProvider.Interpreters {
 public class ActionInterpreter : BaseInterpreter {
 	/// <summary>
-/// All collection types that a parameter can have for which a basic lists will work a value
-/// </summary>
+	/// All collection types that a parameter can have for which a basic lists will work a value
+	/// </summary>
 	private static readonly Type[] CollectionsCoveredByLists = {
 		typeof(List<>), typeof(IList<>), typeof(ICollection<>), typeof(IEnumerable<>), typeof(IReadOnlyList<>),
 		typeof(IReadOnlyCollection<>), typeof(ReadOnlyCollection<>)
 	};
 
+	/// <summary>
+	/// The action that is interpreted by this Interpreter
+	/// </summary>
 	private readonly CmdActionAttribute _underlyingAction;
-	private bool _cached;
 
 	public ActionInterpreter(CmdActionAttribute myActionAttribute, BaseInterpreter parent, int offset = 0) : base(parent,
 		myActionAttribute.Name, offset) => _underlyingAction = myActionAttribute;
@@ -35,7 +37,7 @@ public class ActionInterpreter : BaseInterpreter {
 			}
 			else {
 				IncreaseOffset();
-				if (IsParameterDeclaration(out CmdParameterAttribute found, allowPrefixFree: true)) {
+				if (IsAnyParameterDeclaration(out CmdParameterAttribute found, allowPrefixFree: true)) {
 					HelpGenerators.PrintParameterHelp(found, this);
 					return;
 				}
@@ -89,7 +91,7 @@ public class ActionInterpreter : BaseInterpreter {
 		var invocationArguments = new Dictionary<CmdParameterAttribute, object>();
 		// value = null;
 		while (true) {
-			if (!IsParameterDeclaration(out CmdParameterAttribute found)) {
+			if (!IsAnyParameterDeclaration(out CmdParameterAttribute found)) {
 				if (IsAnyAlias(out found, out object aliasValue) && found.Usage.HasFlag(CmdParameterUsage.SupportDirectAlias)) {
 					invocationArguments.Add(found, aliasValue);
 				}
@@ -152,7 +154,7 @@ public class ActionInterpreter : BaseInterpreter {
 
 			if (IsAnyAlias(out CmdParameterAttribute tmpParameterAttribute, out object _) &&
 				tmpParameterAttribute.Usage.HasFlag(CmdParameterUsage.SupportDirectAlias) ||
-				IsParameterDeclaration(out CmdParameterAttribute _)) {
+				IsAnyParameterDeclaration(out CmdParameterAttribute _)) {
 				break;
 			}
 
@@ -189,7 +191,7 @@ public class ActionInterpreter : BaseInterpreter {
 		}
 	}
 
-	private bool IsParameterDeclaration(out CmdParameterAttribute found, string search = null, bool allowPrefixFree = false) {
+	private bool IsAnyParameterDeclaration(out CmdParameterAttribute found, string search = null, bool allowPrefixFree = false) {
 		search = search ?? TopInterpreter.Args[Offset];
 		foreach (CmdParameterAttribute cmdParameterAttribute in (IEnumerable<CmdParameterAttribute>) _underlyingAction.Parameters) {
 			if (IsParameterEqual(cmdParameterAttribute.Name, search, cmdParameterAttribute.ShortForm, allowPrefixFree)) {
