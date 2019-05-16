@@ -24,9 +24,11 @@ public static class CommandlineMethods {
 	private static readonly Type[] OverridenTypes =
 		{typeof(DateTime), typeof(DateTimeOffset), typeof(TimeSpan), typeof(Guid), typeof(Uri)};
 
-	public static T GetValueFromString<T>([NotNull] string source,
+	public static bool GetValueFromString<T>([NotNull] string source, out T value,
 		[CanBeNull] JsonSerializerSettings serializerSettings = null, bool enableCustomCompatSupport = true) {
-		return (T) GetValueFromString(source, typeof(T), serializerSettings, enableCustomCompatSupport);
+		bool success = GetValueFromString(source, typeof(T), out object tmp, serializerSettings, enableCustomCompatSupport);
+		value = tmp is T t ? t : default(T);
+		return success;
 	}
 
 	/// <summary>
@@ -34,6 +36,7 @@ public static class CommandlineMethods {
 	/// </summary>
 	/// <param name="source">The string to parse</param>
 	/// <param name="expectedType">The type expected, should be as narrow as possible</param>
+	/// <param name="value">The value the parsing operation returned</param>
 	/// <param name="serializerSettings">Custom JSON SerializerSettings</param>
 	/// <param name="enableCustomCompatSupport">Whether to enable the CLI optimizing changes before the JSON Deserializer</param>
 	/// <remarks>
@@ -52,16 +55,18 @@ public static class CommandlineMethods {
 	/// </remarks>
 	/// <remarks><see cref="Nullable{T}" /> types also supported</remarks>
 	/// <returns>Whether parsing was successful</returns>
-	public static object GetValueFromString([NotNull] string source, [NotNull] Type expectedType,
+	public static bool GetValueFromString([NotNull] string source, [NotNull] Type expectedType, out object value,
 		[CanBeNull] JsonSerializerSettings serializerSettings = null, bool enableCustomCompatSupport = true) {
 		serializerSettings = serializerSettings ?? new JsonSerializerSettings();
 		serializerSettings.Converters.Add(new StringEnumConverter());
+		value = null;
 		if (enableCustomCompatSupport) {
 			if (expectedType.IsEnum ||
 				expectedType.IsGenericType && expectedType.GetGenericTypeDefinition() == typeof(Nullable<>) &&
 				expectedType.GenericTypeArguments.Length == 1 &&
 				expectedType.GenericTypeArguments[0].IsEnum && Enum.IsDefined(expectedType, source)) {
-				return Enum.Parse(expectedType, source);
+				value = Enum.Parse(expectedType, source);
+				return true;
 			}
 
 			if (OverridenTypes.Contains(expectedType)) {
@@ -72,12 +77,13 @@ public static class CommandlineMethods {
 
 			if (NullableOverridenTypes.Contains(expectedType)) {
 				if (source == "null") {
-					return null;
+					return true;
 				}
 
 				if (!source.StartsWith("\"")) {
 					if (expectedType == typeof(string)) {
-						return source;
+						value = source;
+						return true;
 					}
 
 					source = "\"" + source + "\"";
@@ -86,12 +92,13 @@ public static class CommandlineMethods {
 		}
 
 		try {
-			return JsonConvert.DeserializeObject(source, expectedType, serializerSettings);
+			value = JsonConvert.DeserializeObject(source, expectedType, serializerSettings);
 		}
-		catch (Exception e) {
-			throw new CLIUsageException($"Whilst trying to parse {source} as a json of type {expectedType} an error occurred:",e);
+		catch (Exception) {
+			return false;
 		}
 
+		return true;
 	}
 
 	/// <summary>

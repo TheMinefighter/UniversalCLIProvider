@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -111,15 +112,15 @@ public class ActionInterpreter : BaseInterpreter {
 				if (IsAlias(found, out object aliasValue)) {
 					invocationArguments.Add(found, aliasValue);
 				}
-				else if (found.Usage.HasFlag(CmdParameterUsage.SupportDeclaredRaw)) {
-					object valueFromString = CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], parameterType);
-					invocationArguments.Add(found, valueFromString);
+				else if (found.Usage.HasFlag(CmdParameterUsage.SupportDeclaredRaw) &&
+					CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], parameterType, out object given)) {
+					invocationArguments.Add(found, given);
 				}
 				else if (found.Usage.HasFlag(CmdParameterUsage.SupportDeclaredRaw) && parameterType.GetInterfaces().Any(
 						x => (iEnumerableCache = x).IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>)
 					)
 				) {
-					HandleEnumerableInput(iEnumerableCache, parameterType, invocationArguments, found);
+					invocationArguments.Add(found,HandleEnumerableInput(iEnumerableCache, found));
 				}
 
 				else {
@@ -133,15 +134,22 @@ public class ActionInterpreter : BaseInterpreter {
 		}
 	}
 
-	private void HandleEnumerableInput(Type iEnumerableCache, Type parameterType,
-		Dictionary<CmdParameterAttribute, object> invocationArguments,
-		CmdParameterAttribute found) {
+	/// <summary>
+	/// Handles the input for IEnumerables that could not be processed in another way
+	/// </summary>
+	/// <param name="enumerableTargetType"></param>
+	/// <param name="foundParameter"></param>
+	/// <returns></returns>
+	/// <exception cref="CLIUsageException">If the user provided parameters are invalid for the given function parameter</exception>
+	private IEnumerable HandleEnumerableInput(Type enumerableTargetType, CmdParameterAttribute foundParameter) {
+		Type parameterType = foundParameter.UnderlyingParameter.ParameterType;
+
 		#region Based upon https://stackoverflow.com/a/2493258/6730162 last access 04.03.2018
 
-		Type realType = iEnumerableCache.GetGenericArguments()[0];
+		Type realType = enumerableTargetType.GetGenericArguments()[0];
 		Type specificList = typeof(List<>).MakeGenericType(realType);
 		ConstructorInfo ci = specificList.GetConstructor(new Type[] { });
-		object listOfRealType = ci.Invoke(new object[] { });
+		var listOfRealType = (IList) ci.Invoke(new object[] { });
 
 		#endregion
 
@@ -158,7 +166,7 @@ public class ActionInterpreter : BaseInterpreter {
 				break;
 			}
 
-			object toAppend = CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], realType);
+			CommandlineMethods.GetValueFromString(TopInterpreter.Args[Offset], realType, out object toAppend);
 			Debug.Assert(addMethodInfo != null,
 				nameof(addMethodInfo) +
 				" != null"); //safe because of the fact that any generic type based on List<> will have an add method
@@ -166,15 +174,15 @@ public class ActionInterpreter : BaseInterpreter {
 		}
 
 		if (CollectionsCoveredByLists.Select(x => x.MakeGenericType(realType)).Contains(parameterType)) {
-			invocationArguments.Add(found, listOfRealType);
+			return listOfRealType;
 		}
 		else if (parameterType == realType.MakeArrayType()) {
 			MethodInfo baseMethodToArray = typeof(Enumerable).GetMethod("ToArray");
 			Debug.Assert(baseMethodToArray != null,
 				nameof(baseMethodToArray) + " != null"); // safe because The Type has such method
-			object arrayOfRealType = baseMethodToArray.MakeGenericMethod(realType)
+			var arrayOfRealType = (Array) baseMethodToArray.MakeGenericMethod(realType)
 				.Invoke(null, new object[] {listOfRealType});
-			invocationArguments.Add(found, arrayOfRealType);
+			return arrayOfRealType;
 		}
 		else {
 			//Just to provide an open interface for custom types
@@ -184,10 +192,10 @@ public class ActionInterpreter : BaseInterpreter {
 
 			if (constructorInfo is null) {
 				throw new CLIUsageException(
-					$"The data for the parameter {found.Name} was not formatted properly, or the collection type could not be initialized");
+					$"The data for the parameter {foundParameter.Name} was not formatted properly, or the collection type could not be initialized");
 			}
 
-			constructorInfo.Invoke(new object[] {listOfRealType});
+			return (IEnumerable) constructorInfo.Invoke(new object[] {listOfRealType});
 		}
 	}
 

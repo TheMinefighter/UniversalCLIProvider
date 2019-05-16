@@ -5,6 +5,7 @@ using System.Reflection;
 using JetBrains.Annotations;
 using PropertyOrFieldInfoPackage;
 using UniversalCLIProvider.Internals;
+using UniversalCLIProvider.Interpreters;
 
 namespace UniversalCLIProvider.Attributes {
 [AttributeUsage(AttributeTargets.Class), UsedImplicitly]

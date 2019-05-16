@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using UniversalCLIProvider;
 using UniversalCLIProvider.Internals;
 using Xunit;
 
@@ -25,12 +24,11 @@ public class StaticTests {
 
 	[Theory, MemberData(nameof(GetValueFromStringData))]
 	public void GetValueFromString(string src, Type expectedType, bool expectedSuccess, object expectedResult) {
-		if (!expectedSuccess) {
-			Assert.Throws<CLIUsageException>(() => CommandlineMethods.GetValueFromString(src, expectedType));
-			return;
+		bool success = CommandlineMethods.GetValueFromString(src, expectedType, out object result);
+		Assert.Equal(expectedSuccess, success);
+		if (success) {
+			Assert.Equal(expectedResult, result);
 		}
-		object o = CommandlineMethods.GetValueFromString(src, expectedType);
-			Assert.Equal(expectedResult, o);
 	}
 
 	[Theory, MemberData(nameof(HexArgumentProcessingTestsData))]
