@@ -9,6 +9,9 @@ using UniversalCLIProvider.Attributes;
 using UniversalCLIProvider.Internals;
 
 namespace UniversalCLIProvider.Interpreters {
+/// <summary>
+/// Implementation of <see cref="BaseInterpreter"/> for interpreting commandline actions
+/// </summary>
 public class ActionInterpreter : BaseInterpreter {
 	/// <summary>
 	/// All collection types that a parameter can have for which a basic lists will work a value

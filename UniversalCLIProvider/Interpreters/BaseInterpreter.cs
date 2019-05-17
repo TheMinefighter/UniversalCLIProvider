@@ -64,6 +64,7 @@ public abstract class BaseInterpreter {
 		Name = name ?? throw new ArgumentNullException(nameof(name));
 	}
 
+	/// <inheritdoc />
 	public override string ToString() => string.Join(" ", Path.Select(x => x.Name));
 
 	/// <summary>
